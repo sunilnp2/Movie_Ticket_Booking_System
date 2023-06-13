@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- regiser area start  -->
+
+        <div class="register-sm-12">
+            <div class="formlogin-sm-50">
+                {% if messages %}
+                {% for mess in messages %}
+                <h5 style = "color:green;" >{{mess}} </h5>
+                    {% endfor %}
+                {% endif %}
+                <h3>Login Here</h3>
+                <hr class="line-break1">
+                <form action="" class="formlogin-sm-12" method = 'post' novalidate>
+                    {% csrf_token %}
+                    {% comment %} {{form.non_field_errors}}
+                    {% for form in fm %}
+                    <label>{{form.label_tag}}</label><span id = "error-messages">{{form.errors}}</span>
+                    {{form}}
+                    {% endfor%} {% endcomment %}
+                  <label for="email">Email : </label>
+                    <input type="email" name="email" id="email" placeholder="Enter email">
+                    <label for="password">Password : </label>
+                    <input type="password" name="password" id="password" placeholder="Enter password">
+                  
+
+                    <button>Submit</button>
+                </form>
+                <p>Not Registered? <a href="{% url 'cinema:signup' %}">Signup</a> </p>
+            </div>
+
+        </div>
+
+    <!-- register area end -->
+    
+
+{% endblock content %}

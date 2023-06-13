@@ -1,0 +1,371 @@
+.movie-detail-sm-12 {
+  height: 90vh;
+  width: 100vw;
+  /* background-color: black; */
+  display: flex;
+  margin-top: 5px;
+}
+
+.detail-sm-25 {
+  width: 27vw;
+  height: 100%;
+  /* background-color: gray; */
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-area {
+  height: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 6px;
+  /* justify-content: center; */
+  /* align-items: centerz; */
+}
+
+.movie-area img {
+  height: 65%;
+  width: 50%;
+  margin-top: 5px;
+}
+
+.movie-name {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.duration {
+  background-color: black;
+  color: white;
+  border: 1px solid black;
+  width: 100px;
+  text-align: center;
+  border-radius: 25px;
+  font-size: 0.8em;
+}
+
+.other-detail {
+  height: 40%;
+  width: 100%;
+}
+
+.other-detail {
+  height: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 0.8em;
+  padding: 13px 16px;
+}
+.other-detail p {
+  margin-left: 0px;
+}
+
+.details {
+  height: auto;
+}
+
+.detail-sm-75 {
+  width: 73vw;
+  height: 70%;
+  padding: 10px 12px;
+  /* border-radius: 15px; */
+}
+
+.detail-heading {
+  width: 100%;
+  height: 60px;
+}
+
+.selection-area {
+  height: 90%;
+  width: 100%;
+  background-color: rgb(65, 63, 63);
+  border-radius: 15px;
+  padding: 20px 50px;
+}
+
+.selection-area h5 {
+  color: white;
+}
+
+.select-date {
+  margin-top: 20px;
+}
+
+.adjust-date {
+  display: inline-block;
+  border: 1px solid white;
+  background-color: rgb(52, 107, 107);
+  color: white;
+  width: 50px;
+  height: 75px;
+  text-align: center;
+  border-radius: 15px;
+}
+
+.dates {
+  display: flex;
+}
+
+.adjust-date p {
+  font-size: 0.7em;
+}
+
+.date-number {
+  font-size: 25px;
+}
+
+.mydate {
+  margin: 5px 20px;
+}
+
+.select-time {
+  margin-top: 30px;
+}
+
+.available-time {
+  height: 200;
+  width: 100%;
+}
+
+.available-time ul {
+  display: flex;
+  list-style: none;
+  flex-direction: column;
+}
+
+.available-time ul li {
+  border: 2px solid rgb(8, 233, 8);
+  display: inline-block;
+  width: 170px;
+  margin: 5px 8px;
+  height: 45px;
+  color: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* style for seats.html ----------------------------------------------------------------------*/
+
+.screen-site{
+  height: 15px;
+  width: 300px;
+  border-radius: 50%;
+  background-color: aqua;
+  margin: 4px auto;
+
+}
+
+.break-screen{
+color: white ;
+width: 50%;
+margin: auto;
+height: 4px;
+margin-top: 20px;
+}
+.detail-seat-75 {
+  width: 73vw;
+  height: 90%;
+  padding: 10px 12px;
+  /* border-radius: 15px; */
+}
+
+.detail-heading {
+  width: 100%;
+  height: 60px;
+}
+
+.seat-area {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(65, 63, 63);
+  border-radius: 15px;
+  padding: 20px 50px;
+}
+
+.seat-list-sm-12 {
+  width: 80%;
+  height: 60%;
+  /* background-color: brown; */
+  margin: 5px auto;
+  padding: 1px 15px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.first-row {
+  /* background-color: white; */
+  background-color: none;
+}
+
+.first-row a{
+    text-decoration: none;
+
+}
+
+.first-row span {
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.material-symbols-outlined {
+  color: aqua;
+  margin: 0px 20px;
+}
+
+.row-number {
+  font: 0.4em;
+}
+
+.line-break{
+    color: white;
+    width: 60%;
+    margin: 20px auto;
+}
+
+.seat-status{
+    width: 80%;
+    height: 5%;
+    /* background-color: brown; */
+    margin: 20px auto;
+    /* padding: 0px 15px; */
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.seat-status span{
+    font-size: 2.4em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.seat-status div{
+    margin: 0px 20px;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+}
+
+.reserved{
+    color: blue;
+}
+
+.sold-out{
+color: red;
+}
+
+.pick-seat{
+    color: yellow;
+}
+
+.buy-sm-12{
+    width: 14%;
+    height: 45px;
+    margin: 10px auto;
+    background-color: rgb(80, 175, 175);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 12px;
+}
+
+.buy-sm-12 input{
+    border: none;
+    font-size: 1.2em;
+    background-color: rgb(80, 175, 175);
+    color: white;
+}
+
+.buy-sm-12:hover{
+    background-color: white;
+    color: rgb(80, 175, 175);
+}
+
+.buy-sm-12 input:hover{
+    border: none;
+    font-size: 1.2em;
+    color: rgb(80, 175, 175);
+    background-color: white;
+}
+
+
+/* ----------------------------style for booking.html--------------------------------------- */
+.customer-details{
+  height: 230px;
+  width: 95%;
+  background-color: white;
+  margin: 6px auto;
+  border-radius: 15px;
+}
+
+.customer-details h3{
+  font-weight: bold;
+}
+
+.customer-details ul{
+  list-style: none;
+
+}
+
+.customer-details ul li{
+  font-size: 20px;
+  /* margin: 2px ; */
+  padding: 4px 10px;
+  /* margin: 3px 4px; */
+}
+
+.selected-seat{
+  margin: 6px auto;
+  width: 95%;
+  height: 100px;
+  background-color: white;
+  padding: 6px 10px;
+  border-radius: 15px;
+}
+
+.selected-seat h4{
+  color:brown;
+}
+
+.payment-method{
+  background-color: white;
+  height: 340px;
+  width: 95%;
+  margin: 6px auto;
+  padding: 6px 10px;
+  border-radius: 15px;
+}
+
+.payment-method ul{
+  list-style: none;
+  margin-left: 10px;
+}
+
+
+.payment-method ul li a{
+  text-decoration: none;
+  font-size: 20px;
+
+}
+
+
+.payment-method button{
+  background-color:cyan;
+  color: black;
+  width: 200px;
+  height: 50px;
+  font-size: 1.4em;
+  font-weight: bold;
+
+}

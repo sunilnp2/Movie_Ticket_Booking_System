@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- movie detail area start -->
+
+    <div class="movie-detail-sm-12">
+      <div class="detail-sm-25">
+        <div class="movie-area">
+          <img src="img/cinema.jpg" alt="" />
+          <p>Now Showing</p>
+          <h3 class="movie-name">Movie Name</h3>
+          <p class="duration">140 mins</p>
+        </div>
+        <div class="other-detail">
+          <p class="details">
+            Shameik MooreHailee SteinfeldOscar IsaacJake JohnsonIssa RaeBrian
+            Tyree HenryLuna Lauren VelezRachel DratchShameik MooreHailee
+            SteinfeldOscar IsaacJake JohnsonIssa RaeBrian Tyree HenryLuna Lauren
+            VelezRachel DratchShameik MooreHailee SteinfeldOscar IsaacJake
+            JohnsonIssa RaeBrian Tyree HenryLuna Lauren VelezRachel Dratch
+          </p>
+          <p>Language : English</p>
+          <p>Genre : Drama</p>
+          <p class="-movie-casts">
+            Cast : Shameik MooreHailee SteinfeldOscar IsaacJake JohnsonIssa
+            RaeBrian Tyree HenryLuna Lauren VelezRachel Dratch
+          </p>
+        </div>
+      </div>
+      <div class="detail-sm-75 detail-seat-75">
+
+        <div class="detail-heading">
+            <h3>
+             Confirm Booking
+            </h3>
+            <hr>
+        </div>
+        <div class="selection-area seat-area">
+            <div class="customer-details">
+                <h3>Your Details</h3>
+                <ul>
+                    <li>Name : Customer Name</li>
+                    <li>Address : Customer Address</li>
+                    <li>Phone : Phone Number</li>
+                    <li>Email : Email</li>
+                </ul>
+            </div>
+           
+            <div class="selected-seat">
+            <h3>Selected Seat:</h3>
+            <h4>A4, A5</h4>
+        </div>
+            <div class="payment-method">
+                <h3>Choose Payment methood</h3>
+                <ul>
+                    <li><a href="http://">E-sewa</a> </li>
+                    <li><a href="http://">Khalti</a> </li>
+                    <li><a href="http://">PayPal</a> </li>
+                
+                </ul>
+                <button type="submit">Confirm</button>
+            </div>
+
+           
+        </div>
+
+      </div>
+    </div>
+
+    <!-- movie detail area end -->
+
+    <!-- footer area start -->
+
+    <div class="footer-sm-12">
+      <p>@copyright QFX Cinemas</p>
+      <p>All Rights Reserved</p>
+    </div>
+
+    {% endblock content %}
