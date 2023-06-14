@@ -55,7 +55,7 @@
                 <div class="available-time">
                     <ul>
                       {% for show in showtimes%}
-                     <a href = "{% url 'cinema:seat' %}"> <li>{{show.start_time}} to {{show.end_time}}</li></a>
+                     <a href = "{% url 'cinema:seat' details.slug dates.id show.id %}"> <li>{{show.start_time}} to {{show.end_time}}</li></a>
                       {% endfor %}
                       {% comment %} <li>2:00 to 5:00</li>
                       <li>6:00 to 9:00</li> {% endcomment %}
@@ -69,11 +69,5 @@
 
     <!-- movie detail area end -->
 
-    <!-- footer area start -->
-
-    <div class="footer-sm-12">
-      <p>@copyright QFX Cinemas</p>
-      <p>All Rights Reserved</p>
-    </div>
 
 {% endblock %}

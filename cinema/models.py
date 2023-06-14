@@ -7,6 +7,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 MOVIE_STATUS  =(('showing', 'showing'), ('comingsoon', 'comingsoon'))
 SHIFT = (('M', 'M'),('D', 'D'),('N', 'N'))
 STATUS = (('active', 'active'), ('inactive', 'inactive'))
+SEAT_STATUS = (('available', 'available'), ('pending', 'pending'), ('reserved', 'reserved'))
 
 class Movie(models.Model):
     name = models.CharField(max_length=200)
@@ -17,7 +18,7 @@ class Movie(models.Model):
     language = models.CharField(max_length=200)
     release_date = models.DateField(blank=True,null=True)
     slug = models.SlugField(max_length=100)
-    # active = models.CharField(choices=STATUS, max_length=100)
+    active = models.CharField(choices=STATUS, max_length=100, blank=True, null=True)
     status = models.CharField(choices=MOVIE_STATUS, max_length=100)
     detail = models.TextField(blank=True)
 
@@ -44,29 +45,62 @@ class Showtime(models.Model):
     
     
 
+# class Seat(models.Model):
+#     date = models.ManyToManyField(Date, null=True, blank=True)
+#     showtime = models.ManyToManyField(Showtime, null=True, blank=True)
+#     seat_number = models.PositiveIntegerField()
+#     name = models.CharField(max_length=10)
+#     morning = models.BooleanField(default=True)
+#     day = models.BooleanField(default=True)
+#     night = models.BooleanField(default=True)
+
+#     def __str__(self):
+#         return str(self.seat_number)
+    
+#     def show_time(self):
+#         return ",".join([str(p) for p in self.showtime.all()])
+    
+#     def show_date(self):
+#         return ",".join([str(p) for p in self.date.all()])
+
 class Seat(models.Model):
-    date = models.ManyToManyField(Date, null=True, blank=True)
-    showtime = models.ManyToManyField(Showtime, null=True, blank=True)
     seat_number = models.PositiveIntegerField()
     name = models.CharField(max_length=10)
+    status = models.CharField(choices=SEAT_STATUS, max_length=100,blank=True, null=True)
+
+    def __str__(self):
+        return str(self.seat_number)
+
+
+class SeatAvailability(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, blank=True, null=True)
+    seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
+    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
+    status = models.CharField(SEAT_STATUS, max_length=20, null=True, blank=True)
     morning = models.BooleanField(default=True)
     day = models.BooleanField(default=True)
     night = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.seat_number)
+        return f"Seat {self.seat.seat_number} Availability"
     
-    def show_time(self):
-        return ",".join([str(p) for p in self.showtime.all()])
-    
-    def show_date(self):
-        return ",".join([str(p) for p in self.date.all()])
+
+
+# class Booking_History(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+#     date = models.DateField(auto_now_add=True)
+#     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
+#     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
 
 
 
 
 
 
+
+# Custom user registration part ---------------------------------------------------------------------------------------------
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email,first_name, last_name,phone,password=None, password2 = None):
@@ -154,9 +188,9 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+    
 
-
-
+    
 # class Booking(models.Model):
 #     user = models.ForeignKey(User,on_delete=models.CASCADE)
 #     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
@@ -168,9 +202,5 @@ class User(AbstractBaseUser):
 #         return self.user
 
 
-# class Booking_History(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-#     date = models.DateField(auto_now_add=True)
-#     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-#     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
+
+

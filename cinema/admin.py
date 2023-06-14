@@ -114,5 +114,7 @@ class ShowtimeAdmin(admin.ModelAdmin):
 admin.site.register(Showtime, ShowtimeAdmin)
 
 class SeatAdmin(admin.ModelAdmin):
-    list_display = ['seat_number', 'name', 'morning', 'day','night', 'show_time', 'show_date']
+    list_display = ['seat_number', 'name']
 admin.site.register(Seat, SeatAdmin)
+
+admin.site.register(SeatAvailability)
