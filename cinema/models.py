@@ -9,7 +9,7 @@ SHIFT = (('M', 'M'),('D', 'D'),('N', 'N'))
 STATUS = (('active', 'active'), ('inactive', 'inactive'))
 SEAT_STATUS = (('available', 'available'), ('pending', 'pending'), ('reserved', 'reserved'))
 
-class Movie(models.Model):
+''' class Movie(models.Model):
     name = models.CharField(max_length=200)
     cast = models.CharField(max_length=200)
     duration = models.CharField(max_length=50)
@@ -77,7 +77,7 @@ class SeatAvailability(models.Model):
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
     date = models.ForeignKey(Date, on_delete=models.CASCADE)
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-    status = models.CharField(SEAT_STATUS, max_length=20, null=True, blank=True)
+    status = models.CharField(choices=SEAT_STATUS, max_length=20, null=True, blank=True)
     morning = models.BooleanField(default=True)
     day = models.BooleanField(default=True)
     night = models.BooleanField(default=True)
@@ -92,7 +92,7 @@ class SeatAvailability(models.Model):
 #     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 #     date = models.DateField(auto_now_add=True)
 #     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-#     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
+#     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)'''
 
 
 
@@ -102,7 +102,7 @@ class SeatAvailability(models.Model):
 
 # Custom user registration part ---------------------------------------------------------------------------------------------
 
-class MyUserManager(BaseUserManager):
+'''class MyUserManager(BaseUserManager):
     def create_user(self, email,first_name, last_name,phone,password=None, password2 = None):
         """
          Creates and saves a user with the given email, name, phone ,password
@@ -201,6 +201,6 @@ class User(AbstractBaseUser):
 #     def __str__(self):
 #         return self.user
 
-
+'''
 
 

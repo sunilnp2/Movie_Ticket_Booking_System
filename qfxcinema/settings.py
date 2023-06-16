@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&bxcuw^8c^vplfb@j72+8qa!-+dy5&+*8t$lu=36*c6_-m9%5m'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = []
+
+# templates and static directory
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
 
 
 # Application definition
 
 INSTALLED_APPS = [
+      'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cinema',
+    'authentication',
+    'movie',
+    'booking',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +68,7 @@ ROOT_URLCONF = 'qfxcinema.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,6 +82,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'qfxcinema.wsgi.application'
+STATICFILES_DIRS = [STATIC_DIR]
+
+
+LOGIN_URL = '/authentication/login/'
 
 
 # Database
@@ -79,6 +96,17 @@ WSGI_APPLICATION = 'qfxcinema.wsgi.application'
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
+# }
+
+# DATABASES = {
+#    'default': {
+#        'ENGINE': config('ENGINE'),
+#        'NAME': config('NAME'),
+#        'USER': config('USER'),
+#        'PASSWORD': config('PASSWORD'),
+#        'HOST': config('HOST'),
+#        'PORT': config('PORT',default=5432, cast=int),
+#    }
 # }
 
 DATABASES = {
@@ -113,12 +141,22 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Emailing settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM = 'nepalisun22@gmail.com'
-EMAIL_HOST_USER = 'nepalisun22@gmail.com'
-EMAIL_HOST_PASSWORD = 'mblsqyqaqwzidwpy'
-EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_FROM = 'nepalisun22@gmail.com'
+# EMAIL_HOST_USER = 'nepalisun22@gmail.com'
+# EMAIL_HOST_PASSWORD = 'mblsqyqaqwzidwpy'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
+# PASSWORD_RESET_TIMEOUT = 14400
+
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_FROM = config('EMAIL_FROM')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_USE_TLS = True
 
 PASSWORD_RESET_TIMEOUT = 14400
@@ -135,7 +173,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'cinema.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,3 +186,8 @@ MEDIA_URL = 'media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRONJOBS = [
+    ('*/1 * * * *', 'cinema.cron.callCron')
+]

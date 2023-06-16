@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from cinema.models import *
 
 
-class UserCreationForm(forms.ModelForm):
+'''class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
 
@@ -117,4 +117,4 @@ class SeatAdmin(admin.ModelAdmin):
     list_display = ['seat_number', 'name']
 admin.site.register(Seat, SeatAdmin)
 
-admin.site.register(SeatAvailability)
+admin.site.register(SeatAvailability)'''

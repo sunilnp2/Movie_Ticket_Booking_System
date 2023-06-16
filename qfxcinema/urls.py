@@ -22,6 +22,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cinema.urls')),
+    path('movie', include('movie.urls')),
+    path('auth', include('authentication.urls')),
+    path('booking', include('booking.urls')),
 ]
 
 if settings.DEBUG:

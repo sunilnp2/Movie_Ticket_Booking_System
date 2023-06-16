@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- movie detail area start -->
+
+    <div class="movie-detail-sm-12">
+      <div class="detail-sm-25">
+        <div class="movie-area">
+          <img src="{{details.image.url}}" alt="" />
+          <p>Now Showing</p>
+          <h3 class="movie-name">{{details.name}}</h3>
+          <p class="duration">140 mins</p>
+        </div>
+        <div class="other-detail">
+          <p class="details">
+            {{details.detail}}
+          </p>
+          <p>Language : {{details.language}}</p>
+          <p>Genre : {{details.genre}}</p>
+          <p class="-movie-casts">
+            Cast : {{details.cast}}
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-sm-75 detail-seat-75">
+
+        <div class="detail-heading">
+          {% if messages %}
+          {% for mess in messages %}
+          <h5 style = "background-color:green; color:white; font-weight:bold;">
+           {{mess}}
+          </h5>
+          {% endfor %}
+          {% endif %}
+            <h3>
+             Choose Seats
+            </h3>
+            
+            <hr>
+        </div>
+        <div class="selection-area seat-area">
+            <h5>1. Select Seat</h5>
+            <h5> Selected Date : {{dates.date}} </h5> 
+            <h5> Selected Showtime : {{showtime}} </h5>
+            <h5> Price : {{showtime.price}} </h5>
+            <div class="screen-site">
+            </div>
+            <hr class="break-screen">
+            <div class="seat-list-sm-12">
+
+              <!-- Frist Line  -->
+            
+                <div class="first-row">
+                  <span class="row-number">E</span>
+                  {% for i in first_row %}
+                  {% if manystatus %}
+                  {% for m in manystatus %}
+                  {% if m.seat|stringformat:"d" == i.id|stringformat:"d" %}
+
+                   <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                  <span class="material-symbols-outlined">
+                    event_seat 
+                    <p style = "font-size:10px; text-align:center; color:yellow; margin-top:3px;">{{i.name}}</p>
+                    </span>
+                  </a>
+                  {% else  %}
+
+                 <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                  <span class="material-symbols-outlined">
+                    event_seat 
+                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                    </span>
+                  </a> 
+                  {% endif %}
+                  {% endfor %}
+
+                 {% elif onestatus %}
+                  {% if seatid == i.id %}
+                  <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                    <span class="material-symbols-outlined">
+                      event_seat 
+                      <p style = "font-size:10px; text-align:center; color:yellow; margin-top:3px;">{{i.name}}</p>
+                      </span>
+                    </a>
+                  {% else %}
+
+                 <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                    <span class="material-symbols-outlined">
+                      event_seat 
+                      <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                      </span>
+                    </a>  
+                    {% endif %}
+                    {% comment %} {% endfor %} {% endcomment %}
+
+                  {% else %}
+                  <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                    <span class="material-symbols-outlined">
+                      event_seat 
+                      <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                      </span>
+                    </a>
+                    
+                {% endif %}
+                  {% endfor %}
+         
+                </div>
+
+     <!-- Second Line  -->
+                <div class="first-row">
+                  <span class="row-number">D</span>
+                  {% for i in second_row %}
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                  <span class="material-symbols-outlined">
+                    event_seat 
+                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                    </span>
+                  </a> 
+                  {% endfor %}
+                </div>
+
+     <!-- Thrid Line  -->
+                <div class="first-row">
+                  <span class="row-number">C</span>
+                  {% for i in third_row %}
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                  <span class="material-symbols-outlined">
+                    event_seat 
+                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                    </span>
+                  </a> 
+                  {% endfor %}
+                </div>
+
+     <!-- Fourth Line -->
+                <div class="first-row">
+                  <span class="row-number">B</span>
+                  {% for i in fourth_row %}
+                  <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                 <span class="material-symbols-outlined">
+                   event_seat 
+                   <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                   </span>
+                 </a> 
+                 {% endfor %}
+                  
+                </div>
+
+     <!-- Fifth Line  -->
+
+                <div class="first-row">
+                  <span class="row-number">A</span>
+                  {% for i in fifth_row %}
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                  <span class="material-symbols-outlined">
+                    event_seat 
+                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
+                    </span>
+                  </a> 
+                  {% endfor %}
+                </div>
+
+                <!-- Line ends here -->
+                
+                <hr class="line-break">
+            </div>
+            <div class="seat-status">
+              <div>
+                <span class="material-symbols-outlined available">
+                  event_seat 
+                  </span>
+                  <p>Available</p>
+                </div>
+                <div>
+                  <span class="material-symbols-outlined reserved">
+                    event_seat 
+                    </span>
+                    <p>Reserved</p>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined sold-out">
+                      event_seat 
+                      </span>
+                      <p>Sold Out</p>
+                    </div>
+                    <div>
+                      <span class="material-symbols-outlined pick-seat">
+                        event_seat 
+                        </span>
+                        <p>Pick Seat</p>
+                      </div>
+                      
+            </div>
+            <div class="buy-sm-12">
+             <a href = "{% url 'booking:booking' %}"><input type="submit" value="Buy Now"></a>
+            </div>
+
+           
+        </div>
+
+      </div>
+    </div>
+
+    <!-- movie detail area end -->
+
+
+
+{% endblock %}

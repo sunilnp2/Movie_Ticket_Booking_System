@@ -1,23 +1,24 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from cinema.forms import SignupForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
+# from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
-from cinema.models import *
+# from cinema.models import *
+from movie.models import *
 from datetime import date
 from django.http import HttpResponse
+
 # Create your views here.
 
 
-from .tokens import account_activation_token
+''' from .tokens import account_activation_token
 
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -52,7 +53,7 @@ def activateEmail(request, user, to_email):
         messages.success(request, f' Dear {user.first_name}.Go to your email {to_email} and verify your email \
                 If not found Check your spam folder.')
     else:
-        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
+        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.') '''
 
 class BaseView(View):
     views = {}
@@ -67,7 +68,7 @@ class HomeView(BaseView):
 
         return render(request,'index.html', self.views)
     
-
+''' 
 class MovieView(BaseView):
     def get(self, request):
         return render(request, 'movie.html', self.views)
@@ -77,7 +78,7 @@ class MovieSearchView(BaseView):
     def get(self,request):
         search = request.GET.get('search', None)
         if search:
-            self.views['search'] = Movie.objects.filter(name__icontains = search)
+            self.views['search'] = Movie.objects.filter(detail__icontains = search)
 
             return render(request, 'movie-search.html', self.views)
         else:
@@ -129,7 +130,15 @@ class Seatview(BaseView):
         self.views['dates'] = Date.objects.get(id = selected_date)
         self.views['showtime'] = Showtime.objects.get(id = showtime)
         # showtime = Showtime.objects.get(date = id).id
-        print(selected_date, showtime)
+        movie = Movie.objects.get(slug = slug).id
+        # dateid = Date.objects.get(id = date_id)
+        # showid = Showtime.objects.get(id = show_id)
+        
+
+        self.views['status'] =  SeatAvailability.objects.filter(movie = movie,date = date_id, showtime = show_id)
+        for s in self.views['status']:
+            print(F"the seat is {s.seat}")
+        
 
         return render(request, 'seat.html', self.views)
 
@@ -200,7 +209,7 @@ class BookingView(BaseView):
 
     
 
-class LoginView(BaseView):
+ class LoginView(BaseView):
     def get(self,request):
         self.views['fm'] = LoginForm()
         return render(request, 'login.html', self.views)
@@ -265,4 +274,4 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         messages.success(request, "Log Out success")
-        return redirect('cinema:home')
+        return redirect('cinema:home') '''

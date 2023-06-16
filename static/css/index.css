@@ -1,0 +1,405 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); */
+
+@font-face {
+    font-family: Righteous;
+    src: url('css/Righteous-Regular.ttf') format('truetype');
+  }
+
+body{
+    left: 0;
+    top: 0;
+    margin: 0;
+    
+}
+
+.navbar-sm-12{
+    font-family: 'Righteous', cursive;
+    height: 80px;
+    width: 100vw;
+    background-color: gray;
+    display: flex;
+    position: relative;
+    /* position: absolute; */
+}
+
+
+.left-sm-6{
+    width: 50vw;
+    display: flex;
+}
+
+.logo{
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search{
+    /* margin: auto; */
+    width: 80%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.search input{
+    padding: 9px 12px;
+    border-radius: 25px;
+    width: 40%;
+    /* font-size:; */
+    font-size: 15px;
+}
+
+.logo img{
+    width: 130px;
+    height: 90px;
+    opacity: 100;
+}
+
+#search-submit{
+    width: 80px;
+}
+
+.right-sm-4{
+    width: 50vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    
+}
+
+.right-sm-4 ul{
+    display: flex;
+    /* justify-content: center;
+    align-items: center; */
+    list-style: none;
+    position: relative;
+}
+
+.right-sm-4 ul li{
+    font-size: 1.3em;
+    /* padding: 10px 8px; */
+    padding-top: 10px;
+    margin: 5px 20px;
+    position: relative;
+}
+
+.right-sm-4 ul li a,.user{
+    text-decoration: none;
+    color: white;
+}
+
+.right-sm-4 ul li:hover{
+    position: relative;
+    border-bottom: 1px solid white;
+    
+}
+
+/* -----------------------------------style for user part -----------------------------------*/
+
+.right-sm-4 ul li:nth-child(4){
+    margin-left: 18px;
+}
+
+#auth-user li:nth-child(2){
+    position: relative;
+    bottom: 15px;
+}
+
+#auth-user{
+    display: none;
+   flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 80px;
+    width: 150px;
+    background-color: gray;
+    box-shadow: 2px 2px 7px 9px lightgray;
+    z-index: 10;
+    top: 45px;
+    left: -27px;
+    font-size: 15px;
+  
+  }
+
+#auth-user li{
+    margin-top: 5px;
+    margin-right: 50px; 
+    color: black; 
+}
+
+#border-none:hover + #auth-user, #auth-user:hover{
+    display: flex;
+}
+
+#border-none:hover {
+    border-bottom: none;
+}
+
+.id-user:hover{
+    border-bottom: none;
+}
+
+/* slider style start */
+.slider-sm-12{
+  top: 0;
+}
+
+.id-user{
+    margin-left: 10px;
+}
+
+.fa-user-circle-o{
+    position: relative;
+    margin-right: 10px;
+}
+
+/* movie section style --------------------------------------------------------------*/
+.movie-sm-12{
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  margin: 5px auto;
+}
+
+.now-showing,.coming-soon{
+  /* display: flex; */
+  height: 18vw;
+  width: 100%;
+  flex-direction: column;
+}
+
+.heading-sm-12{
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    align-items: center;
+}
+.heading-sm-12 p{
+    position: relative;
+    font-size: 2em;
+}
+
+.movie-list{
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list{
+    height: 100%;
+    width: 230px;
+    margin: 5px 10px;
+}
+
+.list img{
+    height: 90%;
+    width: 100%;
+}
+
+.name{
+    text-align: center;
+    color: black;
+}
+
+
+.footer-sm-12{
+    height: 50px;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    background-color: lightgray;
+}
+
+
+
+/* register area start--------------------------------------------------------------- */
+
+.register-sm-12{
+    height: 80vh;
+    width: 90%;
+    /* background-color: antiquewhite; */
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.form-sm-50{
+    height: 90%;
+    width: 30%;
+    background-color: #424147;
+    padding: 15px 0px;
+    box-shadow: 4px 3px 4px 4px salmon;
+    /* display: flex; */
+}
+
+.form-sm-12{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* font-family: 'Righteous', cursive; */
+}
+
+.form-sm-50 h3{
+    text-align: center;
+    color: white;
+}
+
+.form-sm-12 label{
+    display: inline-block;
+    width: 200px;
+    align-self: flex-start;
+    position: relative;
+    left: 30px;
+    margin: 1px 0px;
+    color: white;
+    font-size: 1.1em;
+}
+
+.form-sm-12 input{
+    display: block;
+    height: 40px;
+    padding: 16px 12px;
+    width: 70%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    
+    
+}
+
+#error-messages{
+    color: red;
+    display: inline-block;
+    width: 60%;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.line-break1{
+    color: white;
+    border: 1px solid white;
+    width: 80%;
+    margin: auto;
+}
+
+.form-sm-50 button{
+    width: 70%;
+    height: 40px;
+    border-radius: 15px;
+    background-color:rgb(88, 200, 163);
+    color: white;
+}
+
+.form-sm-50 p{
+    text-align: center;
+    margin-top: 10px;
+    color: aqua;
+    font-size: 1.2em;
+}
+.form-sm-50 a{
+    text-decoration: none;
+    color: yellow;
+}
+
+.form-sm-50 a:hover{
+    color: white;
+}
+
+
+/* style for login ---------------------------------------*/
+
+.register-sm-12{
+    height: 80vh;
+    width: 90%;
+    /* background-color: antiquewhite; */
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.formlogin-sm-50{
+    height: 60%;
+    width: 30%;
+    background-color: #424147;
+    padding: 12px 8px;
+    box-shadow: 4px 3px 4px 4px salmon;
+    /* display: flex; */
+}
+
+.formlogin-sm-12{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* font-family: 'Righteous', cursive; */
+}
+
+.formlogin-sm-50 h3{
+    text-align: center;
+    color: white;
+}
+
+.formlogin-sm-12 label{
+    display: block;
+    align-self: flex-start;
+    position: relative;
+    left: 80px;
+    margin: 2px 0px;
+    color: white;
+    font-size: 1.1em;
+}
+
+.formlogin-sm-12 input{
+    display: block;
+    height: 45px;
+    padding: 16px 12px;
+    width: 70%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    
+    
+}
+
+.formlogin-break1{
+    color: white;
+    border: 1px solid white;
+    width: 80%;
+    margin: auto;
+}
+
+.formlogin-sm-50 button{
+    width: 70%;
+    height: 40px;
+    border-radius: 15px;
+    background-color:rgb(88, 200, 163);
+    color: white;
+}
+
+.formlogin-sm-50 p{
+    text-align: center;
+    margin-top: 15px;
+    color: aqua;
+    font-size: 1.2em;
+}
+.formlogin-sm-50 a{
+    text-decoration: none;
+    color: yellow;
+}
+
+.formlogin-sm-50 a:hover{
+    color: white;
+}
