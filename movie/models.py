@@ -20,21 +20,21 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.name
-    
-class Date(models.Model):
-    date = models.DateField()
+
+class MovieDate(models.Model):
+    movie_date = models.DateField()
 
     def __str__(self):
-        return str(self.date)
-
+        return str(self.movie_date)
+    
 
 class Showtime(models.Model):
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    movie_date = models.ForeignKey(MovieDate, on_delete=models.CASCADE, null=True, blank=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
     shift = models.CharField(choices=SHIFT, max_length=10)
     price = models.PositiveBigIntegerField()
-
+    # movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     def __str__(self):
         return self.shift
     

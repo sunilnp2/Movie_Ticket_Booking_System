@@ -41,8 +41,10 @@
             <hr>
         </div>
         <div class="selection-area seat-area">
-            <h5>1. Select Seat</h5>
-            <h5> Selected Date : {{dates.date}} </h5> 
+            {% if seats %}
+            <h5 style = "color:yellow;"> Selected Date : {{seats}} </h5> 
+            {% endif %}
+          <h5> Selected Date : {{dates.movie_date}} </h5> 
             <h5> Selected Showtime : {{showtime}} </h5>
             <h5> Price : {{showtime.price}} </h5>
             <div class="screen-site">
@@ -55,47 +57,6 @@
                 <div class="first-row">
                   <span class="row-number">E</span>
                   {% for i in first_row %}
-                  {% if manystatus %}
-                  {% for m in manystatus %}
-                  {% if m.seat|stringformat:"d" == i.id|stringformat:"d" %}
-
-                   <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
-                  <span class="material-symbols-outlined">
-                    event_seat 
-                    <p style = "font-size:10px; text-align:center; color:yellow; margin-top:3px;">{{i.name}}</p>
-                    </span>
-                  </a>
-                  {% else  %}
-
-                 <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
-                  <span class="material-symbols-outlined">
-                    event_seat 
-                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
-                    </span>
-                  </a> 
-                  {% endif %}
-                  {% endfor %}
-
-                 {% elif onestatus %}
-                  {% if seatid == i.id %}
-                  <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
-                    <span class="material-symbols-outlined">
-                      event_seat 
-                      <p style = "font-size:10px; text-align:center; color:yellow; margin-top:3px;">{{i.name}}</p>
-                      </span>
-                    </a>
-                  {% else %}
-
-                 <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
-                    <span class="material-symbols-outlined">
-                      event_seat 
-                      <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
-                      </span>
-                    </a>  
-                    {% endif %}
-                    {% comment %} {% endfor %} {% endcomment %}
-
-                  {% else %}
                   <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
                     <span class="material-symbols-outlined">
                       event_seat 
@@ -103,7 +64,7 @@
                       </span>
                     </a>
                     
-                {% endif %}
+
                   {% endfor %}
          
                 </div>
@@ -194,7 +155,7 @@
                       
             </div>
             <div class="buy-sm-12">
-             <a href = "{% url 'booking:booking' %}"><input type="submit" value="Buy Now"></a>
+             <a href = "{% url 'booking:booking' details.slug dates.id showtime.id %}"><input type="submit" value="Buy Now"></a>
             </div>
 
            

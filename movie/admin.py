@@ -9,10 +9,6 @@ class MovieAdmin(admin.ModelAdmin):
    
 admin.site.register(Movie, MovieAdmin)
 
-class DateAdmin(admin.ModelAdmin):
-    list_display = ['id', 'date']
-admin.site.register(Date, DateAdmin)
-
 from django import forms
 class ShowtimeForm(forms.ModelForm):
     class Meta:
@@ -25,6 +21,11 @@ class ShowtimeForm(forms.ModelForm):
 
 class ShowtimeAdmin(admin.ModelAdmin):
     form = ShowtimeForm
-    list_display = ['id', 'date', 'start_time', 'end_time', 'shift', 'price']
-    list_display_links = ['id', 'date', 'start_time', 'end_time', 'shift', 'price']
+    list_display = ['id',  'start_time', 'end_time', 'shift', 'price']
+    list_display_links = ['id', 'start_time', 'end_time', 'shift', 'price']
 admin.site.register(Showtime, ShowtimeAdmin)
+
+
+class MovieDateAdmin(admin.ModelAdmin):
+    list_display = ('id','movie_date')
+admin.site.register(MovieDate, MovieDateAdmin)

@@ -38,10 +38,10 @@
                 <h5>Selected Date</h5>
                 <div class="dates">
                    <div class="mydate">
-                        <h5>{{dates.date}}</h5>
+                        <h5>{{dates.movie_date}}</h5>
                           {% comment %} <a href="{% url 'cinema:time' d.id %}">  {% endcomment %}
                 <div class="adjust-date">
-                    <p>Jun{{dates.date.month}} <br><spanc class="date-number">{{dates.date.day}} </spanc> <br> {{dates.date.year}}</p>
+                    <p>Jun{{dates.movie_date.month}} <br><spanc class="date-number">{{dates.movie_date.day}} </spanc> <br> {{dates.movie_date.year}}</p>
                 </div>
             {% comment %} </a> {% endcomment %}
             </div>

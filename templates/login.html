@@ -25,7 +25,10 @@
                     <label for="password">Password : </label>
                     <input type="password" name="password" id="password" placeholder="Enter password">
                   
+{% if request.GET.next %}
+<input type = "hidden" name = 'next', value = "{{request.GET.next}}"> 
 
+{% endif %}
                     <button>Submit</button>
                 </form>
                 <p>Not Registered? <a href="{% url 'authentication:signup' %}">Signup</a> </p>

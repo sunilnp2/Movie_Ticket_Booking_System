@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- movie detail area start -->
+
+    <div class="movie-history-sm-12">
+      
+      <div class="booking-history-sm-100">
+
+        <div class="detail-heading">
+            <h3>
+             Your Booking Hostory
+            </h3>
+            <hr>
+        </div>
+      <div class="show-history-section">
+        
+
+    <!-- /* movie_date = models.ForeignKey(MovieDate, on_delete=models.CASCADE, null=True, blank=True)
+    showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    seats = models.ManyToManyField(Seat)
+    reservation_datetime = models.DateTimeField(auto_now_add=True)
+    payment_status = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=50, null=True, blank=True) */ -->
+      <div class="history-list">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Show Date</th>
+              <th>Showtime</th>
+              <th id = "watching-movie">Watching Movie</th>
+              <th id = 'seats-names'>Seats</th>
+              <th>Book Date</th>
+              <th>Pay Status</th>
+              {% comment %} <th>Show</th> {% endcomment %}
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in history %}
+            <tr>
+              <td>{{h.user.first_name}}</td>
+              <td>{{h.movie_date}}</td>
+              <td>{{h.showtime}}</td>
+              <td>{{h.movie.name}}</td>
+              <td>{{final_seat}}</td>
+              <td>{{h.reservation_datetime}}</td>
+              <td>{{h.payment_status}}</td>
+              <td><a href="#"> View More</a></td>
+             
+            </tr>
+            {% endfor %}
+           
+          </tbody>
+        </table>
+      </div>
+
+      </div>
+
+      </div>
+    </div>
+
+    <!-- movie detail area end -->
+
+    {% endblock content %}

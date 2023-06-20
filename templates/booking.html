@@ -7,24 +7,19 @@
     <div class="movie-detail-sm-12">
       <div class="detail-sm-25">
         <div class="movie-area">
-          <img src="img/cinema.jpg" alt="" />
+          <img src="{{movie_id.image.url}}" alt="" />
           <p>Now Showing</p>
-          <h3 class="movie-name">Movie Name</h3>
-          <p class="duration">140 mins</p>
+          <h3 class="movie-name">{{movie_id.name}}</h3>
+          <p class="duration">{{movie_id.duration}}</p>
         </div>
         <div class="other-detail">
           <p class="details">
-            Shameik MooreHailee SteinfeldOscar IsaacJake JohnsonIssa RaeBrian
-            Tyree HenryLuna Lauren VelezRachel DratchShameik MooreHailee
-            SteinfeldOscar IsaacJake JohnsonIssa RaeBrian Tyree HenryLuna Lauren
-            VelezRachel DratchShameik MooreHailee SteinfeldOscar IsaacJake
-            JohnsonIssa RaeBrian Tyree HenryLuna Lauren VelezRachel Dratch
+            {{movie_id.details}}
           </p>
-          <p>Language : English</p>
-          <p>Genre : Drama</p>
+          <p>Language : {{movie_id.language}}</p>
+          <p>Genre : {{movie_id.genre}}</p>
           <p class="-movie-casts">
-            Cast : Shameik MooreHailee SteinfeldOscar IsaacJake JohnsonIssa
-            RaeBrian Tyree HenryLuna Lauren VelezRachel Dratch
+            Cast : {{movie_id.cast}}
           </p>
         </div>
       </div>
@@ -40,26 +35,42 @@
             <div class="customer-details">
                 <h3>Your Details</h3>
                 <ul>
-                    <li>Name : Customer Name</li>
-                    <li>Address : Customer Address</li>
-                    <li>Phone : Phone Number</li>
-                    <li>Email : Email</li>
+                  {% if request.user.is_authenticated %}
+                    <li>Name : {{request.user.first_name}}{{user.last_name}}</li>
+                    <li>Address : {{user.address}}</li>
+                    <li>Phone : {{user.phone}}</li>
+                    <li>Email : {{user.email}}</li>
+                    {% endif %}
                 </ul>
             </div>
            
             <div class="selected-seat">
             <h3>Selected Seat:</h3>
-            <h4>A4, A5</h4>
+            {% if seats %}
+            <h4>{{seats}}</h4>
+            {% endif %}
         </div>
             <div class="payment-method">
                 <h3>Choose Payment methood</h3>
                 <ul>
-                    <li><a href="http://">E-sewa</a> </li>
+                  <form type = 'post' action = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id %}">
+                    {% csrf_token %}
+                    {% comment %} <li>E-sewa</li>
                     <li><a href="http://">Khalti</a> </li>
-                    <li><a href="http://">PayPal</a> </li>
+                    <li><a href="http://">PayPal</a> </li> {% endcomment %}
+                    <label for="pay">E-sewa : </label>
+                    <input type="radio" name="pay" id="esewa" value = "esewa">
+                    <label for="pay">Khalti : </label>
+                    <input type="radio" name="pay" id="khalti" value = "khalti">
+                    <label for="pay">Paypal : </label>
+                    <input type="radio" name="pay" id="paypal" value = "paypal">
                 
+               
                 </ul>
-                <button type="submit">Confirm</button>
+                <a href = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id %}">
+                <button >Book Now</button>
+                </a>
+                <form>
             </div>
 
            
@@ -70,11 +81,5 @@
 
     <!-- movie detail area end -->
 
-    <!-- footer area start -->
-
-    <div class="footer-sm-12">
-      <p>@copyright QFX Cinemas</p>
-      <p>All Rights Reserved</p>
-    </div>
-
+  
     {% endblock content %}

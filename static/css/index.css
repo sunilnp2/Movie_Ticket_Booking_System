@@ -257,7 +257,7 @@ body{
 }
 
 .form-sm-12 label{
-    display: inline-block;
+    display: inline;
     width: 200px;
     align-self: flex-start;
     position: relative;
@@ -278,13 +278,13 @@ body{
     
 }
 
-#error-messages{
+/* #error-messages{
     color: red;
-    display: inline-block;
-    width: 60%;
+    display: inline;
+    /* width: 30%;
     font-size: 10px;
     font-style: italic;
-}
+} */
 
 .line-break1{
     color: white;
@@ -402,4 +402,82 @@ body{
 
 .formlogin-sm-50 a:hover{
     color: white;
+}
+
+/* css for booking historys------------------------------- */
+
+/* css for booking history---------------------------------------------- */
+
+.movie-history-sm-12{
+    height: 90vh;
+    width: 100vw;
+    /* background-color: black; */
+    /* display: flex; */
+    margin-top: 5px;
+    /* justify-content: center; */
+    /* align-items: center; */
+  }
+  
+
+
+.booking-history-sm-100{
+width: 68%;
+margin: auto;
+height: 95%;
+
+}
+
+.show-history-section{
+background-color: rgb(65, 63, 63);
+height: 95%;
+border-radius: 20px;
+padding: 10px 15px;
+
+}
+
+.history-list{
+color: black;
+/* background-color: white; */
+width: 100%;
+margin: auto;
+
+}
+
+.history-list table{
+width: 100%;
+}
+
+.history-list table thead{
+border-bottom: 1px solid red;
+color: red;
+font-weight: bold;
+
+}
+
+.history-list table thead th{
+border: 1px solid red;
+
+}
+
+
+.history-list table th,td{
+border-right: 1px solid white;
+text-align:center;
+height: 30px;
+
+}
+
+.history-list table tbody tr{
+color: white;
+border-bottom: 1px solid white;
+font-size: 0.9em;
+}
+
+#watching-movie{
+    width: 300px;
+}
+
+#seats-names{
+    width: 200px;
+
 }

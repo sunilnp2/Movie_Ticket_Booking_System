@@ -40,10 +40,10 @@
                 <div class="dates">
                   {% for d in dates %}
                    <div class="mydate">
-                        <h5>{{d.date}}</h5>
+                        <h5>{{d.movie_date}}</h5>
                         <a href="{% url 'movie:showtime' d.id details.slug %}">
                 <div class="adjust-date">
-                    <p>Jun{{d.date.month}} <br><spanc class="date-number">{{d.date.day}} </spanc> <br> {{d.date.year}}</p>
+                    <p>Jun{{d.movie_date.month}} <br><spanc class="date-number">{{d.movie_date.day}} </spanc> <br> {{d.movie_date.year}}</p>
                 </div>
             </a>
             </div>

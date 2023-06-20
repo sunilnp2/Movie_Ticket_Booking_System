@@ -12,9 +12,9 @@
                     {% csrf_token %}
 
                     {% for form in fm %}
-                    <label>{{form.label_tag}}</label>
+                    <label>{{form.label_tag}}</label>   <span id = "error-messages">{{ form.errors|striptags}}</span>
                     {% comment %} {% if form.errors %} {% endcomment %}
-                    <span id = "error-messages">{{ form.errors|striptags}}</span>
+                 
                     {% comment %} {% endif %} {% endcomment %}
                     {{form}}
                     {% endfor %}

@@ -64,19 +64,6 @@ class LoginView(BaseView):
         return render(request, 'login.html', self.views)
     
     def post(self,request):
-
-        # fm = LoginForm(request.POST)
-        # if fm.is_valid():
-        #     email = fm.cleaned_data['email']
-        #     pw = fm.cleaned_data['password1']
-
-        #     user = authenticate(email = email, password = pw)
-        #     if user is not None:
-        #         login(request,user)
-        #         messages.success(request, "You are login successfully")
-        #         return redirect('cinema:home')
-        
-        # return render(request, 'login.html', {'fm': fm})
         email = request.POST.get('email')
         pw = request.POST.get('password')
         if not email:
@@ -86,10 +73,13 @@ class LoginView(BaseView):
         user = authenticate(email = email, password = pw)
         if user is not None:
             login(request, user)
+            if 'next' in request.POST:
+                return redirect(request.POST.get('next'))
+            
             messages.success(request, "Login Successfully")
             return redirect('cinema:home')
-        else:
-            messages.error(request, "Enter Correct password")
+        
+        messages.error(request, "Enter Correct password")
         return render(request, 'login.html')
 
 

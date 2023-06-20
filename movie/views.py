@@ -14,10 +14,8 @@ class MovieSearchView(BaseView):
         search = request.GET.get('search', None)
         if search:
             self.views['search'] = Movie.objects.filter(detail__icontains = search)
-
             return render(request, 'movie-search.html', self.views)
-        else:
-            return redirect('cinema:movie')
+        return redirect('cinema:movie')
         
 
 class MovieDetailView(BaseView):
@@ -25,14 +23,7 @@ class MovieDetailView(BaseView):
         self.views['details'] = Movie.objects.get(slug = slug)
 
         # code for showing dates
-        self.views['dates'] = Date.objects.filter(date__gte = date.today())
-        
-        # self.views['formatted_date'] = mydate.strftime('%b, %b %d, %Y')
-
-        a = self.views['details']
-        print(a.name)
-        print(a.status)
-       
+        self.views['dates'] = MovieDate.objects.filter(movie_date__gte = date.today())
         return render(request, 'movie-detail.html', self.views)
     
 
@@ -40,10 +31,10 @@ class MovieShowTimeView(BaseView):
     def get(self, request, id, slug):
 
         self.views['details'] = Movie.objects.get(slug = slug)
-        self.views['dates'] = Date.objects.get(id = id)
+        self.views['dates'] = MovieDate.objects.get(id = id)
         print(id)
 
         # selected_date = Date.objects.get(id = id).date
-        self.views['showtimes'] = Showtime.objects.filter(date = id)
+        self.views['showtimes'] = Showtime.objects.filter(movie_date = id)
 
         return render(request, 'movie-showtime.html', self.views)
