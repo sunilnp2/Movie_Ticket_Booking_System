@@ -1,23 +1,23 @@
 from django.shortcuts import render , redirect
 from booking.models import *
 from cinema.views import BaseView
+from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from datetime import datetime
-
 from django.http import FileResponse, HttpResponse
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.platypus import Spacer, Paragraph, SimpleDocTemplate
+from reportlab.platypus import SimpleDocTemplate,Paragraph, Spacer, PageTemplate, Frame
 from reportlab.lib.styles import getSampleStyleSheet
 # Create your views here.
 class Seatview(BaseView):
     # login_required = True
-    def get(self,request, slug, date_id, show_id):
+    def get(self,request, slug, date_id, show_id, hall_id):
         self.views['first_row'] = Seat.objects.filter(seat_number__lte = 5)
         self.views['second_row'] = Seat.objects.filter(seat_number__gt=5,seat_number__lte=10)
         self.views['third_row'] = Seat.objects.filter(seat_number__gt=10,seat_number__lte=15)
@@ -25,62 +25,70 @@ class Seatview(BaseView):
         self.views['fifth_row'] = Seat.objects.filter(seat_number__gt=20,seat_number__lte=25)
 
         self.views['details'] = Movie.objects.get(slug = slug)
-        selected_date = date_id
-        showtime = show_id
         user = request.user
         try:
-            seleted_seat= SeatAvailability.objects.filter(user = user,status = 'pending', payment_status = False)
+            seleted_seat= SeatAvailability.objects.filter(status = 'pending',hall = hall_id,payment_status = False)
             self.views['seats'] = [s.seat.name for s in seleted_seat]
             
         except Exception as e:
             print(e)
             pass
-        
-        self.views['dates'] = MovieDate.objects.get(id = selected_date)
-        self.views['showtime'] = Showtime.objects.get(id = showtime)
-        # showtime = Showtime.objects.get(date = id).id
-    
+        seleted_seat= SeatAvailability.objects.filter(hall = hall_id,status = 'pending', payment_status = False)
+        total = 0 
+        for p in seleted_seat:
+            total += p.total
+        self.views['total'] = total
+        self.views['hall_name'] = CinemaHall.objects.get(id = hall_id)
+        self.views['hall_id'] = hall_id
+        self.views['dates'] = ShowDate.objects.get(id = date_id)
+        self.views['showtime'] = Showtime.objects.get(id = show_id)
         
 
         return render(request, 'seat.html', self.views)
 
 @method_decorator(login_required, name='dispatch')
 class ReserveView(BaseView):
-    def get(self,request, seat_id, date_id, show_id, slug):
+    def get(self,request, seat_id, date_id, show_id, slug, hall_id):
         s_id = Seat.objects.get(id = seat_id)
-        d_id = MovieDate.objects.get(id = date_id)
+        get_seat_id = Seat.objects.get(id = seat_id).id
+        d_id = ShowDate.objects.get(id = date_id)
         sh_id = Showtime.objects.get(id = show_id)
         movie_id = Movie.objects.get(slug = slug)
+        hall = CinemaHall.objects.get(id = hall_id)
         price = Showtime.objects.get(id = show_id).price
         user = request.user
         user_id = user.id
         myuser = User.objects.get(id = user_id)
 
         shift = sh_id.shift
-        if shift == "M":
+        if shift == "Morning":
             morning = False
             day = True
             night = True
         
-        elif shift == "D":
+        elif shift == "Day":
             morning = True
             day = False
             night = True
 
-        elif shift == "N":
+        elif shift == "Night":
             morning = True
             day = True
             night = False
         pass
             
         print(f"The shift is {shift}")
-        if SeatAvailability.objects.filter(movie = movie_id,seat = s_id,showtime = sh_id, status__in = ["pending","reserved"]).exists():
+        if SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = sh_id, status__in = ["pending","reserved"]).exists():
             messages.error(request, "Movie is booked already")
-            return redirect("booking:seat",slug, date_id, show_id)
+            return redirect("booking:seat",slug, date_id, show_id,hall_id)
+        elif BookingHistory.objects.filter(movie = movie_id,seats__id = get_seat_id,hall = hall_id,showtime = sh_id, payment_status =True).exists():
+            messages.error(request, "Movie is booked already")
+            return redirect("booking:seat",slug, date_id, show_id,hall_id)
         else:
             res = SeatAvailability.objects.create(user = myuser,movie = movie_id,
                                             seat = s_id,
-                                             date = d_id, 
+                                            hall = hall,
+                                             show_date = d_id, 
                                              showtime = sh_id,
                                              status = 'pending',
                                              morning = morning, 
@@ -91,52 +99,56 @@ class ReserveView(BaseView):
             res.save()
             Seat.objects.update(status = "pending")
             messages.success(request, "Seat Reserved successfully")
-            return redirect("booking:seat",slug, date_id, show_id)
+            return redirect("booking:seat",slug,date_id,show_id,hall_id)
         
 
         
 class BookingView(BaseView):
-    def get(self,request,slug,date_id,show_id):
-
+    def get(self,request,slug,date_id,show_id, hall_id):
         self.views['user'] = request.user
-        self.views['d_id'] = MovieDate.objects.get(id = date_id)
+        self.views['d_id'] = ShowDate.objects.get(id = date_id)
         self.views['sh_id'] = Showtime.objects.get(id = show_id)
         self.views['movie_id'] = Movie.objects.get(slug = slug)
+        m_id= Movie.objects.get(slug = slug).id
+        self.views['hall'] = CinemaHall.objects.get(id = hall_id)
 
-        seleted_seat= SeatAvailability.objects.filter(user = request.user,status = 'pending', payment_status = False)
+        seleted_seat= SeatAvailability.objects.filter(user = request.user,hall = hall_id, show_date = date_id,showtime = show_id,movie = m_id,  status = 'pending', payment_status = False)
+        total = 0 
+        for p in seleted_seat:
+            total += p.total
+        self.views['total'] = total
         self.views['seats'] = [s.seat.name for s in seleted_seat]
-
-        # seat_available = SeatAvailability.objects.get(seat = seat_id).id
-        # print(seat_available)
-
         return render(request, 'booking.html', self.views)
 
     
 class PaymentView(BaseView):
-    def get(self, request, slug,date_id,show_id):
+    def get(self, request, slug,date_id,show_id, hall_id):
+        if request.method == 'POST':
+            payment_type = request.POST.get('pay')
         movie_id = Movie.objects.get(slug = slug).id
-        payment_type = request.POST.get('pay')
         user = request.user
-        if SeatAvailability.objects.filter(payment_status = True,user = user, date = date_id, movie = movie_id, showtime = show_id).exists():
-            messages.error(request, "Already reserved")
-            return redirect('cinema:home')
+        if SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, status = 'pending',payment_status = False).exists():
+            cart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, status = 'pending',payment_status = False )
+            total = 0
+            for c in cart:
+                total += c.total
+            print(total)
 
-        else:
-            cart = SeatAvailability.objects.filter(user = user, date = date_id, movie = movie_id, showtime = show_id, status = 'pending',payment_status = False )
             my_seats = [s.seat for s in cart]
             print(my_seats)
-            for c in cart:
-                booking = BookingHistory.objects.create(
-                    user = user,
-                    movie_date = c.date,
-                    showtime = c.showtime,
-                    movie = c.movie,
-                    reservation_datetime =  datetime.now(),
-                    payment_status = True
-                )
-                booking.seats.set(my_seats)
-                booking.save()
-            SeatAvailability.objects.filter(user = user, date = date_id, movie = movie_id, showtime = show_id).update(payment_status = True, status = "reserved")
+            booking = BookingHistory.objects.create(
+            user = user,
+            show_date = cart[0].show_date,
+            showtime = cart[0].showtime,
+            movie = cart[0].movie,
+            reservation_datetime =  datetime.now(),
+            payment_status = True, 
+            total =total) 
+            
+            booking.seats.set(my_seats)
+            booking.save()
+            # cart.delete()
+            SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id).update(payment_status = True, status = "reserved")
 
             # Code for Generate Pdf
             name = f"{user.first_name} {user.last_name}"
@@ -144,15 +156,23 @@ class PaymentView(BaseView):
             phone = user.phone
             address = user.address
             movie = Movie.objects.get(slug = slug)
-            reserve_date = MovieDate.objects.get(id = date_id).movie_date
+            reserve_date = ShowDate.objects.get(id = date_id).show_date
             showtime = Showtime.objects.get(id = show_id)
-            my_seats_name = [s.seat.name for s in cart]
-            str_seat = ",".join(my_seats_name)
+            mycart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, payment_status = True)
+            my_seats_name = [s.seat.name for s in mycart]
+            print(f" The seat name is {my_seats_name}")
+            # str_seat = ",".join(my_seats_name)
         
 
             # Create a new PDF document using ReportLab
             pdf_buffer = BytesIO()
-            doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+
+            # set the height and width of pdf 
+            width = 500
+            height = 300
+            # Define the page background color and border
+         
+            doc = SimpleDocTemplate(pdf_buffer, pagesize=(width, height))
 
                 # Define the ticket template styles
             styles = getSampleStyleSheet()
@@ -164,7 +184,7 @@ class PaymentView(BaseView):
             content = []
 
             # Add the title
-            title = Paragraph('Movie Ticket', title_style)
+            title = Paragraph('QFX Movie Ticket', title_style)
             content.append(title)
 
             # Add customer details
@@ -190,6 +210,10 @@ class PaymentView(BaseView):
             # Add Price details
             seat_info = Paragraph(f'Price: {showtime.price}', content_style)
             content.append(seat_info)
+            
+            # Add Price details
+            seat_info = Paragraph(f'Thank You', content_style)
+            content.append(seat_info)
 
             # Add spacing between elements
             content.append(Spacer(1, 12))
@@ -197,7 +221,7 @@ class PaymentView(BaseView):
             # Build the PDF document and close the buffer
             doc.build(content)
             pdf_buffer.seek(0)
-
+            
             # Set response headers for a downloadable PDF file
             response = HttpResponse(content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="qfxcinema.pdf"'
@@ -209,17 +233,69 @@ class PaymentView(BaseView):
 
             return response
         
+        elif SeatAvailability.objects.filter(user = user, show_date = date_id, movie = movie_id, showtime = show_id, status = "reserved", payment_status = True).exists():
+            messages.error(request, "Already reserved")
+            return redirect('cinema:home')
+        
+        messages.error(request,"Select one seat")
+        return redirect('cinema:home')
+    
+        
 class BookingHostoryView(BaseView):
     def get(self, request):
-        user = request.user
-        self.views['history'] = BookingHistory.objects.filter(user = user, payment_status = True)
-        see_list = BookingHistory.objects.filter(user = user, payment_status = True)
-        for s in see_list:
-            seat = s.seats.all()
-        my_lst = [ms.name for ms in seat]
-        self.views['final_seat'] = ",".join(my_lst)
+        if request.user.is_authenticated:
+            user = request.user
+            self.views['history'] = BookingHistory.objects.filter(user = user, payment_status = True)
+            see_list = BookingHistory.objects.filter(user = user, payment_status = True)
+            seat = []
+            for s in see_list:
+                seat += list(s.seats.all())
+            my_lst = [ms.name for ms in seat]
+            self.views['final_seat'] =  ",".join(my_lst)
             
 
-        return render(request, 'booking-history.html', self.views)
+            return render(request, 'booking-history.html', self.views)
+        messages.error(request, "You need to login first")
+        return redirect('authentication:login')
+    
+
+class AdminBookingView(BaseView):
+    def get(self, request):
+        see_list = BookingHistory.objects.filter(payment_status = True)
+        seat = []
+        for s in see_list:
+                seat += list(s.seats.all())
+        my_lst = [ms.name for ms in seat]
+        self.views['final_seat'] =  ",".join(my_lst)
+        self.views['seatreserve'] = SeatAvailability.objects.filter(status = "pending", payment_status = False)
+        self.views['history'] = BookingHistory.objects.filter(payment_status = True)
+        return render(request, 'booking-list-admin.html', self.views)
+
+class DeletePendingView(View):
+    def get(self, request, id):
+        seat = SeatAvailability.objects.get(id = id)
+        seat.delete()
+        messages.success(request, "Pending Delete Successfully")
+        return redirect('booking:bookingadmin')
+    
+class BookingHistoryDeleteView(View):
+    def get(self, request, id):
+        history = BookingHistory.objects.get(id = id)
+        history.delete()
+        messages.error(request,"History Delete successcully")
+        return redirect('booking:bookingadmin')
+    
+# Delete with Jquery and Ajax 
+from django.http import JsonResponse
+
+class DeleteBookingView(View):
+    def post(self, request):
+        booking_id = request.POST.get('booking-id')
+        try:
+            booking = BookingHistory.objects.get(id=booking_id)
+            booking.delete()
+            return JsonResponse({'success': 'Booking deleted successfully.'})
+        except BookingHistory.DoesNotExist:
+            return JsonResponse({'error': 'Booking not found.'})
 
         

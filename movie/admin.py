@@ -25,7 +25,8 @@ class ShowtimeAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'start_time', 'end_time', 'shift', 'price']
 admin.site.register(Showtime, ShowtimeAdmin)
 
+class ShowDateAdmin(admin.ModelAdmin):
+    list_display = ['id', 'show_date']
+    list_display_links = ['id', 'show_date']
 
-class MovieDateAdmin(admin.ModelAdmin):
-    list_display = ('id','movie_date')
-admin.site.register(MovieDate, MovieDateAdmin)
+admin.site.register(ShowDate, ShowDateAdmin)

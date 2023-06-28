@@ -40,7 +40,7 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 # Application definition
 
 INSTALLED_APPS = [
-      'django_crontab',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -191,5 +191,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CRONJOBS = [
-    ('*/1 * * * *', 'cinema.cron.callCron')
+    ('*/3 * * * *', 'cinema.cron.DeleteUnverifiedAccount')
 ]

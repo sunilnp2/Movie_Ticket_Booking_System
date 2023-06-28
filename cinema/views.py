@@ -11,12 +11,13 @@ class BaseView(View):
     views = {}
     views['showing'] = Movie.objects.filter(status = "showing")
     views['coming'] = Movie.objects.filter(status = "comingsoon")
-
+    
 
 class HomeView(BaseView):
     def get(self,request):
-        user = get_user_model()
-        name = user.first_name
-
-        return render(request,'index.html', self.views)
+        showing = Movie.objects.filter(status = "showing")
+        upcoming = Movie.objects.filter(status = "comingsoon")
+        return render(
+            request,'index.html', 
+            context={'showing':showing, 'coming':upcoming})
     

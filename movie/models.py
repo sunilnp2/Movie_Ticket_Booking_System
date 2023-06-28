@@ -1,9 +1,10 @@
 from django.db import models
-
+from cinema.models import *
 # Create your models here.
 MOVIE_STATUS  =(('showing', 'showing'), ('comingsoon', 'comingsoon'))
 STATUS = (('active', 'active'), ('inactive', 'inactive'))
-SHIFT = (('M', 'M'),('D', 'D'),('N', 'N'))
+SHIFT = (('Morning', 'Morning'),('Day', 'Day'),('Night', 'Night'))
+
 
 class Movie(models.Model):
     name = models.CharField(max_length=200)
@@ -21,20 +22,25 @@ class Movie(models.Model):
     def __str__(self):
         return self.name
 
-class MovieDate(models.Model):
-    movie_date = models.DateField()
+class ShowDate(models.Model):
+    show_date = models.DateField()
 
     def __str__(self):
-        return str(self.movie_date)
-    
+        return str(self.show_date)
 
+
+    
 class Showtime(models.Model):
-    movie_date = models.ForeignKey(MovieDate, on_delete=models.CASCADE, null=True, blank=True)
+    show_date = models.ForeignKey(ShowDate, on_delete=models.CASCADE)
     start_time = models.TimeField()
     end_time = models.TimeField()
     shift = models.CharField(choices=SHIFT, max_length=10)
     price = models.PositiveBigIntegerField()
-    # movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, blank=True, null=True                          )
+    cinema_hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE, blank=True, null=True)
     def __str__(self):
         return self.shift
     
+class Todo(models.Model):
+    # name = models.CharField()
+    pass

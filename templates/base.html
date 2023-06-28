@@ -25,6 +25,7 @@
           <a href="{% url 'cinema:home' %}">
             <img src="{% static '/img/logo.png' %}" alt="Logo img"
           /></a>
+
         </div>
         <div class="search">
           <form method="get" , action="{% url 'movie:search' %}">
@@ -40,7 +41,11 @@
         </div>
       </div>
       <div class="right-sm-4">
+       
         <ul>
+          <li class="nav getvalue">
+            <a href="{% url 'booking:bookingadmin' %}">Status</a>
+          </li>
           <li class="nav getvalue">
             <a href="{% url 'movie:movie' %}">Movies</a>
           </li>
@@ -54,6 +59,7 @@
               >{{user.first_name}}</a
             >
             <ul id="auth-user">
+              <li><a href="{% url 'authentication:profile' %}"> Profile</a></li>
               <li><a href="{% url 'authentication:logout' %}"> Logout</a></li>
               {% comment %}
               <li><a href="{% url 'cinema:signup' %}"> Register</a></li>
@@ -101,6 +107,9 @@
 
     <!-- footer area end -->
     <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    {% include 'ajax.html' %}
     {% comment %}
     <script src="{% static 'js/bootstrap.js' %}"></script>
     {% endcomment %}

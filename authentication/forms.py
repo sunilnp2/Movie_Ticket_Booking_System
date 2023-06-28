@@ -1,7 +1,8 @@
 from django import forms
-from authentication.admin import UserCreationForm
+from authentication.admin import UserCreationForm, UserChangeForm
 from authentication.models import *
 from authentication.utils import *
+
 
 
 
@@ -51,4 +52,12 @@ class LoginForm(forms.ModelForm):
         fields = ('email', 'password1')
 
 
+
+
+
 # form for showtime custom editing ----------------------------------------------------------------
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email','username', 'first_name', 'last_name', 'phone', 'address'] 

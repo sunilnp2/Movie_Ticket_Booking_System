@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from authentication.forms import SignupForm, LoginForm
+from authentication.forms import SignupForm, LoginForm, EditUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
@@ -15,6 +15,7 @@ from cinema.models import *
 from datetime import date
 from django.http import HttpResponse
 from cinema.views import BaseView
+from authentication.models import User
 
 # Create your views here.
 
@@ -71,6 +72,9 @@ class LoginView(BaseView):
         if not pw:
             messages.error(request,"Username required")
         user = authenticate(email = email, password = pw)
+        if User.objects.filter(email = email, email_verified = False):
+            messages.error(request, "You are not Verified! Verify email first")
+            return redirect('authentication:login')
         if user is not None:
             login(request, user)
             if 'next' in request.POST:
@@ -84,13 +88,13 @@ class LoginView(BaseView):
 
 
 class SignupView(BaseView):
-    def dispatch(self, request, *args, **kwargs):
-        if request.method == 'GET':
-            return self.get(request, *args, **kwargs)
-        elif request.method == 'POST':
-            return self.post(request, *args, **kwargs)
-        else:
-            return HttpResponse(['GET', 'POST']) 
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.method == 'GET':
+    #         return self.get(request, *args, **kwargs)
+    #     elif request.method == 'POST':
+    #         return self.post(request, *args, **kwargs)
+    #     else:
+    #         return HttpResponse(['GET', 'POST']) 
         
     def get(self,request):
         self.views['fm'] = SignupForm()
@@ -99,13 +103,29 @@ class SignupView(BaseView):
     def post(self,request):
         fm = SignupForm(request.POST)
         if fm.is_valid():
+            email = fm.cleaned_data['email']
+            uname = email.split('@')[0]
+            user.username = uname
+            if User.objects.filter(username = uname).exists():
+                messages.error(request, "Try new email")
+                return redirect('authentication:login')
             user = fm.save(commit=False)
             user.email_verified=False
+            email = fm.cleaned_data['email']
+            uname = email.split('@')[0]
+            user.username = uname
             user.save()
             activateEmail(request, user, fm.cleaned_data.get('email'))
             fm.save()
             return redirect('cinema:home')
         return render(request, 'signup.html', {'fm': fm})
+    
+
+class ProfileView(BaseView):
+    def get(self, request):
+        self.views['fm'] = EditUserForm()
+
+        return render(request, 'profile.html', self.views)
 
 
         

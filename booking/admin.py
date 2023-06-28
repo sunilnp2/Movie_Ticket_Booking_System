@@ -8,12 +8,12 @@ class SeatAdmin(admin.ModelAdmin):
 admin.site.register(Seat, SeatAdmin)
 
 class SeatAvailabilityAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
-    list_display_links = ('user', 'date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
+    list_display = ('user', 'show_date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
+    list_display_links = ('user', 'show_date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
 
 admin.site.register(SeatAvailability, SeatAvailabilityAdmin)
 
 class BookingHistoryAdmin(admin.ModelAdmin):
-    list_display = ('user', 'movie_date', 'showtime', 'movie', 'reservation_datetime', 'payment_status', 'payment_method')
+    list_display = ('id','user', 'show_date','book_seat', 'showtime', 'movie', 'reservation_datetime', 'payment_status', 'payment_method')
 
 admin.site.register(BookingHistory, BookingHistoryAdmin)

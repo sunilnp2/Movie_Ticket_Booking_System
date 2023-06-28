@@ -42,11 +42,12 @@
         </div>
         <div class="selection-area seat-area">
             {% if seats %}
-            <h5 style = "color:yellow;"> Selected Date : {{seats}} </h5> 
+            <h5 style = "color:yellow;"> Selected Seat : {{seats}} </h5> 
             {% endif %}
-          <h5> Selected Date : {{dates.movie_date}} </h5> 
+            <h5> Selected Date : {{dates.show_date}} </h5> 
+            <h5 style = "color:yellow;"> Selected Hall : {{hall_name.name}} </h5> 
             <h5> Selected Showtime : {{showtime}} </h5>
-            <h5> Price : {{showtime.price}} </h5>
+            <h5> Price : {{total}} </h5>
             <div class="screen-site">
             </div>
             <hr class="break-screen">
@@ -57,7 +58,7 @@
                 <div class="first-row">
                   <span class="row-number">E</span>
                   {% for i in first_row %}
-                  <a id = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug  %}">
+                  <a  href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_name.id %}">
                     <span class="material-symbols-outlined">
                       event_seat 
                       <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
@@ -73,7 +74,7 @@
                 <div class="first-row">
                   <span class="row-number">D</span>
                   {% for i in second_row %}
-                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_id %}">
                   <span class="material-symbols-outlined">
                     event_seat 
                     <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
@@ -86,7 +87,7 @@
                 <div class="first-row">
                   <span class="row-number">C</span>
                   {% for i in third_row %}
-                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_id %}">
                   <span class="material-symbols-outlined">
                     event_seat 
                     <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
@@ -99,7 +100,7 @@
                 <div class="first-row">
                   <span class="row-number">B</span>
                   {% for i in fourth_row %}
-                  <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                  <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_id %}">
                  <span class="material-symbols-outlined">
                    event_seat 
                    <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
@@ -114,7 +115,7 @@
                 <div class="first-row">
                   <span class="row-number">A</span>
                   {% for i in fifth_row %}
-                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug %}">
+                   <a class = "clickSeat" href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_id %}">
                   <span class="material-symbols-outlined">
                     event_seat 
                     <p style = "font-size:10px; text-align:center; color:cyan; margin-top:3px;">{{i.name}}</p>
@@ -155,7 +156,7 @@
                       
             </div>
             <div class="buy-sm-12">
-             <a href = "{% url 'booking:booking' details.slug dates.id showtime.id %}"><input type="submit" value="Buy Now"></a>
+             <a href = "{% url 'booking:booking' details.slug dates.id showtime.id hall_id %}"><input type="submit" value="Buy Now"></a>
             </div>
 
            

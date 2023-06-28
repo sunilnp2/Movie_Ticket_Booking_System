@@ -161,9 +161,26 @@ body{
 .movie-sm-12{
   height: auto;
   display: flex;
-  flex-direction: column;
-  width: 90vw;
-  margin: 5px auto;
+  /* flex-direction: column; */
+  width: 99vw;
+  /* margin:; */
+}
+
+.showing-sm-70{
+    height: auto;
+    display: flex;
+    width: 85%;
+    flex-direction: column;
+
+}
+
+.upcoming-sm-30{
+    width: 15%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
 }
 
 .now-showing,.coming-soon{
@@ -173,12 +190,15 @@ body{
   flex-direction: column;
 }
 
+
 .heading-sm-12{
     height: auto;
     display: flex;
     justify-content: center;
     margin: auto;
     align-items: center;
+    font-weight: bold;
+    color: rgb(3, 79, 79);
 }
 .heading-sm-12 p{
     position: relative;
@@ -192,6 +212,26 @@ body{
     align-items: center;
 }
 
+.movie-list-upcoming{
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.list-upcoming{
+    height: 80%;
+    width: 230px;
+    margin: 5px 10px;
+}
+
+.list-upcoming img{
+    height: 100%;
+    width: 100px;
+    margin: 5px 10px;
+}
+
+
 .list{
     height: 100%;
     width: 230px;
@@ -199,7 +239,7 @@ body{
 }
 
 .list img{
-    height: 90%;
+    height: 95%;
     width: 100%;
 }
 
@@ -480,4 +520,32 @@ font-size: 0.9em;
 #seats-names{
     width: 200px;
 
+}
+
+
+/* style for bookig-list-admin */
+
+.break-line{
+    height: 3px;
+    color: black;
+}
+
+
+.admin-history-sm-12{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+
+.booking-pending-sm-50{
+    width: 49%;
+    margin: 2px 6px;
+}
+
+
+.booking-history-sm-50{
+    width: 49%;
+    margin: 2px 6px;
 }

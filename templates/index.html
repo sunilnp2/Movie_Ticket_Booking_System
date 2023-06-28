@@ -36,7 +36,8 @@
 
     <!-- movie section start -->
 
-    <div class="movie-sm-12">
+    <div class="movie-sm-12"> 
+      <div class = "showing-sm-70">
         <div class="now-showing">
         <div class="heading-sm-12">
           <p class="heading">Now Showing</p>
@@ -50,35 +51,15 @@
           </div>
         </a>
           {% endfor %}
-          {% comment %} <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div> {% endcomment %}
         </div>
     </div>
 
         <div class="coming-soon">
         <div class="heading-sm-12">
-          <p>Coming Soon</p>
+          <p>Recommended Movie</p>
         </div>
         <div class="movie-list">
-          {% for soon in coming %}
+          {% for soon in recommended %}
           <div class="list"> 
             <a href = "{% url 'movie:movie-detail' soon.slug %}"> 
             <img src="{{soon.image.url}}" alt="">
@@ -86,25 +67,29 @@
           </a>
           </div>
           {% endfor %}
-          {% comment %} <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div>
-          <div class="list"> 
-            <img src="img/cinema.jpg" alt="">
-            <p class="name">Movie Name</p>
-          </div> {% endcomment %}
         </div>
     </div>
     </div>
+    
+    <div class = "upcoming-sm-30">
+      <div class="upcoming-soon">
+        <div class="heading-sm-12">
+          <p>Coming Soon</p>
+        </div>
+        <div class="movie-list-upcoming">
+          {% for soon in coming %}
+          <div class="list-upcoming"> 
+            <a href = "{% url 'movie:movie-detail' soon.slug %}"> 
+            <img src="{{soon.image.url}}" alt="">
+            <p class="name">{{soon.name}}</p>
+          </a>
+          </div>
+          {% endfor %}
+        </div>
+    </div>
+    </div>
+    </div>
+  </div>
     <!-- movie section end -->
 
     {% endblock content %}

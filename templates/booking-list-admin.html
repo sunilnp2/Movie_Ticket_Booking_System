@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- movie detail area start -->
+
+    <div class="admin-history-sm-12">
+      
+      <div class="booking-pending-sm-50">
+
+        <div class="detail-heading">
+            <h3>
+             User Booking Pending
+            </h3>
+            <hr id="break-line">
+        </div>
+      <div class="show-history-section">
+        
+
+    <!-- /* movie_date = models.ForeignKey(MovieDate, on_delete=models.CASCADE, null=True, blank=True)
+    showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    seats = models.ManyToManyField(Seat)
+    reservation_datetime = models.DateTimeField(auto_now_add=True)
+    payment_status = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=50, null=True, blank=True) */ -->
+      <div class="history-list">
+        {% if messages %}
+        {% for mess in messages %}
+        {% if mess.tags == 'success' %}
+        <h3 style = "color:red; font-weight:bold; background-color:lightgray; text-align:center;">{{mess}} </h3>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        <table>
+          <thead>
+            <tr>
+        <th>User</th>
+              <th>Date</th>
+              <th>Showtime</th>
+              <th>Movie</th>
+              <th>Seat</th>
+              <th>Status</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody class = "booking-pending">
+            {% for res in seatreserve %}
+            <tr>
+              <td>{{res.user.first_name}}</td>
+              <td>{{res.date}}</td>
+              <td>{{res.showtime}}</td>
+              <td>{{res.movie}}</td>
+              <td>{{res.seat.name}}</td>
+              <td>{{res.status}}</td>
+              <td>{{res.total}}</td>
+              <td class = "delete-pending" data-pending-id = {{res.id}}><a href="{% url 'booking:deletepending' res.id %}"> Delete</a></td>
+             
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      </div>
+
+      </div> 
+
+      <div class="booking-history-sm-50">
+
+        <div class="detail-heading">
+            <h3>
+             User Booking History
+            </h3>
+            <hr>
+        </div>
+      <div class="show-history-section">
+        
+
+    <!-- /* movie_date = models.ForeignKey(MovieDate, on_delete=models.CASCADE, null=True, blank=True)
+    showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    seats = models.ManyToManyField(Seat)
+    reservation_datetime = models.DateTimeField(auto_now_add=True)
+    payment_status = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=50, null=True, blank=True) */ -->
+      <div class="history-list">
+        {% if messages %}
+        {% for mess in messages %}
+        {% if mess.tags == 'error' %}
+        <h3 style = "color:red; font-weight:bold; background-color:lightgray; text-align:center;">{{mess}} </h3>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Show Date</th>
+              <th>Movie</th>
+              <th>Showtime</th>
+              <th>Book Date</th>
+              <th>Seat</th>
+              <th>Payment Status</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for h in history %}
+            <tr>
+              <td>{{h.user.first_name}}</td>
+              <td>{{h.show_date}}</td>
+              <td>{{h.movie.name}}</td>
+              <td>{{h.showtime}}</td>
+              <td>{{h.reservation_datetime}}</td>
+              <td>{{final_seat}}</td>
+              <td>{{h.payment_status}}</td>
+              <td>{{h.total}}</td>
+              <td><a href="{% url 'booking:hisdelete' h.id %}"> Delete</a></td>
+             
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      </div>
+      
+    </div> 
+
+</div>
+
+
+    <!-- movie detail area end -->
+
+    {% endblock content %}

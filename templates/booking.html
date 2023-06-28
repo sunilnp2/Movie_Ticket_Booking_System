@@ -45,15 +45,17 @@
             </div>
            
             <div class="selected-seat">
-            <h3>Selected Seat:</h3>
+              <h4>Selected Hall : {{hall.name}}</h4>
+            <h4>Selected Seat:</h4>
             {% if seats %}
             <h4>{{seats}}</h4>
             {% endif %}
+            <h3 style = "color:brown;">Total Price: {{total}}</h3>
         </div>
             <div class="payment-method">
                 <h3>Choose Payment methood</h3>
                 <ul>
-                  <form type = 'post' action = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id %}">
+                  <form type = 'post' action = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id hall.id %}">
                     {% csrf_token %}
                     {% comment %} <li>E-sewa</li>
                     <li><a href="http://">Khalti</a> </li>
@@ -67,7 +69,7 @@
                 
                
                 </ul>
-                <a href = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id %}">
+                <a href = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id hall.id %}">
                 <button >Book Now</button>
                 </a>
                 <form>

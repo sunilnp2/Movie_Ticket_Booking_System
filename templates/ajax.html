@@ -1,0 +1,41 @@
+<script>
+
+
+
+console.log("Hello Ajax is now working!");
+$(document).ready(function() {
+    $('.delete-pending').on('click', function() {
+      var bookingId = $(this).data('pending-id');
+
+       // Show confirmation dialog box
+    var result = confirm("Are you sure you want to delete this booking?");
+    if (result){
+
+      $.ajax({
+        url: "/booking/delete/",
+        type: "POST",
+        data: {
+            booking_id: bookingId,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+
+        success: function (response) {
+          // Handle success response
+          // Remove the deleted booking entry from the page
+          $(".booking-pending[data-pending-id='" + bookingId + "']").remove();
+      },
+      error: function (xhr, errmsg, err) {
+        // Handle error response
+        console.log(errmsg);
+    }
+
+  });
+}
+});
+});
+    
+
+
+
+    
+</script>

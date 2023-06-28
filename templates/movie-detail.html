@@ -36,35 +36,45 @@
             <h5>1. Select Date and TIme Slots</h5>
 
             <div class="select-date">
+              {% if dates %}
                 <h5>Select Date</h5>
                 <div class="dates">
                   {% for d in dates %}
                    <div class="mydate">
-                        <h5>{{d.movie_date}}</h5>
-                        <a href="{% url 'movie:showtime' d.id details.slug %}">
+                        <h5>{{d.show_date}}</h5>
+                        <a href="{% url 'movie:cinemahall' d.id details.slug %}">
                 <div class="adjust-date">
-                    <p>Jun{{d.movie_date.month}} <br><spanc class="date-number">{{d.movie_date.day}} </spanc> <br> {{d.movie_date.year}}</p>
+                    <p>July{{d.show_date.month}} <br><spanc class="date-number">{{d.show_date.day}} </spanc> <br> {{d.show_date.year}}</p>
                 </div>
             </a>
             </div>
             {% endfor %}
-       
-
+          </div>
+          {% endif %}
+            <br>
+            <div class="dates">
+              {% if selected_date %}
+                  <h5>Selected Date :<span style = "color:yellow;"> {{selected_date.show_date}} </span> </h5>
+                  
+                  {% endif %}
             </div>
 
             </div>
-
+{% if hall_name %}
             <div class="select-time">
-                <h5>Select Time Slots</h5>
+                <h5>Select Cinema Hall</h5>
 
                 <div class="available-time">
                     <ul>
-                      <li>10:00 to 1:00</li>
-                      <li>2:00 to 5:00</li>
-                      <li>6:00 to 9:00</li>
+                      {% for h in hall_name %}
+                      <li><a href = "{% url 'movie:showtime' d_id h.id details.slug %}">{{h.name}}</a></li>
+                      {% endfor %}
                     </ul>
                 </div>
             </div>
+            {% else %}
+            ...
+            {% endif %}
         </div>
 
       </div>

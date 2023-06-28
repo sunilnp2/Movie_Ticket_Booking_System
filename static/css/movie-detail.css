@@ -70,7 +70,7 @@
 
 .detail-sm-75 {
   width: 73vw;
-  height: 70%;
+  height: 84%;
   padding: 10px 12px;
   /* border-radius: 15px; */
 }
@@ -149,6 +149,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.available-time ul li a{
+  text-decoration: none;
+}
+
+.available-time ul li a:hover{
+  color: white;
 }
 
 /* style for seats.html ----------------------------------------------------------------------*/
@@ -328,7 +335,7 @@ color: red;
 .selected-seat{
   margin: 6px auto;
   width: 95%;
-  height: 100px;
+  height: 170px;
   background-color: white;
   padding: 6px 10px;
   border-radius: 15px;
@@ -340,7 +347,7 @@ color: red;
 
 .payment-method{
   background-color: white;
-  height: 340px;
+  height: 300px;
   width: 95%;
   margin: 6px auto;
   padding: 6px 10px;
