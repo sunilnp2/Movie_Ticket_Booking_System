@@ -1,5 +1,6 @@
 from django.db import models
 from cinema.models import *
+from authentication.models import User
 # Create your models here.
 MOVIE_STATUS  =(('showing', 'showing'), ('comingsoon', 'comingsoon'))
 STATUS = (('active', 'active'), ('inactive', 'inactive'))
@@ -14,10 +15,12 @@ class Movie(models.Model):
     genre = models.CharField(max_length=100)
     language = models.CharField(max_length=200)
     release_date = models.DateField(blank=True,null=True)
+    end_date = models.DateField(blank=True,null=True)
     slug = models.SlugField(max_length=100)
     active = models.CharField(choices=STATUS, max_length=100, blank=True, null=True)
     status = models.CharField(choices=MOVIE_STATUS, max_length=100)
     detail = models.TextField(blank=True)
+    # like = models.PositiveIntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -41,6 +44,16 @@ class Showtime(models.Model):
     def __str__(self):
         return self.shift
     
-class Todo(models.Model):
-    # name = models.CharField()
-    pass
+    
+    
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    like = models.PositiveBigIntegerField(default = 0, null=True)
+    liked_at  = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['liked_at'] 
+    
+    def __str__(self):
+        return self.user.username

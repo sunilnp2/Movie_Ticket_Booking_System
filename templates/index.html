@@ -23,7 +23,7 @@
             <img src="{% static 'img/slider3.png' %}" class="d-block w-100" alt="...">
           </div>
         </div>
-   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="prev">
+   {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
@@ -31,7 +31,7 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
-      </div>
+      </div> {% endcomment %}
     <!-- slider area ends -->
 
     <!-- movie section start -->
@@ -53,23 +53,24 @@
           {% endfor %}
         </div>
     </div>
-
-        <div class="coming-soon">
+        <div class="now-showing">
         <div class="heading-sm-12">
-          <p>Recommended Movie</p>
+          <p class="heading">Recommendation</p>
         </div>
         <div class="movie-list">
-          {% for soon in recommended %}
+          {% for show in recom %}
           <div class="list"> 
-            <a href = "{% url 'movie:movie-detail' soon.slug %}"> 
-            <img src="{{soon.image.url}}" alt="">
-            <p class="name">{{soon.name}}</p>
-          </a>
+            <a href = "{% url 'movie:movie-detail' show.slug %}"> 
+            <img src="{{show.image.url}}" alt="">
+            <p class="name">{{show.name}}</p>
           </div>
+        </a>
           {% endfor %}
         </div>
     </div>
+
     </div>
+
     
     <div class = "upcoming-sm-30">
       <div class="upcoming-soon">
@@ -91,6 +92,61 @@
     </div>
   </div>
     <!-- movie section end -->
+
+<!-- filter section start  -->
+<div class="movie-filter-section">
+  <div class="heading-sm-20">
+    <h4>Filter Movie</h4>
+  </div>
+  <div class="filter-sm-80">
+    <form action="{% url 'movie:filter' %}">
+      {% csrf_token %}
+
+      <div class="choose-one">
+      <label for="select-option">Start Date</label>
+      {{ fm.start_date }}
+
+   {% comment %} <select id="select-option" name="select-option">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+      </select>  {% endcomment %}
+    </div>
+      <div class="choose-one">
+      <label for="select-option">End Date:</label>
+      {{ fm.end_date }}
+      {% comment %} <select id="select-option" name="select-option">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+      </select> {% endcomment %}
+    </div>
+      <div class="choose-one">
+      <label for="select-option">Genre:</label>
+      {{ fm.genre }}
+      {% comment %} <select id="select-option" name="select-option">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+      </select> {% endcomment %}
+    </div>
+      <div class="choose-one">
+      <label for="select-option">Language:</label>
+      {{ fm.language }}
+      {% comment %} <select id="select-option" name="select-option">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+      </select> {% endcomment %}
+    </div> 
+    <button type="submit">Filter</button>
+
+    </form>
+     
+  </div>
+  
+</div>
+<!-- filter section end  -->
 
     {% endblock content %}
 

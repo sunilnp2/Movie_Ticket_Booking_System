@@ -16,6 +16,7 @@ from datetime import date
 from django.http import HttpResponse
 from cinema.views import BaseView
 from authentication.models import User
+from utils.forms import UpdateProfileForm
 
 # Create your views here.
 
@@ -103,12 +104,12 @@ class SignupView(BaseView):
     def post(self,request):
         fm = SignupForm(request.POST)
         if fm.is_valid():
-            email = fm.cleaned_data['email']
-            uname = email.split('@')[0]
-            user.username = uname
-            if User.objects.filter(username = uname).exists():
-                messages.error(request, "Try new email")
-                return redirect('authentication:login')
+            # email = fm.cleaned_data['email']
+            # uname = email.split('@')[0]
+            # user.username = uname
+            # if User.objects.filter(username = uname).exists():
+            #     messages.error(request, "Try new email")
+            #     return redirect('authentication:login')
             user = fm.save(commit=False)
             user.email_verified=False
             email = fm.cleaned_data['email']
@@ -123,9 +124,22 @@ class SignupView(BaseView):
 
 class ProfileView(BaseView):
     def get(self, request):
-        self.views['fm'] = EditUserForm()
-
+        user = request.user
+        self.views['fm'] = UpdateProfileForm(instance=user)
+        
         return render(request, 'profile.html', self.views)
+
+
+    def post(self, request):
+        user = request.user
+        fm = UpdateProfileForm(request.POST, instance=user)
+        if fm.is_valid():
+            fm.save()
+            messages.success(request, "Profile Update successfully")
+            return redirect('authentication:profile')
+        messages.error(request, "Some Error Occurs")
+        return redirect('authentication:profile')
+
 
 
         

@@ -30,3 +30,11 @@ class ShowDateAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'show_date']
 
 admin.site.register(ShowDate, ShowDateAdmin)
+
+
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'movie', 'like', 'liked_at']
+    list_display_links = ['id', 'user', 'movie', 'like', 'liked_at']
+    
+admin.site.register(Like, LikeAdmin)
+    

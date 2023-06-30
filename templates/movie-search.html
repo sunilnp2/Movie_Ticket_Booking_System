@@ -2,26 +2,25 @@
 {% load static %}
 {% block content %}
 
+
 {% if search %}
-
     <!-- movie section start -->
-
     <div class="movie-sm-12">
         <div class="now-showing">
         <div class="heading-sm-12">
           <p class="heading">Now Showing</p>
         </div>
         <div class="movie-list">
-            {% if search.status == showing %}
           {% for show in search %}
+          {% if show.status == 'showing' %}
           <div class="list"> 
             <a href = "{% url 'movie:movie-detail' show.slug %}"> 
             <img src="{{show.image.url}}" alt="">
             <p class="name">{{show.name}}</p>
           </div>
         </a>
+        {% endif %}
           {% endfor %}
-          {% endif %}
         </div>
     </div>
 
@@ -30,8 +29,8 @@
           <p>Coming Soon</p>
         </div>
         <div class="movie-list">
-            {% if search.status == comingsoon %}
           {% for  comm in search %}
+          {% if comm.status == 'comingsoon' %}
           
           <div class="list"> 
             <a href = "{% url 'movie:movie-detail' comm.slug %}"> 
@@ -39,8 +38,52 @@
             <p class="name">{{comm.name}}</p>
             </a>
           </div>
-          {% endfor %}
           {% endif %}
+          {% endfor %}
+  
+        </div>
+    </div>
+    </div>
+
+    <!-- movie section end -->
+
+{% elif mov %}
+    <!-- movie section start -->
+    <div class="movie-sm-12">
+        <div class="now-showing">
+        <div class="heading-sm-12">
+          <p class="heading">Now Showing</p>
+        </div>
+        <div class="movie-list">
+          {% for show in mov %}
+          {% if show.status == 'showing' %}
+          <div class="list"> 
+            <a href = "{% url 'movie:movie-detail' show.slug %}"> 
+            <img src="{{show.image.url}}" alt="">
+            <p class="name">{{show.name}}</p>
+          </div>
+        </a>
+        {% endif %}
+          {% endfor %}
+        </div>
+    </div>
+
+        <div class="coming-soon">
+        <div class="heading-sm-12">
+          <p>Coming Soon</p>
+        </div>
+        <div class="movie-list">
+          {% for  comm in mov %}
+          {% if comm.status == 'comingsoon' %}
+          
+          <div class="list"> 
+            <a href = "{% url 'movie:movie-detail' comm.slug %}"> 
+            <img src="{{comm.image.url}}" alt="">
+            <p class="name">{{comm.name}}</p>
+            </a>
+          </div>
+          {% endif %}
+          {% endfor %}
   
         </div>
     </div>
@@ -50,6 +93,9 @@
     <h3 style = "height:30vw; color:red; display:flex; justify-content:center; align-items:center; font-size:3em; font-weight:bold;">Movie Not In list</h3>
     {% endif %}
     <!-- movie section end -->
+
+    
+   
 
     {% endblock content %}
 

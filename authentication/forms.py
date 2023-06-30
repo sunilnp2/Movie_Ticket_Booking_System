@@ -4,7 +4,14 @@ from authentication.models import *
 from authentication.utils import *
 
 
-
+ADDRESS_CHOICES = [
+    ('Kathmandu', 'Kathmandu'),
+    ('Pokhara', 'Pokhara'),
+    ('Butwal', 'Butwal'),
+    ('Dharan', 'Dharan'),
+    ('Bhaktpur', 'Bhaktpur'),
+    ('LalitPur', 'Lalitpur'),
+]
 
 class SignupForm(UserCreationForm):
     password1 = forms.CharField(label='Enter Password:',
@@ -16,17 +23,19 @@ class SignupForm(UserCreationForm):
                                                                   'class': 'password2', 'id': 'cpassword'}),
                                 error_messages={'required': "Enter confirm password"})
     
-    email = forms.EmailField(validators=[checkemail], label='Email :', widget=forms.EmailInput(
+    email = forms.EmailField(
+
+        validators=[checkemail], label='Email :', widget=forms.EmailInput(
         attrs={'id': 'email', 'class': 'email', 'placeholder': "Enter email"}), 
         error_messages={'required':"enter email"})
+
     
-    first_name = forms.CharField(validators=[checkalpha] , label='First Name :', widget=forms.TextInput(
-        attrs={'id': 'f_name', 'class': 'f_name', 'placeholder': "First Name"}), 
-        error_messages={'required':"Enter First Name"})
+    # address = forms.CharField(label='Current City :', widget=forms.TextInput(
+    #     attrs={'id': 'address', 'class': 'address_id', 'placeholder': "Enter Current City"}), 
+    #     error_messages={'required':"City Is required "})
     
-    last_name = forms.CharField(validators=[checkalpha] , label='Last Name :', widget=forms.TextInput(
-        attrs={'id': 'l_name', 'class': 'l_name', 'placeholder': "Enter Last Name"}), 
-        error_messages={'required':"Enter Last Name "})
+    address = forms.ChoiceField(choices=ADDRESS_CHOICES, label='Current City :',
+        error_messages={'required':"City Is required "})
     
     phone = forms.CharField(validators=[checkphone], label='Phone Number :', widget=forms.TextInput(
         attrs={'id': 'phone', 'class': 'phone', 'placeholder': "Enter phone"}), 
@@ -34,7 +43,7 @@ class SignupForm(UserCreationForm):
 
     class Meta:
         model = User 
-        fields = ("email", "first_name", "last_name","phone")
+        fields = ("email", "address","phone")
 
 
 class LoginForm(forms.ModelForm):

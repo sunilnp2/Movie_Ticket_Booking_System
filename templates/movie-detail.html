@@ -3,6 +3,19 @@
 {% block content %}
 
     <!-- movie detail area start -->
+    {% if messages %}
+    {% for mess in messages%}
+
+{% if mess.tags == 'error '%}
+    <h3 style = "color:red; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
+    {% elif mess.tags == 'success' %}
+    <h3 style = "color:green; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
+    {% else %}
+    <h3 style = "color:green; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
+{% endif %}
+
+    {% endfor %}
+    {% endif %}
 
     <div class="movie-detail-sm-12">
       <div class="detail-sm-25">
@@ -11,6 +24,10 @@
           <p>{{details.status}}</p>
           <h3 class="movie-name">{{details.name}}</h3>
           <p class="duration">{{details.duration}} mins</p>
+          <p class="like">{{like_count}} Likes <a href = "{% url 'movie:like' details.slug %}"> <span style = "display:inline;" class="material-symbols-outlined">
+            thumb_up
+            </span> </a></p> 
+
         </div>
         <div class="other-detail">
           <p class="details">
@@ -44,7 +61,7 @@
                         <h5>{{d.show_date}}</h5>
                         <a href="{% url 'movie:cinemahall' d.id details.slug %}">
                 <div class="adjust-date">
-                    <p>July{{d.show_date.month}} <br><spanc class="date-number">{{d.show_date.day}} </spanc> <br> {{d.show_date.year}}</p>
+                    <p>July{{d.show_date.month}} <br><span class="date-number">{{d.show_date.day}} </span> <br> {{d.show_date.year}}</p>
                 </div>
             </a>
             </div>
