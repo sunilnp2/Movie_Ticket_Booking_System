@@ -81,11 +81,18 @@
             <div class="select-time">
                 <h5>Select Cinema Hall</h5>
 
-                <div class="available-time">
+                <div class="available-hall-time">
                     <ul>
-                      {% for h in hall_name %}
-                      <li><a href = "{% url 'movie:showtime' d_id h.id details.slug %}">{{h.name}}</a></li>
-                      {% endfor %}
+                      {% comment %} {% for h in hall %} {% endcomment %}
+                      <li><a href = "{% url 'movie:showtime' d_id hall.id details.slug %}">{{hall.name}}</a></li>
+                        <ul>
+                          {% for show in cin%}
+                         <a href = "#"> <li>{{show.start_time}} to {{show.end_time}}</li></a>
+                          {% endfor %}
+                          {% comment %} <li>2:00 to 5:00</li>
+                          <li>6:00 to 9:00</li> {% endcomment %}
+                        </ul>
+                      {% comment %} {% endfor %} {% endcomment %}
                     </ul>
                 </div>
             </div>

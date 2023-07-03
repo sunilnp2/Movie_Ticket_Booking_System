@@ -138,6 +138,7 @@ class PaymentView(BaseView):
             print(my_seats)
             booking = BookingHistory.objects.create(
             user = user,
+            hall = CinemaHall.objects.get(id = hall_id),
             show_date = cart[0].show_date,
             showtime = cart[0].showtime,
             movie = cart[0].movie,
@@ -240,6 +241,92 @@ class PaymentView(BaseView):
         messages.error(request,"Select one seat")
         return redirect('cinema:home')
     
+    
+class GetPdfView(BaseView):
+    def get(self, request, slug, date_id, hall_id, show_id):
+        # Code for Generate Pdf
+            user = request.user
+            name = f"{user.first_name} {user.last_name}"
+            email = user.email
+            phone = user.phone
+            address = user.address
+            movie = Movie.objects.get(slug = slug)
+            reserve_date = ShowDate.objects.get(id = date_id).show_date
+            showtime = Showtime.objects.get(id = show_id)
+            mycart = BookingHistory.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie.id, showtime = show_id, payment_status = True)
+            my_seats_name = [s.seats.name for s in mycart]
+            print(f" The seat name is {my_seats_name}")
+            # str_seat = ",".join(my_seats_name)
+        
+
+            # Create a new PDF document using ReportLab
+            pdf_buffer = BytesIO()
+
+            # set the height and width of pdf 
+            width = 500
+            height = 300
+            # Define the page background color and border
+         
+            doc = SimpleDocTemplate(pdf_buffer, pagesize=(width, height))
+
+                # Define the ticket template styles
+            styles = getSampleStyleSheet()
+            title_style = styles['Heading1']
+            subtitle_style = styles['Heading3']
+            content_style = styles['Normal']
+
+            # Add content to the PDF document based on the template design
+            content = []
+
+            # Add the title
+            title = Paragraph('QFX Movie Ticket', title_style)
+            content.append(title)
+
+            # Add customer details
+            customer_info = Paragraph(f'Name: {name} \n Phone : {phone} \n email : {email} \n Address : {address}', content_style)
+            content.append(customer_info)
+
+            # Add Reserve Date information
+            showtime_info = Paragraph(f'Date: {reserve_date}', content_style)
+            content.append(showtime_info)
+
+            # Add Showtime
+            seat_info = Paragraph(f'Showtime: {showtime.shift} Time: {showtime.start_time}-{showtime.end_time}', content_style)
+            content.append(seat_info)
+
+            # Add seat details
+            seat_info = Paragraph(f'Movie: {movie}', content_style)
+            content.append(seat_info)
+
+            # Add seat details
+            seat_info = Paragraph(f'Selected Seat: {my_seats_name}', content_style)
+            content.append(seat_info)
+
+            # Add Price details
+            seat_info = Paragraph(f'Price: {showtime.price}', content_style)
+            content.append(seat_info)
+            
+            # Add Price details
+            seat_info = Paragraph(f'Thank You', content_style)
+            content.append(seat_info)
+
+            # Add spacing between elements
+            content.append(Spacer(1, 12))
+
+            # Build the PDF document and close the buffer
+            doc.build(content)
+            pdf_buffer.seek(0)
+            
+            # Set response headers for a downloadable PDF file
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="qfxcinema.pdf"'
+
+
+            # Set the PDF content from the buffer and close the buffer
+            response.write(pdf_buffer.getvalue())
+            pdf_buffer.close()
+
+            return response
         
 class BookingHostoryView(BaseView):
     def get(self, request):

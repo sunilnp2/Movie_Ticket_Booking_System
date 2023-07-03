@@ -89,7 +89,7 @@ class MovieFilterView(BaseView):
 
 class MovieDetailView(BaseView):
     def get(self, request, slug):
-        self.views['details'] = Movie.objects.get(slug=slug)
+        self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
 
         # code for showing dates
         self.views['dates'] = ShowDate.objects.filter(
@@ -97,10 +97,10 @@ class MovieDetailView(BaseView):
         self.views['hall_name'] = None
         self.views['selected_date'] = None
         
-        movie_id = Movie.objects.get(slug = slug).id
+        movie_id = self.views['details'].id
         try:
             
-            like = Like.objects.filter(movie=movie_id).order_by('liked_at').last()
+            like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
             if like is not None:
                 like_count = like.like
             else:
@@ -116,23 +116,24 @@ class CinemaHallView(BaseView):
     def get(self, request, id, slug):
         address = request.user.address
         self.views['d_id'] = id
-        movie_id = Movie.objects.get(slug=slug).id
-        movie = Movie.objects.prefetch_related('showtime_set').get(slug=slug)
-        print(movie.showtime_set.filter(show_date__show_date = date.today()))
         self.views['details'] = Movie.objects.get(slug=slug)
+        movie_id = self.views['details'].id
         self.views['selected_date'] = ShowDate.objects.get(id=id)
-        self.views['dates'] = ShowDate.objects.filter(
-            show_date__gte=date.today())
-        # self.views['hall'] = Showtime.objects.filter(show_date = id,movie = movie_id ).values('cinema_hall').distinct('cinema_hall')
-        showtimes_queryset = Showtime.objects.filter(
-            show_date=id, movie=movie_id)
-        cinema_hall_ids = showtimes_queryset.values_list(
-            'cinema_hall', flat=True).distinct()
-        self.views['hall_name'] = CinemaHall.objects.filter(
-            id__in=cinema_hall_ids, location__icontains=address)
-
-        return render(request, 'movie-detail.html', self.views)
-
+       
+        self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()     
+        self.views['cin'] = {}
+        for cinema_hall in self.views['cinema_hall']:
+            showtimes = cinema_hall.showtime_set.filter(movie=movie_id, show_date=id)
+            self.views['cin'][cinema_hall] = showtimes
+        return render(request, 'movie-showtime.html', self.views)
+        # self.views['dates'] = ShowDate.objects.filter(
+        #     show_date__gte=date.today())
+        # showtimes_queryset = Showtime.objects.filter(
+        #     show_date=id, movie=movie_id)
+        # cinema_hall_ids = showtimes_queryset.values_list(
+        #     'cinema_hall', flat=True).distinct()
+        # self.views['hall_name'] = CinemaHall.objects.filter(
+        #     id__in=cinema_hall_ids, location__icontains=address)
 
 class MovieShowTimeView(BaseView):
     def get(self, request, d_id, h_id, slug):

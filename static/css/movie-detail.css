@@ -176,6 +176,52 @@
   color: white;
 }
 
+.available-cinema-time{
+  margin-top: 10px;
+  height: 180;
+  width: 100%;
+  display: flex;
+}
+
+.available-cinema-time ul{
+  display: flex;
+  list-style: none;
+}
+
+.available-cinema-time h5{
+  border: 2px solid rgb(8, 233, 8);
+  display: inline-block;
+  width: 160px;
+  margin: 0px 8px;
+  height: 45px;
+  color: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.available-cinema-time ul li{
+  border: 2px solid rgb(8, 233, 8);
+  display: inline-block;
+  width: 160px;
+  margin: 0px 8px;
+  height: 45px;
+  color: rgb(8, 233, 8);;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.available-cinema-time ul a{
+  text-decoration: none;
+}
+.available-cinema-time ul:hover{
+  color: white;
+}
+
+
 /* style for seats.html ----------------------------------------------------------------------*/
 
 .screen-site{

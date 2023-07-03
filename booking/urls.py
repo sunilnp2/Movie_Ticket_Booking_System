@@ -10,6 +10,7 @@ urlpatterns = [
     path('booking/<slug>/<int:date_id>/<int:show_id>/<int:hall_id>', BookingView.as_view(), name='booking'),
     path('payment/<slug>/<int:date_id>/<int:show_id>/<int:hall_id>', PaymentView.as_view(), name='payment'),
     path('history', BookingHostoryView.as_view(), name = "history"),
+    path('getpdf/<slug>/<int:date_id>/<int:hall_id>/<int:show_id>', GetPdfView.as_view(), name = "getpdf"),
     path('bookingadmin', AdminBookingView.as_view(), name='bookingadmin'),
     path('deletepending/<int:id>', DeletePendingView.as_view(), name='deletepending'),
     path('hisdelete/<int:id>', BookingHistoryDeleteView.as_view(), name='hisdelete'),
