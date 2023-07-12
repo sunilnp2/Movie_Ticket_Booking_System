@@ -7,35 +7,175 @@ $(document).ready(function() {
     $('.delete-pending').on('click', function() {
       var bookingId = $(this).data('pending-id');
 
-       // Show confirmation dialog box
-    var result = confirm("Are you sure you want to delete this booking?");
-    if (result){
+    
+});
+});
+    
+
+
+//Ajax code for Like and Dislike
+  function getCookie(name){
+    let cookieValue = null;
+    if(document.cookie && document.cookie !== '')
+    {
+      let cookies = document.cookie.split(';');
+      for(let i=0; i < cookies.length; i++){
+        let cookie = cookies[i].trim();
+        if(cookie.substring(0,name.length + 1) === (name + '='))
+        {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+$(document).ready(function () {
+  $("#mylike").on('click' , function(e){
+    e.preventDefault();
+    console.log("User Click Like functin");
+    const movieslug = $(this).data("slug");
+    const csrftoken = getCookie('csrftoken');
+    console.log("Csrf token is" + csrftoken)
+    $.ajax({
+      url : '/movie/like/' + movieslug + '/',
+      method :'POST',
+      dataType : 'json',
+      headers : {
+        'X-CSRFToken': csrftoken
+      },
+      success : function(data) {
+        $('#message').show();
+        $('#message').text(data.message);
+        $('#likeid').text(data.like);
+        console.log(data.message);
+        console.log(data.like);
+        $('#message').fadeOut(1000);
+      }
+    });
+  })
+});
+
+
+/* ----------------------------------------Ajax for Bookign Seat -------------------------------*/ 
+
+
+
+
+/* ------------------------------Ajax for Booking History -------------------------------- */ 
+//Delete Pending Pending
+
+$(document).ready(function(){
+  $("tbody").on('click', '.delete-pending', function(e)
+  {
+    e.preventDefault();
+
+    // Show confirmation dialog box
+    let p_id = $(this).attr("data-pending-id");
+    console.log(p_id);
+    let csrftoken = getCookie('csrftoken');
+    let result = confirm("Are you sure you want to delete this Pending? " + p_id);
+    mythis = this
+   if (result){
 
       $.ajax({
-        url: "/booking/delete/",
+        url: "/booking/deletepending/" + p_id,
         type: "POST",
-        data: {
-            booking_id: bookingId,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
+        dataType: "json",
+        headers:{
+          "X-CSRFToken": csrftoken,
+          'content-type': "application/json"
         },
 
         success: function (response) {
-          // Handle success response
-          // Remove the deleted booking entry from the page
-          $(".booking-pending[data-pending-id='" + bookingId + "']").remove();
+          console.log(response.message);
+          $(mythis).closest('tr').fadeOut('fast');
+          $("#pen-message").html(response.message);
       },
-      error: function (xhr, errmsg, err) {
-        // Handle error response
-        console.log(errmsg);
-    }
-
   });
 }
+
+
+  });
+});
+
+
+//Delete History
+
+$(document).ready(function(){
+  $("tbody").on('click', ".delete-booking", function(e)
+  {
+    e.preventDefault();
+    console.log("Pending Delete clicked");
+    let h_id = $(this).attr("data-histry-id");
+    const csrftoken = getCookie('csrftoken');
+    console.log(h_id);
+    mythis = this
+    let result = confirm("Are you sure you want to delete Histry " + h_id);
+    if (result){
+    $.ajax({
+      url : '/booking/hisdelete/' + h_id,
+      method : 'POST',
+      dataType : 'json',
+      headers:{
+        "X-CSRFToken": csrftoken,
+        contentType : 'application/json'
+      },
+      success: function(data) {
+              console.log(data);
+              $("#histry-message").text(data.message);
+              $(mythis).closest("tr").fadeOut("fast");
+              console.log("Deleted");
+              $("#histry-message").fadeOut(3000);
+
+            }
+    });
+  }
+
+  });
+});
+
+// Seat booking-----------------------------------------------
+$(document).ready(function(){
+$(".row").on("click",".material-symbols-outlined", function(e){
+  e.preventDefault();
+  let seat_id = $(this).attr("data-seat-id");
+  let date_id = $(this).attr("data-date-id");
+  let showtime_id = $(this).attr("data-showtime-id");
+  let movie_slug = $(this).attr("data-details-slug");
+  let hall_id = $(this).attr("data-hall-id");
+  console.log(seat_id)
+  console.log(date_id)
+  console.log(showtime_id)
+  console.log(movie_slug)
+  console.log(hall_id)
+
+  console.log("Seat booked Clicked Inside DIv");
+  console.log("Change Color");
+  // $(this).css("color", "red");
+  const csrftoken = getCookie('csrftoken');
+  $.ajax({
+    url : '/booking/reserve/' + seat_id + '/' + date_id + '/'+ showtime_id +  '/' + movie_slug+  '/' + hall_id,
+    method:'POST',
+    dataType : 'json',
+    headers :{
+      "X-CSRFToken": csrftoken,
+      contentType : 'application/json'
+    },
+    success: function(data) {
+              console.log(data);
+              $('#seat-message').text(data.success);
+              $("#selected-seat").text(data.seat);
+              $("#selected-date").text(data.date_id);
+              $("#selected-hall").text(data.hall_id);
+              $("#selected-showtime").text(data.show_id);
+              $("#total-price").text(data.total);
+              console.log("fine");
+            }
+
+  });
+
 });
 });
-    
-
-
-
-    
 </script>

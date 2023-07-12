@@ -28,10 +28,12 @@
         {% if messages %}
         {% for mess in messages %}
         {% if mess.tags == 'success' %}
-        <h3 style = "color:red; font-weight:bold; background-color:lightgray; text-align:center;">{{mess}} </h3>
         {% endif %}
         {% endfor %}
         {% endif %}
+        <div style = "height:40px; width:100%;">
+        <h3 id = "pen-message" style = "color:green; font-weight:bold; background-color:lightgray; text-align:center;"></h3>
+        </div>
         <table>
           <thead>
             <tr>
@@ -55,7 +57,8 @@
               <td>{{res.seat.name}}</td>
               <td>{{res.status}}</td>
               <td>{{res.total}}</td>
-              <td class = "delete-pending" data-pending-id = {{res.id}}><a href="{% url 'booking:deletepending' res.id %}"> Delete</a></td>
+              <td class = "delete-pending" style = "cursor:pointer;" data-pending-id = {{res.id}} >Delete</td>
+              {% comment %} href="{% url 'booking:deletepending' res.id %} {% endcomment %}
              
             </tr>
             {% endfor %}
@@ -70,7 +73,7 @@
       <div class="booking-history-sm-50">
 
         <div class="detail-heading">
-            <h3>
+            <h3>ucce
              User Booking History
             </h3>
             <hr>
@@ -89,10 +92,12 @@
         {% if messages %}
         {% for mess in messages %}
         {% if mess.tags == 'error' %}
-        <h3 style = "color:red; font-weight:bold; background-color:lightgray; text-align:center;">{{mess}} </h3>
         {% endif %}
         {% endfor %}
         {% endif %}
+        <div style = "height:40px; width:100%">
+        <h3 id = "histry-message" style = "color:green; font-weight:bold; background-color:lightgray; text-align:center;"> </h3>
+        </div>
         <table>
           <thead>
             <tr>
@@ -107,7 +112,7 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id = "histry-data">
             {% for h in history %}
             <tr>
               <td>{{h.user.first_name}}</td>
@@ -118,7 +123,8 @@
               <td>{{final_seat}}</td>
               <td>{{h.payment_status}}</td>
               <td>{{h.total}}</td>
-              <td><a href="{% url 'booking:hisdelete' h.id %}"> Delete</a></td>
+              <td class = "delete-booking" style = "cursor:pointer;" data-histry-id = "{{h.id}}"> Delete</td>
+              {% comment %} href="{% url 'booking:hisdelete' h.id %}" {% endcomment %}
              
             </tr>
             {% endfor %}

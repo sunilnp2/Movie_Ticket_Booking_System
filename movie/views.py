@@ -7,6 +7,8 @@ from django.utils.decorators import method_decorator
 from utils.forms import FilterMovieForm
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
+from utils.form.search.search_movies import SearchForm
 
 from django.contrib import messages
 
@@ -14,31 +16,44 @@ from django.contrib import messages
 
 
 class MovieView(BaseView):
+    """"""
     def get(self, request):
+        """_summary_
+        """
         return render(request, 'movie.html', self.views)
 
 
 class MovieSearchView(BaseView):
     def get(self, request):
-        
-        search = request.GET.get('search', None)
-        
-        
-        if search is None:
-            return redirect('movie:movie')
-        elif search:
-            mysearch = search.strip()
-            self.views['search'] = Movie.objects.filter(
-                name__icontains=mysearch)
-            return render(request, 'movie-search.html', self.views)
+        """_summary_
+
+        Args:
+            request (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        sf = SearchForm({"search": request.GET.get('search', '')})
+        if sf.is_valid():
+            movie_qs = sf.filter_movie()
+        else:
+            movie_qs = []
+        return render(request, 'movie-search.html',context = {'search':movie_qs})
         
        
 
 class MovieFilterView(BaseView):
     def get(self, request):
-        movies = Movie.objects.all()
+                  # if start_date and end_date and language and genre:
+            #     self.views['mov'] = movies.filter(
+            #         release_date__gte=start_date, end_date__lte=end_date, language__icontains=language, genre__in=genre)
+
+            # elif start_date and end_date:
+            #     self.views['mov'] = movies.filter(
+            #         release_date__gte=start_date, end_date__lte=end_date)
         fm = FilterMovieForm(request.GET)
         if fm.is_valid():
+            '''
             start_date = fm.cleaned_data['start_date']
             end_date = fm.cleaned_data['end_date']
             genre = fm.cleaned_data['genre']
@@ -52,13 +67,7 @@ class MovieFilterView(BaseView):
             for g in genre:
                 q_objects |= Q(genre__icontains=g)
     
-            # if start_date and end_date and language and genre:
-            #     self.views['mov'] = movies.filter(
-            #         release_date__gte=start_date, end_date__lte=end_date, language__icontains=language, genre__in=genre)
-
-            # elif start_date and end_date:
-            #     self.views['mov'] = movies.filter(
-            #         release_date__gte=start_date, end_date__lte=end_date)
+  
                 
             if start_date:
                 print("start date: %s" % start_date)
@@ -80,6 +89,8 @@ class MovieFilterView(BaseView):
             elif language is not None and language:
                 print("I found language: %s" % language)
                 self.views['mov'] = movies.filter(language__icontains=language)
+                '''
+            self.views['mov'] = fm.filter_movie()
             return render(request, 'movie-search.html', self.views)
         else:
             return redirect('conema:home')
@@ -149,24 +160,63 @@ class MovieShowTimeView(BaseView):
 
 @method_decorator(login_required, name='dispatch')
 class MovieLikeView(BaseView):
-    def get(self, request, slug):
+    def post(self, request, slug):
+        self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
+        movie_id = self.views['details'].id
+        try:
+            
+            like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
+            if like is not None:
+                like_count = like.like
+            else:
+                like_count = 0
+        except ObjectDoesNotExist:
+            self.views['like_count'] = 0
+        print("This is movie slug from ajax"+ slug)
         user = request.user
         movie = Movie.objects.get(slug = slug)
-        movie_id = movie.id
+        movie_id = self.views['details'].id
         if Like.objects.filter(user=user , movie = movie_id).exists():
             Like.objects.filter(user=user , movie = movie_id).delete()
-            messages.error(request,"You Delete Your Like")
-            return redirect('movie:movie-detail', slug)
+            try:
+            
+                like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
+                if like is not None:
+                    like_count = like.like
+                else:
+                    like_count = 0
+            except ObjectDoesNotExist:
+                like_count = 0
+            res_data = {'message': 'Like deleted successfully', 'like':like_count}
+            return JsonResponse(res_data)
         
         if Like.objects.filter(movie=movie_id).exists():
             count = Like.objects.get(movie = movie_id)
             ct = count.like
             
             Like.objects.create(user=user, movie=movie, like = ct + 1).save()
-            messages.success(request, "Thank You For Like")
-            return redirect('movie:movie-detail', slug)
+            try:
+            
+                like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
+                if like is not None:
+                    like_count = like.like
+                else:
+                    like_count = 0
+            except ObjectDoesNotExist:
+                like_count = 0
+            res_data = {'message':'Thank you for like ', 'like':like_count}
+            return JsonResponse(res_data)
         else:
             Like.objects.create(user=user, movie=movie, like = 1).save()
-            messages.success(request, "Thank You For Like")
-            return redirect('movie:movie-detail', slug)
+            try:
+            
+                like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
+                if like is not None:
+                    like_count = like.like
+                else:
+                    like_count = 0
+            except ObjectDoesNotExist:
+                like_count = 0
+            res_data = {'message':'Thank you for Like', 'like':like_count}
+            return JsonResponse(res_data)
 

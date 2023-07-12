@@ -25,15 +25,19 @@ class Seatview(BaseView):
         self.views['fifth_row'] = Seat.objects.filter(seat_number__gt=20,seat_number__lte=25)
 
         self.views['details'] = Movie.objects.get(slug = slug)
+        movie_id = self.views['details'].id
         user = request.user
         try:
-            seleted_seat= SeatAvailability.objects.filter(status = 'pending',hall = hall_id,payment_status = False)
-            self.views['seats'] = [s.seat.name for s in seleted_seat]
+            seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            seat = [s.seat.name for s in seleted_seat]
+            
+            self.views['seats'] = ",".join(seat)
             
         except Exception as e:
             print(e)
             pass
-        seleted_seat= SeatAvailability.objects.filter(hall = hall_id,status = 'pending', payment_status = False)
+        seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+        # , show_date = show_id,movie = movie_id,showtime = show_id 
         total = 0 
         for p in seleted_seat:
             total += p.total
@@ -48,7 +52,8 @@ class Seatview(BaseView):
 
 @method_decorator(login_required, name='dispatch')
 class ReserveView(BaseView):
-    def get(self,request, seat_id, date_id, show_id, slug, hall_id):
+    def post(self,request, seat_id, date_id, show_id, slug, hall_id):
+        user = request.user
         s_id = Seat.objects.get(id = seat_id)
         get_seat_id = Seat.objects.get(id = seat_id).id
         d_id = ShowDate.objects.get(id = date_id)
@@ -77,13 +82,34 @@ class ReserveView(BaseView):
             night = False
         pass
             
+        user = request.user
         print(f"The shift is {shift}")
-        if SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = sh_id, status__in = ["pending","reserved"]).exists():
-            messages.error(request, "Movie is booked already")
-            return redirect("booking:seat",slug, date_id, show_id,hall_id)
+        if SeatAvailability.objects.filter(user = user, movie = movie_id, showtime = sh_id,seat = s_id, hall = hall_id,status = 'pending').exists():
+            myseat = SeatAvailability.objects.get(user = user, movie = movie_id, showtime = sh_id,seat = s_id, hall = hall_id,status = 'pending')
+            myseat.delete()
+            try:
+                seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+                seats = [s.seat.name for s in seleted_seat]
+            
+            except Exception as e:
+                print(e)
+                pass
+            seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            total = 0 
+            for p in seleted_seat:
+                total += p.total
+            res_data = {"success":"Seat Un reserved", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
+            return JsonResponse(res_data)
+        
+        elif SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = show_id, status__in = ["pending","reserved"]).exists():
+            # messages.error(request, "Movie is booked already")
+            # return redirect("booking:seat",slug, date_id, show_id,hall_id)
+            res_data = {"success":"Movie is booked Already", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id}
+            return JsonResponse(res_data)
+        
         elif BookingHistory.objects.filter(movie = movie_id,seats__id = get_seat_id,hall = hall_id,showtime = sh_id, payment_status =True).exists():
-            messages.error(request, "Movie is booked already")
-            return redirect("booking:seat",slug, date_id, show_id,hall_id)
+            res_data = {"success":"Seat Un reserved Already", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id}
+            return JsonResponse(res_data)
         else:
             res = SeatAvailability.objects.create(user = myuser,movie = movie_id,
                                             seat = s_id,
@@ -98,8 +124,21 @@ class ReserveView(BaseView):
                                              )
             res.save()
             Seat.objects.update(status = "pending")
-            messages.success(request, "Seat Reserved successfully")
-            return redirect("booking:seat",slug,date_id,show_id,hall_id)
+            # messages.success(request, "Seat Reserved successfully")
+            # return redirect("booking:seat",slug,date_id,show_id,hall_id)
+            try:
+                seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+                seats = [s.seat.name for s in seleted_seat]
+            
+            except Exception as e:
+                print(e)
+                pass
+            seleted_seat= SeatAvailability.objects.filter(user = user, status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            total = 0 
+            for p in seleted_seat:
+                total += p.total
+            res_data = {"success":"Seat reserved successfully", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
+            return JsonResponse(res_data)
         
 
         
@@ -359,18 +398,17 @@ class AdminBookingView(BaseView):
         return render(request, 'booking-list-admin.html', self.views)
 
 class DeletePendingView(View):
-    def get(self, request, id):
+    def post(self, request, id):
         seat = SeatAvailability.objects.get(id = id)
         seat.delete()
-        messages.success(request, "Pending Delete Successfully")
-        return redirect('booking:bookingadmin')
+        return JsonResponse({"message":"Delete Successfully"})
     
 class BookingHistoryDeleteView(View):
-    def get(self, request, id):
+    def post(self, request, id):
         history = BookingHistory.objects.get(id = id)
         history.delete()
-        messages.error(request,"History Delete successcully")
-        return redirect('booking:bookingadmin')
+        # messages.error(request,"History Delete successcully")
+        return JsonResponse({'message':"Successfully deleted"})
     
 # Delete with Jquery and Ajax 
 from django.http import JsonResponse

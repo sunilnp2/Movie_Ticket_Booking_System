@@ -1,114 +1,166 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 
-    <!-- movie detail area start -->
-    {% if messages %}
-    {% for mess in messages%}
-
-{% if mess.tags == 'error '%}
-    <h3 style = "color:red; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
-    {% elif mess.tags == 'success' %}
-    <h3 style = "color:green; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
-    {% else %}
-    <h3 style = "color:green; background-color:white; text-align:center; font-weight:bold;" > {{mess}}</h3>
-{% endif %}
-
-    {% endfor %}
-    {% endif %}
-
-    <div class="movie-detail-sm-12">
-      <div class="detail-sm-25">
-        <div class="movie-area">
-          <img src="{{details.image.url}}" alt="" />
-          <p>{{details.status}}</p>
-          <h3 class="movie-name">{{details.name}}</h3>
-          <p class="duration">{{details.duration}} mins</p>
-          <p class="like">{{like_count}} Likes <a href = "{% url 'movie:like' details.slug %}"> <span style = "display:inline;" class="material-symbols-outlined">
+<!-- movie detail area start -->
+{% if messages %} {% for mess in messages%} {% if mess.tags == 'error '%}
+<h3
+  id="message"
+  style="
+    color: red;
+    background-color: white;
+    text-align: center;
+    font-weight: bold;
+  "
+>
+  {{mess}}
+</h3>
+{% elif mess.tags == 'success' %}
+<h3
+  style="
+    color: green;
+    background-color: white;
+    text-align: center;
+    font-weight: bold;
+  "
+>
+  {{mess}}
+</h3>
+{% else %}
+<h3
+  style="
+    color: green;
+    background-color: white;
+    text-align: center;
+    font-weight: bold;
+  "
+>
+  {{mess}}
+</h3>
+{% endif %} {% endfor %} {% endif %}
+<div style="height: 30px; width: 100%; display: block">
+  <h3
+    id="message"
+    style="
+      color: green;
+      background-color: lightgray;
+      text-align: center;
+      height: 100%;
+      font-weight: bold;
+      display: block;
+    "
+  >
+    {{mess}}
+  </h3>
+</div>
+<div class="movie-detail-sm-12">
+  <div class="detail-sm-25">
+    <div class="movie-area">
+      <img src="{{details.image.url}}" alt="" />
+      <p>{{details.status}}</p>
+      <h3 class="movie-name">{{details.name}}</h3>
+      <p class="duration">{{details.duration}} mins</p>
+      <p class="like">
+        <span
+          id="likeid"
+          style="color: white; font-size: 1em; position: relative; top: -0px"
+        >
+          {{like_count}}</span
+        >
+        Likes
+        <a>
+          <span
+            id="mylike"
+            data-slug="{{details.slug}}"
+            style="display: inline; cursor: pointer"
+            class="material-symbols-outlined"
+          >
+            {% comment %} {% url 'movie:like' details.slug %} {% endcomment %}
             thumb_up
-            </span> </a></p> 
-
-        </div>
-        <div class="other-detail">
-          <p class="details">
-            {{details.detail}}
-          </p>
-          <p>Language : {{details.language}}</p>
-          <p>Genre : {{details.genre}}</p>
-          <p class="-movie-casts">
-            Cast : {{details.cast}}
-          </p>
-        </div>
-      </div>
-      {% if details.status == 'showing' %}
-      <div class="detail-sm-75">
-
-        <div class="detail-heading">
-            <h3>
-              Now Showing
-            </h3>
-            <hr>
-        </div>
-        <div class="selection-area">
-            <h5>1. Select Date and TIme Slots</h5>
-
-            <div class="select-date">
-              {% if dates %}
-                <h5>Select Date</h5>
-                <div class="dates">
-                  {% for d in dates %}
-                   <div class="mydate">
-                        <h5>{{d.show_date}}</h5>
-                        <a href="{% url 'movie:cinemahall' d.id details.slug %}">
-                <div class="adjust-date">
-                    <p>July{{d.show_date.month}} <br><span class="date-number">{{d.show_date.day}} </span> <br> {{d.show_date.year}}</p>
-                </div>
-            </a>
-            </div>
-            {% endfor %}
-          </div>
-          {% endif %}
-            <br>
-            <div class="dates">
-              {% if selected_date %}
-                  <h5>Selected Date :<span style = "color:yellow;"> {{selected_date.show_date}} </span> </h5>
-                  
-                  {% endif %}
-            </div>
-
-            </div>
-{% if hall_name %}
-            <div class="select-time">
-                <h5>Select Cinema Hall</h5>
-
-                <div class="available-hall-time">
-                    <ul>
-                      {% comment %} {% for h in hall %} {% endcomment %}
-                      <li><a href = "{% url 'movie:showtime' d_id hall.id details.slug %}">{{hall.name}}</a></li>
-                        <ul>
-                          {% for show in cin%}
-                         <a href = "#"> <li>{{show.start_time}} to {{show.end_time}}</li></a>
-                          {% endfor %}
-                          {% comment %} <li>2:00 to 5:00</li>
-                          <li>6:00 to 9:00</li> {% endcomment %}
-                        </ul>
-                      {% comment %} {% endfor %} {% endcomment %}
-                    </ul>
-                </div>
-            </div>
-            {% else %}
-            ...
-            {% endif %}
-        </div>
-
-      </div>
-      {% else %}
-      <h3> Coming Soon </h3>
-      {% endif %}
+          </span>
+        </a>
+      </p>
     </div>
+    <div class="other-detail">
+      <p class="details">{{details.detail}}</p>
+      <p>Language : {{details.language}}</p>
+      <p>Genre : {{details.genre}}</p>
+      <p class="-movie-casts">Cast : {{details.cast}}</p>
+    </div>
+  </div>
+  {% if details.status == 'showing' %}
+  <div class="detail-sm-75">
+    <div class="detail-heading">
+      <h3>Now Showing</h3>
+      <hr />
+    </div>
+    <div class="selection-area">
+      <h5>1. Select Date and TIme Slots</h5>
 
-    <!-- movie detail area end -->
+      <div class="select-date">
+        {% if dates %}
+        <h5>Select Date</h5>
+        <div class="dates">
+          {% for d in dates %}
+          <div class="mydate">
+            <h5>{{d.show_date}}</h5>
+            <a href="{% url 'movie:cinemahall' d.id details.slug %}">
+              <div class="adjust-date">
+                <p>
+                  July{{d.show_date.month}} <br /><span class="date-number"
+                    >{{d.show_date.day}}
+                  </span>
+                  <br />
+                  {{d.show_date.year}}
+                </p>
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <br />
+        <div class="dates">
+          {% if selected_date %}
+          <h5>
+            Selected Date :<span style="color: yellow">
+              {{selected_date.show_date}}
+            </span>
+          </h5>
 
+          {% endif %}
+        </div>
+      </div>
+      {% if hall_name %}
+      <div class="select-time">
+        <h5>Select Cinema Hall</h5>
 
+        <div class="available-hall-time">
+          <ul>
+            {% comment %} {% for h in hall %} {% endcomment %}
+            <li>
+              <a href="{% url 'movie:showtime' d_id hall.id details.slug %}"
+                >{{hall.name}}</a
+              >
+            </li>
+            <ul>
+              {% for show in cin%}
+              <a href="#"> <li>{{show.start_time}} to {{show.end_time}}</li></a>
+              {% endfor %} {% comment %}
+              <li>2:00 to 5:00</li>
+              <li>6:00 to 9:00</li>
+              {% endcomment %}
+            </ul>
+            {% comment %} {% endfor %} {% endcomment %}
+          </ul>
+        </div>
+      </div>
+      {% else %} {% comment %} ... {% endcomment %} {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <h3>Coming Soon</h3>
+  {% endif %}
+</div>
+
+<!-- movie detail area end -->
 
 {% endblock %}
