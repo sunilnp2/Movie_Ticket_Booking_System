@@ -9,7 +9,6 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from utils.form.search.search_movies import SearchForm
-
 from django.contrib import messages
 
 # Create your views here.
@@ -18,20 +17,16 @@ from django.contrib import messages
 class MovieView(BaseView):
     """"""
     def get(self, request):
-        """_summary_
+        """ 
+        This views Display the currently showing and upcoming movie.
         """
         return render(request, 'movie.html', self.views)
 
 
 class MovieSearchView(BaseView):
     def get(self, request):
-        """_summary_
-
-        Args:
-            request (_type_): _description_
-
-        Returns:
-            _type_: _description_
+        """
+        This views gets the user search data and return matching movie.
         """
         sf = SearchForm({"search": request.GET.get('search', '')})
         if sf.is_valid():
@@ -44,62 +39,22 @@ class MovieSearchView(BaseView):
 
 class MovieFilterView(BaseView):
     def get(self, request):
-                  # if start_date and end_date and language and genre:
-            #     self.views['mov'] = movies.filter(
-            #         release_date__gte=start_date, end_date__lte=end_date, language__icontains=language, genre__in=genre)
-
-            # elif start_date and end_date:
-            #     self.views['mov'] = movies.filter(
-            #         release_date__gte=start_date, end_date__lte=end_date)
+        """
+        This views get the user filter data like Movie Date , Language, Genre Filter and return and matching movie.
+        """
         fm = FilterMovieForm(request.GET)
         if fm.is_valid():
-            '''
-            start_date = fm.cleaned_data['start_date']
-            end_date = fm.cleaned_data['end_date']
-            genre = fm.cleaned_data['genre']
-            language = fm.cleaned_data['language']
-            if len(genre) == 0:
-                genre = None
-            else:
-                genre = [g for g in genre]
-            
-            q_objects = Q()
-            for g in genre:
-                q_objects |= Q(genre__icontains=g)
-    
-  
-                
-            if start_date:
-                print("start date: %s" % start_date)
-                self.views['mov'] = movies.filter(
-                    release_date__gte=start_date)
-            elif end_date:
-                print("start date: %s" % end_date)
-                self.views['mov'] = movies.filter(
-                    end_date__lte=end_date)
-
-            elif genre and language:
-                self.views['mov'] = movies.filter(
-                   q_objects, language__icontains=language)
-                
-            # Construct a dynamic Q object with logical OR conditions for genre__icontains
-            elif genre:
-                self.views['mov'] = movies.filter(q_objects)
-                
-            elif language is not None and language:
-                print("I found language: %s" % language)
-                self.views['mov'] = movies.filter(language__icontains=language)
-                '''
             self.views['mov'] = fm.filter_movie()
             return render(request, 'movie-search.html', self.views)
         else:
             return redirect('conema:home')
-        
-        
-
 
 class MovieDetailView(BaseView):
     def get(self, request, slug):
+        """
+        This views gets the movie slug and show the details of the movie.
+        User can like and unlike in this view
+        """
         self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
 
         # code for showing dates
@@ -124,42 +79,35 @@ class MovieDetailView(BaseView):
 
 @method_decorator(login_required, name='dispatch')
 class CinemaHallView(BaseView):
+    """
+    This views Shows The All cinema hall of selected movie and it's showtime.
+    """
     def get(self, request, id, slug):
-        address = request.user.address
+        # address = request.user.address
         self.views['d_id'] = id
         self.views['details'] = Movie.objects.get(slug=slug)
+        self.views['details'] = Movie.objects.prefetch_related("showtime_set")
         movie_id = self.views['details'].id
         self.views['selected_date'] = ShowDate.objects.get(id=id)
-       
-        self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()     
-        self.views['cin'] = {}
+        self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()
+        
+        # movies = Movie.objects.get(slug=slug)
+        # show_time = movies.showtime_set.select_related("movie","cinema_hall").filter(show_date = id)
+        # self.views['cin'] = {}
+        # for movie in show_time:
+        #     print(movie.cinema_hall)
+        #     print(movie.show_date, movie.shift, movie.cinema_hall)
+        self.views['cin'] = {} 
         for cinema_hall in self.views['cinema_hall']:
             showtimes = cinema_hall.showtime_set.filter(movie=movie_id, show_date=id)
             self.views['cin'][cinema_hall] = showtimes
         return render(request, 'movie-showtime.html', self.views)
-        # self.views['dates'] = ShowDate.objects.filter(
-        #     show_date__gte=date.today())
-        # showtimes_queryset = Showtime.objects.filter(
-        #     show_date=id, movie=movie_id)
-        # cinema_hall_ids = showtimes_queryset.values_list(
-        #     'cinema_hall', flat=True).distinct()
-        # self.views['hall_name'] = CinemaHall.objects.filter(
-        #     id__in=cinema_hall_ids, location__icontains=address)
-
-class MovieShowTimeView(BaseView):
-    def get(self, request, d_id, h_id, slug):
-        movie_id = Movie.objects.get(slug=slug).id
-        self.views['hall_id'] = h_id
-        self.views['details'] = Movie.objects.get(slug=slug)
-        self.views['dates'] = ShowDate.objects.get(id=d_id)
-        self.views['showtimes'] = Showtime.objects.filter(
-            show_date=d_id, movie=movie_id, cinema_hall=h_id)
-
-        return render(request, 'movie-showtime.html', self.views)
     
-
 @method_decorator(login_required, name='dispatch')
 class MovieLikeView(BaseView):
+    """
+    This views handle the like and unlike of user and display in page using Jquery Ajax
+    """
     def post(self, request, slug):
         self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
         movie_id = self.views['details'].id

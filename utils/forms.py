@@ -54,7 +54,7 @@ GENRE_CHOICE = [
 ]
 
 LANGUAGE_CHOICE = [
-     ('', ''),
+    ('', ''),
     ('english', 'English'), 
     ('nepali', 'Nepali'), 
     ('hindi', 'Hindi'), 
@@ -66,38 +66,17 @@ class FilterMovieForm(forms.Form):
     genre = forms.MultipleChoiceField(choices= GENRE_CHOICE , required=False)
     language = forms.ChoiceField(choices= LANGUAGE_CHOICE , required=False)
     
+    def get_filtered_data(self):
+        return dict(
+            filter(lambda item: item[1], self.cleaned_data.items()))
+
     def filter_movie(self):
         movies = Movie.objects.all()
-        start_date = self.cleaned_data['start_date']
-        end_date = self.cleaned_data['end_date']
-        genre = self.cleaned_data['genre']
-        language = self.cleaned_data['language']
-        if len(genre) == 0 or genre == None:
-            pass
-        else:
-            genre = [g for g in genre]
-            
+        filter_data = self.get_filtered_data()
+        genre = filter_data.get('genre')        
         q_objects = Q()
-        for g in genre:
-            q_objects |= Q(genre__icontains=g)
-            
-        if start_date:
-                print("start date: %s" % start_date)
-                return movies.filter(
-                    release_date__gte=start_date)
-        elif end_date:
-                print("start date: %s" % end_date)
-                return movies.filter(
-                    end_date__lte=end_date)
-
-        elif genre and language:
-                return movies.filter(
-                   q_objects, language__icontains=language)
-                
-        elif genre:
-            return movies.filter(q_objects)
-                
-        elif language is not None and language:
-            print("I found language: %s" % language)
-            return movies.filter(language__icontains=language)
-    
+        if genre:
+            for g in genre:
+                q_objects |= Q(genre__icontains=g)
+        qyeryset = movies.filter(**filter_data)
+        return qyeryset.union(movies.filter(q_objects))

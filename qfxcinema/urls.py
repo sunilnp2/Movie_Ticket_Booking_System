@@ -25,6 +25,7 @@ urlpatterns = [
     path('movie/', include('movie.urls')),
     path('auth/', include('authentication.urls')),
     path('booking/', include('booking.urls')),
+    # path('utils/', include('utils.urls')),
 ]
 
 if settings.DEBUG:

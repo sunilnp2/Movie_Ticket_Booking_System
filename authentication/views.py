@@ -88,15 +88,7 @@ class LoginView(BaseView):
         return render(request, 'login.html')
 
 
-class SignupView(BaseView):
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.method == 'GET':
-    #         return self.get(request, *args, **kwargs)
-    #     elif request.method == 'POST':
-    #         return self.post(request, *args, **kwargs)
-    #     else:
-    #         return HttpResponse(['GET', 'POST']) 
-        
+class SignupView(BaseView):  
     def get(self,request):
         self.views['fm'] = SignupForm()
         return render(request, 'signup.html', self.views)
@@ -104,12 +96,6 @@ class SignupView(BaseView):
     def post(self,request):
         fm = SignupForm(request.POST)
         if fm.is_valid():
-            # email = fm.cleaned_data['email']
-            # uname = email.split('@')[0]
-            # user.username = uname
-            # if User.objects.filter(username = uname).exists():
-            #     messages.error(request, "Try new email")
-            #     return redirect('authentication:login')
             user = fm.save(commit=False)
             user.email_verified=False
             email = fm.cleaned_data['email']

@@ -167,9 +167,9 @@ $(".row").on("click",".material-symbols-outlined", function(e){
               console.log(data);
               $('#seat-message').text(data.success);
               $("#selected-seat").text(data.seat);
-              $("#selected-date").text(data.date_id);
-              $("#selected-hall").text(data.hall_id);
-              $("#selected-showtime").text(data.show_id);
+              $("#selected-date").text(data.date_id.show_date);
+              $("#selected-hall").text(data.hall_id.name);
+              $("#selected-showtime").text(data.show_id.shift);
               $("#total-price").text(data.total);
               console.log("fine");
             }

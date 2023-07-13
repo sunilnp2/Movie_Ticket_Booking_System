@@ -8,15 +8,18 @@ from django.utils.decorators import method_decorator
 from datetime import datetime
 from django.http import FileResponse, HttpResponse
 from io import BytesIO
-from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate,Paragraph, Spacer, PageTemplate, Frame
 from reportlab.lib.styles import getSampleStyleSheet
 # Create your views here.
+
+
 class Seatview(BaseView):
-    # login_required = True
+    """ 
+    This View Shows The reserved and vacant seats of selected cinema hall , movie and showtime.
+    """
     def get(self,request, slug, date_id, show_id, hall_id):
         self.views['first_row'] = Seat.objects.filter(seat_number__lte = 5)
         self.views['second_row'] = Seat.objects.filter(seat_number__gt=5,seat_number__lte=10)
@@ -52,6 +55,12 @@ class Seatview(BaseView):
 
 @method_decorator(login_required, name='dispatch')
 class ReserveView(BaseView):
+    """
+    When user try to reserved seat This view check the Seat Status 
+    If seat is vacant it will reserved the selected seat with user id
+    using Jquery and Ajax
+    
+    """
     def post(self,request, seat_id, date_id, show_id, slug, hall_id):
         user = request.user
         s_id = Seat.objects.get(id = seat_id)
@@ -143,6 +152,10 @@ class ReserveView(BaseView):
 
         
 class BookingView(BaseView):
+    """
+    This view shows the all booking information of user with Selected Cinema hall, Selected date
+    Selected showtime and Selected seats accordingly.
+    """
     def get(self,request,slug,date_id,show_id, hall_id):
         self.views['user'] = request.user
         self.views['d_id'] = ShowDate.objects.get(id = date_id)
@@ -161,6 +174,11 @@ class BookingView(BaseView):
 
     
 class PaymentView(BaseView):
+    """
+    This views verify the user booking and reserve the seat with current user id 
+    and generate and provide pdf of selected seat to user
+    
+    """
     def get(self, request, slug,date_id,show_id, hall_id):
         if request.method == 'POST':
             payment_type = request.POST.get('pay')
@@ -282,6 +300,9 @@ class PaymentView(BaseView):
     
     
 class GetPdfView(BaseView):
+    """
+    This view provide a pdf of booking history of user
+    """
     def get(self, request, slug, date_id, hall_id, show_id):
         # Code for Generate Pdf
             user = request.user
@@ -368,6 +389,10 @@ class GetPdfView(BaseView):
             return response
         
 class BookingHostoryView(BaseView):
+    """_summary_
+
+    This views shows the All booking history of user in history template
+    """
     def get(self, request):
         if request.user.is_authenticated:
             user = request.user
@@ -386,6 +411,11 @@ class BookingHostoryView(BaseView):
     
 
 class AdminBookingView(BaseView):
+    """
+
+    This views shows the all pending booking history and booking history of user 
+    and manage the booking by user
+    """
     def get(self, request):
         see_list = BookingHistory.objects.filter(payment_status = True)
         seat = []
@@ -398,12 +428,19 @@ class AdminBookingView(BaseView):
         return render(request, 'booking-list-admin.html', self.views)
 
 class DeletePendingView(View):
+    """
+    This view is used for filter the pending booking by user
+    """
     def post(self, request, id):
         seat = SeatAvailability.objects.get(id = id)
         seat.delete()
         return JsonResponse({"message":"Delete Successfully"})
     
 class BookingHistoryDeleteView(View):
+    """_summary_
+
+    This view is used for filter the  booking history of user.
+    """
     def post(self, request, id):
         history = BookingHistory.objects.get(id = id)
         history.delete()

@@ -29,9 +29,8 @@
       <hr />
     </div>
     <div class="selection-area seat-area">
-      {% if seats %}
+  
       <h5 style="color: yellow; font-size:0.9em;"  >Selected Seat : <span id = "selected-seat" >{{seats}}</span></h5>
-      {% endif %}
        <h5 style="color: yellow; font-size:0.9em;" >Selected Date : <span id="selected-date">{{dates.show_date}}</span></h5>
       <h5  style="color: yellow; font-size:0.9em;" >Selected Hall : <span id = "selected-hall">{{hall_name.name}}</span></h5>
       <h5 style="color: yellow; font-size:0.9em;" >Selected Showtime : <span id = "selected-showtime">{{showtime}}</span></h5>
@@ -44,6 +43,7 @@
         <div class="first-row row">
           <span class="row-number">E</span>
           {% for i in first_row %}
+          {% if i.status == "pending" %}
           <a class="book-seat">
             <!-- href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_name.id %}" -->
             <span
@@ -67,7 +67,31 @@
               </p>
             </span>
           </a>
-
+          {% else %}
+          <a class="book-seat">
+            <!-- href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_name.id %}" -->
+            <span
+              class="material-symbols-outlined"
+              data-seat-id="{{i.id}}"
+              data-date-id="{{dates.id}}"
+              data-showtime-id="{{showtime.id}}"
+              data-details-slug="{{details.slug}}"
+              data-hall-id="{{hall_name.id}}"
+            >
+              event_seat
+              <p
+                style="
+                  font-size: 10px;
+                  text-align: center;
+                  color: cyan;
+                  margin-top: 3px;
+                "
+              >
+                {{i.name}}
+              </p>
+            </span>
+          </a>
+          {% endif %}
           {% endfor %}
         </div>
 
