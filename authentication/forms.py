@@ -63,7 +63,6 @@ class LoginForm(forms.ModelForm):
 
 
 
-
 # form for showtime custom editing ----------------------------------------------------------------
 
 class EditUserForm(forms.ModelForm):

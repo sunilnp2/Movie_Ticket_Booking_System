@@ -1,7 +1,8 @@
 {% autoescape off %}
-Hi {{ user}},
+Hi {{ user.username }},
 
 Please click on the link below to confirm your registration:
 
-{{ protocol }}://{{ domain }}{% url 'authentication:activate' uidb64=uid token=token %}
+{{ protocol }}://{{ domain }}{% url 'auth:activate' uidb64=uid token=token %}
+
 {% endautoescape %}

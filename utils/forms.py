@@ -12,7 +12,13 @@ class UpdateProfileForm(forms.ModelForm):
     email = forms.EmailField(
 
         validators=[checkemail], label='Email :', widget=forms.EmailInput(
-        attrs={'id': 'email', 'class': 'email', 'placeholder': "Enter email"}), 
+        attrs={'id': 'email', 'class': 'email','readonly': 'readonly', 'placeholder': "Enter email"}), 
+        error_messages={'required':"enter email"})
+    
+    username = forms.CharField(
+
+        validators=[checkemail], label='Email :', widget=forms.TextInput(
+        attrs={'id': 'email', 'class': 'email','readonly': 'readonly', 'placeholder': "Enter email"}), 
         error_messages={'required':"enter email"})
     
     first_name = forms.CharField(
@@ -35,10 +41,39 @@ class UpdateProfileForm(forms.ModelForm):
     phone = forms.CharField(validators=[checkphone], label='Phone Number :', widget=forms.TextInput(
         attrs={'id': 'phone', 'class': 'phone', 'placeholder': "Enter phone"}), 
         error_messages={'required':"Enter Phone Number"})
-
+    
+    balance = forms.CharField(validators=[checkphone], label='Available Balance :', widget=forms.TextInput(
+        attrs={'id': 'phone', 'class': 'phone','readonly': 'readonly', 'placeholder': "Enter phone"}), 
+        error_messages={'required':"Enter Phone Number"})
+    
+    
+    
     class Meta:
-        model = User 
-        fields = ("first_name", "last_name", "email", "address","phone")
+        model = Customer
+        fields = ('__all__')
+    
+    # def __init__(self, *args, **kwargs):
+    #     instance = kwargs.get('instance')
+    #     if instance:
+    #         kwargs['initial'] = {
+    #             'email': instance.email,
+    #             'first_name': instance.first_name,
+    #             'last_name': instance.last_name,
+    #             'address': instance.address,
+    #             'phone': instance.phone,
+    #         }
+    #     super(UpdateProfileForm, self).__init__(*args, **kwargs)
+    
+    # def save(self, commit=True):
+    #     instance = self.instance
+    #     instance.email = self.cleaned_data['email']
+    #     instance.first_name = self.cleaned_data['first_name']
+    #     instance.last_name = self.cleaned_data['last_name']
+    #     instance.address = self.cleaned_data['address']
+    #     instance.phone = self.cleaned_data['phone']
+    #     if commit:
+    #         instance.save()
+    #     return instance
 
         
 

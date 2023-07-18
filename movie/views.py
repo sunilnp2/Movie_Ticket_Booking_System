@@ -86,7 +86,6 @@ class CinemaHallView(BaseView):
         # address = request.user.address
         self.views['d_id'] = id
         self.views['details'] = Movie.objects.get(slug=slug)
-        self.views['details'] = Movie.objects.prefetch_related("showtime_set")
         movie_id = self.views['details'].id
         self.views['selected_date'] = ShowDate.objects.get(id=id)
         self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()

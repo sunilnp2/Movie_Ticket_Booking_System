@@ -23,10 +23,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cinema.urls')),
     path('movie/', include('movie.urls')),
-    path('auth/', include('authentication.urls')),
+    path('auth/', include('authentication.urls', namespace='auth')),
     path('booking/', include('booking.urls')),
-    # path('utils/', include('utils.urls')),
-]
+    path('utils/', include('utils.urls')),
+    path('api/', include('api.urls')),
+] 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

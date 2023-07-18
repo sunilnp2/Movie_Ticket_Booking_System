@@ -13,6 +13,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate,Paragraph, Spacer, PageTemplate, Frame
 from reportlab.lib.styles import getSampleStyleSheet
+from django.core.mail import EmailMessage
+from django.conf import settings
+    
+
+from utils.tasks import send_ticket
 # Create your views here.
 
 
@@ -220,7 +225,8 @@ class PaymentView(BaseView):
             my_seats_name = [s.seat.name for s in mycart]
             print(f" The seat name is {my_seats_name}")
             # str_seat = ",".join(my_seats_name)
-        
+
+ 
 
             # Create a new PDF document using ReportLab
             pdf_buffer = BytesIO()
@@ -288,8 +294,13 @@ class PaymentView(BaseView):
             # Set the PDF content from the buffer and close the buffer
             response.write(pdf_buffer.getvalue())
             pdf_buffer.close()
+            
+            # Send email after booking
+            send_ticket.delay('DOne')
 
             return response
+        
+            
         
         elif SeatAvailability.objects.filter(user = user, show_date = date_id, movie = movie_id, showtime = show_id, status = "reserved", payment_status = True).exists():
             messages.error(request, "Already reserved")
@@ -377,14 +388,32 @@ class GetPdfView(BaseView):
             doc.build(content)
             pdf_buffer.seek(0)
             
-            # Set response headers for a downloadable PDF file
+            # Set the PDF content from the buffer and close the buffer
+            pdf_content = pdf_buffer.getvalue()
+            pdf_buffer.close()
+          
+            
+              # Create an email message
+            email = EmailMessage(
+                'Movie Ticket',
+                'Please find attached your movie ticket.',
+                settings.EMAIL_HOST_USER,
+                [email],
+            )
+
+            # Attach the PDF to the email
+            email.attach('qfxcinema.pdf', pdf_content, 'application/pdf')
+
+            # Send the email
+            email.send()
+            
+              # Set response headers for a downloadable PDF file
             response = HttpResponse(content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename="qfxcinema.pdf"'
+            response.write(pdf_content)
 
 
-            # Set the PDF content from the buffer and close the buffer
-            response.write(pdf_buffer.getvalue())
-            pdf_buffer.close()
+         
 
             return response
         

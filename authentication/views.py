@@ -3,20 +3,21 @@ from django.views import View
 from authentication.forms import SignupForm, LoginForm, EditUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.core.mail import EmailMessage
 from cinema.models import *
 from datetime import date
 from django.http import HttpResponse
 from cinema.views import BaseView
-from authentication.models import User
-from utils.forms import UpdateProfileForm
+from authentication.models import User, Customer
+from utils.forms import UpdateProfileForm, UserChangeForm
+from authentication.tasks import activate_email
+from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
 
@@ -34,7 +35,16 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.email_verified = True
         user.save()
-
+        customer = Customer.objects.create(
+            email = user.email,
+            username = user.username,
+            first_name = user.first_name,
+            last_name = user.last_name,
+            phone = user.phone,
+            address = user.address,
+            balance = 10000
+        )
+        customer.save()
         messages.success(request, "Thank you for your email confirmation you can login your account.")
         return redirect('authentication:login')
     else:
@@ -43,20 +53,28 @@ def activate(request, uidb64, token):
     return redirect('home')
 
 def activateEmail(request, user, to_email):
-    mail_subject = "Activate your user account."
-    message = render_to_string("email-activate.html", {
-        'user': user.first_name,
-        'domain': get_current_site(request).domain,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': account_activation_token.make_token(user),
-        "protocol": 'https' if request.is_secure() else 'http'
-    })
-    email = EmailMessage(mail_subject, message, to=[to_email])
-    if email.send():
-        messages.success(request, f' Dear {user.first_name}.Go to your email {to_email} and verify your email \
+    id = user.id
+    domain =  get_current_site(request).domain
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token =  account_activation_token.make_token(user)
+    protocol = 'https' if request.is_secure() else 'http'
+    # activate_url = f"{protocol}://{domain}/authentication/activate/{uid}/{token}"
+    activate_email.delay(id, domain, uid, token, protocol)
+    
+    # mail_subject = "Activate your user account."
+    # message = render_to_string("email-activate.html", {
+    #     'user': user.first_name,
+    #     'domain': get_current_site(request).domain,
+    #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+    #     'token': account_activation_token.make_token(user),
+    #     "protocol": 'https' if request.is_secure() else 'http'
+    # })
+    # email = EmailMessage(mail_subject, message, to=[to_email])
+    # if email.send():
+    messages.success(request, f' Dear {user.username}.Go to your email {to_email} and verify your email \
                 If not found Check your spam folder.')
-    else:
-        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
+    # else:
+    #     messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
 
 
 
@@ -111,18 +129,21 @@ class SignupView(BaseView):
 class ProfileView(BaseView):
     def get(self, request):
         user = request.user
-        self.views['fm'] = UpdateProfileForm(instance=user)
+        customer_id = Customer.objects.get(email = user.email)
+        self.views['fm'] = UpdateProfileForm(instance=customer_id)
         
         return render(request, 'profile.html', self.views)
 
 
     def post(self, request):
         user = request.user
-        fm = UpdateProfileForm(request.POST, instance=user)
+        customer = Customer.objects.get(email = user.email)
+        fm = UpdateProfileForm(request.POST, instance=customer)
         if fm.is_valid():
             fm.save()
             messages.success(request, "Profile Update successfully")
             return redirect('authentication:profile')
+        print(fm.errors)
         messages.error(request, "Some Error Occurs")
         return redirect('authentication:profile')
 

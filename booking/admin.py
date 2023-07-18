@@ -17,3 +17,9 @@ class BookingHistoryAdmin(admin.ModelAdmin):
     list_display = ('id','user', 'show_date','book_seat', 'showtime', 'movie', 'reservation_datetime', 'payment_status', 'payment_method')
 
 admin.site.register(BookingHistory, BookingHistoryAdmin)
+
+
+class CollectionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'movie', 'payment_amount', 'timestamp']
+    list_display_links = ['user', 'movie', 'payment_amount', 'timestamp']
+admin.site.register(Collection, CollectionAdmin)

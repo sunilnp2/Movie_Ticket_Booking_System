@@ -91,3 +91,16 @@ class User(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
     
+class Customer(models.Model):
+    profile = models.ImageField(upload_to= 'media/', blank=True, null=True)
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=50, unique=True)
+    first_name = models.CharField(max_length=200, blank=True, null=True)
+    last_name = models.CharField(max_length=200, blank=True, null=True)
+    phone = models.CharField(max_length=10, unique=True)
+    address = models.CharField(max_length=50)
+    balance = models.PositiveBigIntegerField(default=0)
+    
+    def __str__(self):
+        return self.username
+    

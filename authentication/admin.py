@@ -21,7 +21,7 @@ class UserCreationForm(forms.ModelForm):
         fields = ["email", "phone"]
 
     def clean_password2(self):
-        # Check that the two password entries match
+        # Check that the two password entries match  
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -34,8 +34,7 @@ class UserCreationForm(forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
-        return user
-
+        return user 
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -47,7 +46,8 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["email", "password", "phone","first_name","last_name","email_verified", "is_active", "is_admin"]
+        fields = ["email","username","address","phone","first_name","last_name"]
+        
 
 
 class UserAdmin(BaseUserAdmin):
@@ -86,3 +86,10 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+
+
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ['email', 'username']
+    list_display_links = ['email', 'username']
+    
+admin.site.register(Customer, CustomerAdmin)
