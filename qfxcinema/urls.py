@@ -26,7 +26,6 @@ urlpatterns = [
     path('auth/', include('authentication.urls', namespace='auth')),
     path('booking/', include('booking.urls')),
     path('utils/', include('utils.urls')),
-    path('api/', include('api.urls')),
 ] 
 
 if settings.DEBUG:

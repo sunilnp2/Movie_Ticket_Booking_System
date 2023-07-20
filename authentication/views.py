@@ -4,23 +4,31 @@ from authentication.forms import SignupForm, LoginForm, EditUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
-from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from cinema.models import *
-from datetime import date
-from django.http import HttpResponse
 from cinema.views import BaseView
 from authentication.models import User, Customer
-from utils.forms import UpdateProfileForm, UserChangeForm
+from utils.forms import UpdateProfileForm
 from authentication.tasks import activate_email
-from django.shortcuts import get_object_or_404
-
 
 # Create your views here.
+from django.contrib.auth.backends import ModelBackend
 
+UserModel = get_user_model()
+
+class EmailBackend(ModelBackend):
+    def authenticate(self, request, email=None, password=None, **kwargs):
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            return None
+        else:
+            if user.check_password(password):
+                return user
+        return None
+  
 
 from .tokens import account_activation_token
 
@@ -87,9 +95,9 @@ class LoginView(BaseView):
         email = request.POST.get('email')
         pw = request.POST.get('password')
         if not email:
-            messages.error(request,"Username required")
+            messages.error(request,"Email required")
         if not pw:
-            messages.error(request,"Username required")
+            messages.error(request,"Password required")
         user = authenticate(email = email, password = pw)
         if User.objects.filter(email = email, email_verified = False):
             messages.error(request, "You are not Verified! Verify email first")
