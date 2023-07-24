@@ -4,8 +4,8 @@ from movie.models import *
 
 # Register your models here.
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'language', 'genre','status']
-    list_display_links = ['id', 'name', 'language', 'genre','status']
+    list_display = ['id', 'name', 'language', 'genre','movie_status']
+    list_display_links = ['id', 'name', 'language', 'genre','movie_status']
    
 admin.site.register(Movie, MovieAdmin)
 

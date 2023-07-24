@@ -58,8 +58,11 @@ class MovieDetailView(BaseView):
         self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
 
         # code for showing dates
-        self.views['dates'] = ShowDate.objects.filter(
-            show_date__gte=date.today())
+        # self.views['dates'] = ShowDate.objects.filter(
+        #     show_date__gte=date.today())
+        self.views['dates'] = ShowDate.objects.all()
+        for d in self.views['dates']:
+            print(d)
         self.views['hall_name'] = None
         self.views['selected_date'] = None
         
@@ -77,7 +80,7 @@ class MovieDetailView(BaseView):
         return render(request, 'movie-detail.html', self.views)
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class CinemaHallView(BaseView):
     """
     This views Shows The All cinema hall of selected movie and it's showtime.
@@ -89,13 +92,6 @@ class CinemaHallView(BaseView):
         movie_id = self.views['details'].id
         self.views['selected_date'] = ShowDate.objects.get(id=id)
         self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()
-        
-        # movies = Movie.objects.get(slug=slug)
-        # show_time = movies.showtime_set.select_related("movie","cinema_hall").filter(show_date = id)
-        # self.views['cin'] = {}
-        # for movie in show_time:
-        #     print(movie.cinema_hall)
-        #     print(movie.show_date, movie.shift, movie.cinema_hall)
         self.views['cin'] = {} 
         for cinema_hall in self.views['cinema_hall']:
             showtimes = cinema_hall.showtime_set.filter(movie=movie_id, show_date=id)
@@ -107,7 +103,11 @@ class MovieLikeView(BaseView):
     """
     This views handle the like and unlike of user and display in page using Jquery Ajax
     """
-    def post(self, request, slug):
+    # @method_decorator(login_required,name='dispatch')
+    def post(self, request):
+        slug = request.POST.get('slug')
+        
+        print(slug)
         self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
         movie_id = self.views['details'].id
         try:

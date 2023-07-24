@@ -61,12 +61,13 @@
       <p class="like">
         <span
           id="likeid"
-          style="color: white; font-size: 1em; position: relative; top: -0px"
+          style="color: black; font-size: 1em; position: relative; top: -0px"
         >
           {{like_count}}</span
         >
         Likes
         <a>
+          {% if request.user.is_authenticated %}
           <span
             id="mylike"
             data-slug="{{details.slug}}"
@@ -77,6 +78,7 @@
             thumb_up
           </span>
         </a>
+        {% endif %}
       </p>
     </div>
     <div class="other-detail">
@@ -86,7 +88,7 @@
       <p class="-movie-casts">Cast : {{details.cast}}</p>
     </div>
   </div>
-  {% if details.status == 'showing' %}
+  {% if details.movie_status == 'showing' %}
   <div class="detail-sm-75">
     <div class="detail-heading">
       <h3>Now Showing</h3>

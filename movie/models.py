@@ -18,7 +18,7 @@ class Movie(models.Model):
     end_date = models.DateField(blank=True,null=True)
     slug = models.SlugField(max_length=100)
     active = models.CharField(choices=STATUS, max_length=100, blank=True, null=True)
-    status = models.CharField(choices=MOVIE_STATUS, max_length=100)
+    movie_status = models.CharField(choices=MOVIE_STATUS, max_length=100, blank=True, null=True)
     detail = models.TextField(blank=True)
     # like = models.PositiveIntegerField(default=0, null=True, blank=True)
 

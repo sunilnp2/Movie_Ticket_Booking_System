@@ -5,7 +5,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 # Custom user registration part ---------------------------------------------------------------------------------------------
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email,first_name, last_name,phone,password=None, password2 = None):
+    def create_user(self, email,phone,password=None, password2 = None):
         """
          Creates and saves a user with the given email, name, phone ,password
         """
@@ -17,8 +17,6 @@ class MyUserManager(BaseUserManager):
 
         user = self.model(
             email=self.normalize_email(email),
-            first_name = first_name,
-            last_name = last_name,
             phone = phone,
         )
 
@@ -26,14 +24,12 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self,email,first_name, last_name,phone, password=None, password2 = None):
+    def create_superuser(self,email,phone, password=None, password2 = None):
         """
         Creates and saves a superuser with the given email, name, phone ,password
         """
         user = self.create_user(
             email,
-            first_name = first_name, 
-            last_name=last_name,
             phone = phone,
             password=password,
         )
@@ -70,7 +66,7 @@ class User(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["address", "phone"]
+    REQUIRED_FIELDS = ["address","phone"]
 
     def __str__(self):
         return self.email

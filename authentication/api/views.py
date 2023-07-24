@@ -83,4 +83,4 @@ class LoginSerializerView(APIView):
                 return Response({'token':token,'msg':'Login Success'}, status=status.HTTP_200_OK)
             print(serializer.errors)
             return Response({'errors':{'non_field_errors':["Username Or Password is not valid"]}},
-                                status = status.HTTP_404_NOT_FOUND)
+                            status = status.HTTP_404_NOT_FOUND)

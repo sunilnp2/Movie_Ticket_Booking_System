@@ -45,27 +45,25 @@
             </div>
            
             <div class="selected-seat">
-              <h4>Selected Hall : {{hall.name}}</h4>
-            <h4>Selected Seat:</h4>
-            {% if seats %}
+              <h4 style = "color:black;">Selected Hall : {{hall.name}}</h4>
+            <h4 style = "color:black;">Selected Seat: {% if seats %} <span>{{seats}}</span> {% endif %}</h4>
+            <!-- {% if seats %}
             <h4>{{seats}}</h4>
-            {% endif %}
-            <h3 style = "color:brown;">Total Price: {{total}}</h3>
+            {% endif %} -->
+            <h3 style = "color:black;">Available Balance: {{balance}}</h3>
+            <h3 style = "color:black;">Total Price: {{total}}</h3>
         </div>
             <div class="payment-method">
                 <h3>Choose Payment methood</h3>
                 <ul>
                   <form type = 'post' action = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id hall.id %}">
                     {% csrf_token %}
-                    {% comment %} <li>E-sewa</li>
-                    <li><a href="http://">Khalti</a> </li>
-                    <li><a href="http://">PayPal</a> </li> {% endcomment %}
-                    <label for="pay">E-sewa : </label>
-                    <input type="radio" name="pay" id="esewa" value = "esewa">
-                    <label for="pay">Khalti : </label>
-                    <input type="radio" name="pay" id="khalti" value = "khalti">
-                    <label for="pay">Paypal : </label>
-                    <input type="radio" name="pay" id="paypal" value = "paypal">
+                    <label for="pay">Demo Balance : </label> 
+                    <input type="radio" name="pay" id="khalti" value = "khalti"> <br>
+                    <label for="pay">Khalti :<span style = "color:red;">Not Available</span>  </label>  <br>
+                    <!-- <input type="radio" name="pay" id="khalti" value = "khalti"> <br> -->
+                    <label for="pay">Paypal :<span style = "color:red;">Not Available</span>  </label> 
+                    <!-- <input type="radio" name="pay" id="paypal" value = "paypal"> -->
                 
                
                 </ul>

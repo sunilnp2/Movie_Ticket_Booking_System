@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 app_name = 'movie'
 from movie.views import *
 
@@ -8,6 +8,8 @@ urlpatterns = [
         path('movie', MovieView.as_view(), name='movie'),
         path('movie-detail/<slug>', MovieDetailView.as_view(), name='movie-detail'),
         path('cinemahall/<int:id>/<str:slug>', CinemaHallView.as_view(), name='cinemahall'),
-        path('like/<str:slug>/', MovieLikeView.as_view(), name='like'),
-    
+        path('like/', MovieLikeView.as_view(), name='like'),
+        
+         # for api
+        path('api/', include('authentication.api.urls')),
 ]

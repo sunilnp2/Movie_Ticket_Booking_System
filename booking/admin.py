@@ -8,8 +8,8 @@ class SeatAdmin(admin.ModelAdmin):
 admin.site.register(Seat, SeatAdmin)
 
 class SeatAvailabilityAdmin(admin.ModelAdmin):
-    list_display = ('user', 'show_date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
-    list_display_links = ('user', 'show_date', 'movie', 'seat', 'showtime', 'status', 'morning', 'day', 'night', 'payment_status')
+    list_display = ('user', 'show_date', 'movie', 'seat', 'showtime', 'seat_status', 'morning', 'day', 'night', 'payment_status')
+    list_display_links = ('user', 'show_date', 'movie', 'seat', 'showtime', 'seat_status', 'morning', 'day', 'night', 'payment_status')
 
 admin.site.register(SeatAvailability, SeatAvailabilityAdmin)
 

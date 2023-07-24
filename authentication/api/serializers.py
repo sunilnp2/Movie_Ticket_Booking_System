@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from authentication.api.tasks import drf_activate_email
 
 # Jwt token process 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -25,37 +26,31 @@ def activateEmail(request,email):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = generate_token(user)
     protocol = 'https' if request.is_secure() else 'http'
-    print(f"The email is {email}")
-    print(f"The email is {domain}")
-    print(f"The email is {token}")
-    print(f"The email is {protocol}")
+    # print(f"The email is {email}")
+    # print(f"The email is {domain}")
+    # print(f"The email is {token}")
+    # print(f"The email is {protocol}")
     
     
-    subject = f"Hello {username}"
-    print(token)
-    message = "Activate Your account"
-    message = render_to_string("drf-email-activate.html", {
-        'user': user.first_name,
-        'domain': domain,
-        'uid': uid,
-        'token': token,
-        "protocol": protocol,
-    })
-    email_from = settings.EMAIL_HOST_USER 
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email=email_from,
-        recipient_list=[email],
-        fail_silently=False,
-    )
-    # subject = 'Hello'
-    # body = 'This is the body of the email.'
-    # from_email = settings.EMAIL_HOST_USER,
-    # to = ['sunilnepali844@gmail.com']
-
-    # email = EmailMessage(subject, message, from_email, to)
-    # email.send()
+    # subject = f"Hello {username}"
+    # print(token)
+    # message = "Activate Your account"
+    # message = render_to_string("drf-email-activate.html", {
+    #     'user': user.first_name,
+    #     'domain': domain,
+    #     'uid': uid,
+    #     'token': token,
+    #     "protocol": protocol,
+    # })
+    # email_from = settings.EMAIL_HOST_USER 
+    # send_mail(
+    #     subject=subject,
+    #     message=message,
+    #     from_email=email_from,
+    #     recipient_list=[email],
+    #     fail_silently=False,
+    # )
+    drf_activate_email.delay(id, domain, uid, token, protocol)
 
 
     

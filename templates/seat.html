@@ -19,9 +19,9 @@
   </div>
 
   <div class="detail-sm-75 detail-seat-75">
-    <div class="detail-heading" >
+    <div class="detail-heading">
       <div class="message" style=" height: 25px; width: 100%; font-size: 1em; display: block;">
-      <h5 id = "seat-message" style="background-color: green; color: white; font-weight: bold;">
+        <h5 id="seat-message" style="background-color: green; color: white; font-weight: bold;">
       </div>
       </h5>
       <h3>Choose Seats</h3>
@@ -29,12 +29,15 @@
       <hr />
     </div>
     <div class="selection-area seat-area">
-  
-      <h5 style="color: yellow; font-size:0.9em;"  >Selected Seat : <span id = "selected-seat" >{{seats}}</span></h5>
-       <h5 style="color: yellow; font-size:0.9em;" >Selected Date : <span id="selected-date">{{dates.show_date}}</span></h5>
-      <h5  style="color: yellow; font-size:0.9em;" >Selected Hall : <span id = "selected-hall">{{hall_name.name}}</span></h5>
-      <h5 style="color: yellow; font-size:0.9em;" >Selected Showtime : <span id = "selected-showtime">{{showtime}}</span></h5>
-      <h5 style="color: yellow; font-size:0.9em;" >Price : <span id = "total-price">{{total}}</span></h5>
+
+      <h5 style="color: yellow; font-size:0.9em;">Selected Seat : <span id="selected-seat">{{seats}}</span></h5>
+      <h5 style="color: yellow; font-size:0.9em;">Selected Date : <span id="selected-date">{{dates.show_date}}</span>
+      </h5>
+      <h5 style="color: yellow; font-size:0.9em;">Selected Hall : <span id="selected-hall">{{hall_name.name}}</span>
+      </h5>
+      <h5 style="color: yellow; font-size:0.9em;">Selected Showtime : <span id="selected-showtime">{{showtime}}</span>
+      </h5>
+      <h5 style="color: yellow; font-size:0.9em;">Price : <span id="total-price">{{total}}</span></h5>
       <div class="screen-site"></div>
       <hr class="break-screen" />
       <div class="seat-list-sm-12">
@@ -43,55 +46,22 @@
         <div class="first-row row">
           <span class="row-number">E</span>
           {% for i in first_row %}
-          {% if i.status == "pending" %}
-          <a class="book-seat">
-            <!-- href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_name.id %}" -->
-            <span
-              class="material-symbols-outlined"
-              data-seat-id="{{i.id}}"
+          <a>
+            <span {% if i.} class="material-symbols-outlined"
+             data-seat-id="{{i.id}}"
               data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}"
-            >
+              data-showtime-id="{{showtime.id}}" data-details-slug="{{details.slug}}" data-hall-id="{{hall_name.id}}">
               event_seat
-              <p
-                style="
+              <p class="" style="
                   font-size: 10px;
                   text-align: center;
                   color: cyan;
                   margin-top: 3px;
-                "
-              >
+                ">
                 {{i.name}}
               </p>
             </span>
           </a>
-          {% else %}
-          <a class="book-seat">
-            <!-- href="{% url 'booking:reserve' i.id dates.id showtime.id details.slug hall_name.id %}" -->
-            <span
-              class="material-symbols-outlined"
-              data-seat-id="{{i.id}}"
-              data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}"
-            >
-              event_seat
-              <p
-                style="
-                  font-size: 10px;
-                  text-align: center;
-                  color: cyan;
-                  margin-top: 3px;
-                "
-              >
-                {{i.name}}
-              </p>
-            </span>
-          </a>
-          {% endif %}
           {% endfor %}
         </div>
 
@@ -99,23 +69,16 @@
         <div class="first-row row">
           <span class="row-number">D</span>
           {% for i in second_row %}
-          <a
-          >
-            <span class="material-symbols-outlined"
-            data-seat-id="{{i.id}}"
-              data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}" >
+          <a>
+            <span class="material-symbols-outlined" data-seat-id="{{i.id}}" data-date-id="{{dates.id}}"
+              data-showtime-id="{{showtime.id}}" data-details-slug="{{details.slug}}" data-hall-id="{{hall_name.id}}">
               event_seat
-              <p
-                style="
+              <p style="
                   font-size: 10px;
                   text-align: center;
                   color: cyan;
                   margin-top: 3px;
-                "
-              >
+                ">
                 {{i.name}}
               </p>
             </span>
@@ -127,24 +90,16 @@
         <div class="first-row row">
           <span class="row-number">C</span>
           {% for i in third_row %}
-          <a
-           
-          >
-            <span class="material-symbols-outlined" 
-            data-seat-id="{{i.id}}"
-              data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}">
+          <a>
+            <span class="material-symbols-outlined" data-seat-id="{{i.id}}" data-date-id="{{dates.id}}"
+              data-showtime-id="{{showtime.id}}" data-details-slug="{{details.slug}}" data-hall-id="{{hall_name.id}}">
               event_seat
-              <p
-                style="
+              <p style="
                   font-size: 10px;
                   text-align: center;
                   color: cyan;
                   margin-top: 3px;
-                "
-              >
+                ">
                 {{i.name}}
               </p>
             </span>
@@ -156,23 +111,16 @@
         <div class="first-row row">
           <span class="row-number">B</span>
           {% for i in fourth_row %}
-          <a
-          >
-            <span class="material-symbols-outlined" 
-            data-seat-id="{{i.id}}"
-              data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}">
+          <a>
+            <span class="material-symbols-outlined" data-seat-id="{{i.id}}" data-date-id="{{dates.id}}"
+              data-showtime-id="{{showtime.id}}" data-details-slug="{{details.slug}}" data-hall-id="{{hall_name.id}}">
               event_seat
-              <p
-                style="
+              <p style="
                   font-size: 10px;
                   text-align: center;
                   color: cyan;
                   margin-top: 3px;
-                "
-              >
+                ">
                 {{i.name}}
               </p>
             </span>
@@ -185,23 +133,16 @@
         <div class="first-row row">
           <span class="row-number">A</span>
           {% for i in fifth_row %}
-          <a
-          >
-            <span class="material-symbols-outlined" 
-            data-seat-id="{{i.id}}"
-              data-date-id="{{dates.id}}"
-              data-showtime-id="{{showtime.id}}"
-              data-details-slug="{{details.slug}}"
-              data-hall-id="{{hall_name.id}}">
+          <a>
+            <span class="material-symbols-outlined" data-seat-id="{{i.id}}" data-date-id="{{dates.id}}"
+              data-showtime-id="{{showtime.id}}" data-details-slug="{{details.slug}}" data-hall-id="{{hall_name.id}}">
               event_seat
-              <p
-                style="
+              <p style="
                   font-size: 10px;
                   text-align: center;
                   color: cyan;
                   margin-top: 3px;
-                "
-              >
+                ">
                 {{i.name}}
               </p>
             </span>
@@ -232,10 +173,8 @@
         </div>
       </div>
       <div class="buy-sm-12">
-        <a
-          href="{% url 'booking:booking' details.slug dates.id showtime.id hall_id %}"
-          ><input type="submit" value="Buy Now"
-        /></a>
+        <a href="{% url 'booking:booking' details.slug dates.id showtime.id hall_id %}"><input type="submit"
+            value="Buy Now" /></a>
       </div>
     </div>
   </div>

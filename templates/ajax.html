@@ -36,15 +36,26 @@ $(document).ready(function () {
     e.preventDefault();
     console.log("User Click Like functin");
     const movieslug = $(this).data("slug");
+    console.log("slug is" + movieslug)
+    console.log(typeof(movieslug))
+
     const csrftoken = getCookie('csrftoken');
     console.log("Csrf token is" + csrftoken)
+    const postData = {
+      slug: movieslug,
+    };
+    url  = "{% url 'movie:like' %}"
+    console.log(url)
     $.ajax({
-      url : '/movie/like/' + movieslug + '/',
+      // url : 'http://localhost:8000/' + 'movie/like/',
+      url : url,
+      
       method :'POST',
       dataType : 'json',
       headers : {
         'X-CSRFToken': csrftoken
       },
+      data: postData,
       success : function(data) {
         $('#message').show();
         $('#message').text(data.message);
@@ -52,8 +63,15 @@ $(document).ready(function () {
         console.log(data.message);
         console.log(data.like);
         $('#message').fadeOut(1000);
+      },
+      error:function(data){
+        console.log(data)
+          // if (data.status == 403){
+
+          // }
       }
     });
+    
   })
 });
 
@@ -80,7 +98,7 @@ $(document).ready(function(){
    if (result){
 
       $.ajax({
-        url: "/booking/deletepending/" + p_id,
+        url: "http://localhost:8000/booking/deletepending/" + p_id,
         type: "POST",
         dataType: "json",
         headers:{
@@ -115,7 +133,7 @@ $(document).ready(function(){
     let result = confirm("Are you sure you want to delete Histry " + h_id);
     if (result){
     $.ajax({
-      url : '/booking/hisdelete/' + h_id,
+      url : 'http://localhost:8000/booking/hisdelete/' + h_id,
       method : 'POST',
       dataType : 'json',
       headers:{
@@ -153,10 +171,10 @@ $(".row").on("click",".material-symbols-outlined", function(e){
 
   console.log("Seat booked Clicked Inside DIv");
   console.log("Change Color");
-  // $(this).css("color", "red");
+  $(this).css("color", "red");
   const csrftoken = getCookie('csrftoken');
   $.ajax({
-    url : '/booking/reserve/' + seat_id + '/' + date_id + '/'+ showtime_id +  '/' + movie_slug+  '/' + hall_id,
+    url : 'http://localhost:8000/booking/reserve/' + seat_id + '/' + date_id + '/'+ showtime_id +  '/' + movie_slug+  '/' + hall_id,
     method:'POST',
     dataType : 'json',
     headers :{

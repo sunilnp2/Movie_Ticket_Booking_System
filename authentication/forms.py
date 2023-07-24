@@ -14,7 +14,7 @@ ADDRESS_CHOICES = [
 ]
 
 class SignupForm(UserCreationForm):
-    password1 = forms.CharField(label='Enter Password:',
+    password1 = forms.CharField(label='Enter Password:',validators=[checkpassword],
                                 widget=forms.PasswordInput(
                                     attrs={'class': 'input'}),
                                 error_messages={'required': 'This Password is required'})

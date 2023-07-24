@@ -14,20 +14,20 @@ from utils.forms import UpdateProfileForm
 from authentication.tasks import activate_email
 
 # Create your views here.
-from django.contrib.auth.backends import ModelBackend
+# from django.contrib.auth.backends import ModelBackend
 
-UserModel = get_user_model()
+# UserModel = get_user_model()
 
-class EmailBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None, **kwargs):
-        try:
-            user = UserModel.objects.get(email=email)
-        except UserModel.DoesNotExist:
-            return None
-        else:
-            if user.check_password(password):
-                return user
-        return None
+# class EmailBackend(ModelBackend):
+#     def authenticate(self, request, email=None, password=None, **kwargs):
+#         try:
+#             user = UserModel.objects.get(email=email)
+#         except UserModel.DoesNotExist:
+#             return None
+#         else:
+#             if user.check_password(password):
+#                 return user
+#         return None
   
 
 from .tokens import account_activation_token
@@ -57,7 +57,6 @@ def activate(request, uidb64, token):
         return redirect('authentication:login')
     else:
         messages.error(request, "Activation link is invalid!")
-
     return redirect('home')
 
 def activateEmail(request, user, to_email):
@@ -66,23 +65,9 @@ def activateEmail(request, user, to_email):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token =  account_activation_token.make_token(user)
     protocol = 'https' if request.is_secure() else 'http'
-    # activate_url = f"{protocol}://{domain}/authentication/activate/{uid}/{token}"
     activate_email.delay(id, domain, uid, token, protocol)
-    
-    # mail_subject = "Activate your user account."
-    # message = render_to_string("email-activate.html", {
-    #     'user': user.first_name,
-    #     'domain': get_current_site(request).domain,
-    #     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-    #     'token': account_activation_token.make_token(user),
-    #     "protocol": 'https' if request.is_secure() else 'http'
-    # })
-    # email = EmailMessage(mail_subject, message, to=[to_email])
-    # if email.send():
     messages.success(request, f' Dear {user.username}.Go to your email {to_email} and verify your email \
                 If not found Check your spam folder.')
-    # else:
-    #     messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
 
 
 
@@ -154,9 +139,6 @@ class ProfileView(BaseView):
         print(fm.errors)
         messages.error(request, "Some Error Occurs")
         return redirect('authentication:profile')
-
-
-
         
 class LogoutView(View):
     def get(self, request):

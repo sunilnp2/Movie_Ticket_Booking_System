@@ -9,7 +9,7 @@ SEAT_STATUS = (('available', 'available'), ('pending', 'pending'), ('reserved', 
 class Seat(models.Model):
     seat_number = models.PositiveIntegerField()
     name = models.CharField(max_length=10)
-    status = models.CharField(choices=SEAT_STATUS, max_length=100,blank=True, null=True)
+    seat_status = models.CharField(choices=SEAT_STATUS, max_length=100,blank=True, null=True)
 
     def __str__(self):
         return str(self.seat_number)
@@ -22,7 +22,7 @@ class SeatAvailability(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-    status = models.CharField(choices=SEAT_STATUS, max_length=20, default='available')
+    seat_status = models.CharField(choices=SEAT_STATUS, max_length=20, default='available')
     morning = models.BooleanField(default=True)
     day = models.BooleanField(default=True)
     night = models.BooleanField(default=True)

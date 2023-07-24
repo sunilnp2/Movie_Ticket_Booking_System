@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'utils',
     'rest_framework',  
     'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'qfxcinema.urls'
@@ -89,7 +91,7 @@ STATICFILES_DIRS = [STATIC_DIR]
 
 
 LOGIN_URL = 'authentication:login'
-LOGIN_REDIRECT_URL = 'booking:seat'
+# LOGIN_REDIRECT_URL = 'booking:seat'
 LOGOUT_REDIRECT_URL = 'cinema:home'
 
 
@@ -214,9 +216,8 @@ CELERY_TIMEZONE = 'Asia/Kathmandu'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'django.contrib.auth.backends.ModelBackend',
-        'authentication.views.EmailBackend',
     ],
+   
 }
 
 
@@ -224,7 +225,6 @@ REST_FRAMEWORK = {
 
 from datetime import timedelta
 from django.conf import settings
-...
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
@@ -265,3 +265,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+
+# cors headers -------------------------------------------------

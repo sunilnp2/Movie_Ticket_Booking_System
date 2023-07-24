@@ -1,4 +1,4 @@
-from django.urls import path 
+from django.urls import path , include
 app_name = 'booking'
 from booking.views import *
 
@@ -17,4 +17,7 @@ urlpatterns = [
 
     # url for jquery ajax 
     path('pending/delete/', DeleteBookingView.as_view(), name='delete_pending'),
+    
+     # for api
+    path('api/', include('authentication.api.urls')),
 ]

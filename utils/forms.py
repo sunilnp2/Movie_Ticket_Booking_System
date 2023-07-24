@@ -50,7 +50,7 @@ class UpdateProfileForm(forms.ModelForm):
     
     class Meta:
         model = Customer
-        fields = ('__all__')
+        fields = '__all__'
     
     # def __init__(self, *args, **kwargs):
     #     instance = kwargs.get('instance')
