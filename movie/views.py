@@ -56,13 +56,10 @@ class MovieDetailView(BaseView):
         User can like and unlike in this view
         """
         self.views['details'] = Movie.objects.prefetch_related('like_set').get(slug=slug)
-
-        # code for showing dates
-        # self.views['dates'] = ShowDate.objects.filter(
-        #     show_date__gte=date.today())
-        self.views['dates'] = ShowDate.objects.all()
-        for d in self.views['dates']:
-            print(d)
+        showtime_dates = Showtime.objects.filter(show_date__gte=date.today() , movie = self.views['details'].id)
+        self.views['dates'] = showtime_dates.order_by('show_date').distinct('show_date').values('show_date', 'pk')
+        
+        
         self.views['hall_name'] = None
         self.views['selected_date'] = None
         
@@ -85,18 +82,19 @@ class CinemaHallView(BaseView):
     """
     This views Shows The All cinema hall of selected movie and it's showtime.
     """
-    def get(self, request, id, slug):
+    def get(self, request,pk,slug):
         # address = request.user.address
-        self.views['d_id'] = id
+        self.views['pk'] = pk
+        self.views['selected_date'] = Showtime.objects.get(pk = pk).show_date
         self.views['details'] = Movie.objects.get(slug=slug)
         movie_id = self.views['details'].id
-        self.views['selected_date'] = ShowDate.objects.get(id=id)
         self.views['cinema_hall'] = CinemaHall.objects.prefetch_related('showtime_set').all()
         self.views['cin'] = {} 
         for cinema_hall in self.views['cinema_hall']:
-            showtimes = cinema_hall.showtime_set.filter(movie=movie_id, show_date=id)
+            showtimes = cinema_hall.showtime_set.filter(movie=movie_id, show_date = self.views['selected_date'])
             self.views['cin'][cinema_hall] = showtimes
         return render(request, 'movie-showtime.html', self.views)
+    
     
 @method_decorator(login_required, name='dispatch')
 class MovieLikeView(BaseView):
@@ -130,6 +128,7 @@ class MovieLikeView(BaseView):
                 like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
                 if like is not None:
                     like_count = like.like
+                    
                 else:
                     like_count = 0
             except ObjectDoesNotExist:

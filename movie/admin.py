@@ -21,15 +21,12 @@ class ShowtimeForm(forms.ModelForm):
 
 class ShowtimeAdmin(admin.ModelAdmin):
     form = ShowtimeForm
-    list_display = ['id',  'start_time', 'end_time', 'shift', 'price']
-    list_display_links = ['id', 'start_time', 'end_time', 'shift', 'price']
+    list_display = ['id','show_date',  'start_time', 'end_time', 'shift', 'price']
+    list_display_links = ['id','show_date', 'start_time', 'end_time', 'shift', 'price']
 admin.site.register(Showtime, ShowtimeAdmin)
 
-class ShowDateAdmin(admin.ModelAdmin):
-    list_display = ['id', 'show_date']
-    list_display_links = ['id', 'show_date']
 
-admin.site.register(ShowDate, ShowDateAdmin)
+# admin.site.register(ShowDate, ShowDateAdmin)
 
 
 class LikeAdmin(admin.ModelAdmin):

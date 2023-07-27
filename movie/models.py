@@ -20,21 +20,14 @@ class Movie(models.Model):
     active = models.CharField(choices=STATUS, max_length=100, blank=True, null=True)
     movie_status = models.CharField(choices=MOVIE_STATUS, max_length=100, blank=True, null=True)
     detail = models.TextField(blank=True)
+    trailer_link = models.URLField(null=True, blank=True)
     # like = models.PositiveIntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.name
-
-class ShowDate(models.Model):
-    show_date = models.DateField()
-
-    def __str__(self):
-        return str(self.show_date)
-
-
     
 class Showtime(models.Model):
-    show_date = models.ForeignKey(ShowDate, on_delete=models.CASCADE)
+    show_date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
     shift = models.CharField(choices=SHIFT, max_length=10)

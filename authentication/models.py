@@ -66,7 +66,7 @@ class User(AbstractBaseUser):
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["address","phone"]
+    REQUIRED_FIELDS = ["address", "phone"]
 
     def __str__(self):
         return self.email
@@ -85,6 +85,7 @@ class User(AbstractBaseUser):
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
+
         return self.is_admin
     
 class Customer(models.Model):

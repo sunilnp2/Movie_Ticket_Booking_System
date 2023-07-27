@@ -1,59 +1,10 @@
 from rest_framework import serializers
-from authentication.models import User
+from authentication.models import User, Customer
 from rest_framework.response import Response
-from django.core.mail import send_mail
-from django.conf import settings
-from django.template.loader import render_to_string
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from authentication.api.tasks import drf_activate_email
-
-# Jwt token process 
-from rest_framework_simplejwt.tokens import RefreshToken
-def generate_token(user):
-    refresh = RefreshToken.for_user(user)
-    token = str(refresh.access_token)
-    return token
-
-
-
-def activateEmail(request,email):
-    user = User.objects.get(email = email)
-    username = User.objects.get(email=email).username
-    id = user.id
-    domain =  get_current_site(request).domain
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = generate_token(user)
-    protocol = 'https' if request.is_secure() else 'http'
-    # print(f"The email is {email}")
-    # print(f"The email is {domain}")
-    # print(f"The email is {token}")
-    # print(f"The email is {protocol}")
-    
-    
-    # subject = f"Hello {username}"
-    # print(token)
-    # message = "Activate Your account"
-    # message = render_to_string("drf-email-activate.html", {
-    #     'user': user.first_name,
-    #     'domain': domain,
-    #     'uid': uid,
-    #     'token': token,
-    #     "protocol": protocol,
-    # })
-    # email_from = settings.EMAIL_HOST_USER 
-    # send_mail(
-    #     subject=subject,
-    #     message=message,
-    #     from_email=email_from,
-    #     recipient_list=[email],
-    #     fail_silently=False,
-    # )
-    drf_activate_email.delay(id, domain, uid, token, protocol)
-
-
-    
+from django.contrib.auth import authenticate
+from utils.api.jwt_tokens import get_tokens_for_user
+from rest_framework import status
+from utils.api.activate_email import activateEmail
 
 class SignUpSerializer(serializers.Serializer):
     
@@ -134,8 +85,8 @@ class SignUpSerializer(serializers.Serializer):
         ).save()
         # myuser = usr.save()
         activateEmail(request,email)
-
-        return Response({"message":"Created"})
+        return Response({"success":"Create"})
+        
 
         
         
@@ -144,3 +95,31 @@ class SignUpSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+    
+    
+    def create(self,validated_data):
+        email = validated_data.get('email')
+        pw = validated_data.get('password')
+    
+        user = authenticate(email = email, password = pw)
+        if user is not None:
+            token = get_tokens_for_user(user)
+            return Response({'token':token,'msg':'Login Success'}, status=status.HTTP_200_OK)
+        return Response({'errors':{'non_field_errors':["Username Or Password is not valid"]}},
+                        status = status.HTTP_404_NOT_FOUND)
+
+
+# customer
+
+class CustomerSerializer(serializers.Serializer):
+    profile = serializers.ImageField(allow_null=True, required=False)
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=50)
+    first_name = serializers.CharField(max_length=200, allow_blank=True, allow_null=True, required=False)
+    last_name = serializers.CharField(max_length=200, allow_blank=True, allow_null=True, required=False)
+    phone = serializers.CharField(max_length=10)
+    address = serializers.CharField(max_length=50)
+    balance = serializers.IntegerField(default=0)
+    
+    def create(self, validated_data):
+        return Customer.objects.create(**validated_data)

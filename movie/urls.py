@@ -7,9 +7,9 @@ urlpatterns = [
         path('filter', MovieFilterView.as_view(), name = 'filter'),
         path('movie', MovieView.as_view(), name='movie'),
         path('movie-detail/<slug>', MovieDetailView.as_view(), name='movie-detail'),
-        path('cinemahall/<int:id>/<str:slug>', CinemaHallView.as_view(), name='cinemahall'),
+        path('cinemahall/<int:pk>/<str:slug>', CinemaHallView.as_view(), name='cinemahall'),
         path('like/', MovieLikeView.as_view(), name='like'),
         
-         # for api
-        path('api/', include('authentication.api.urls')),
+        # for api
+        path('api/', include('movie.api.urls')),
 ]

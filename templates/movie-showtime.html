@@ -38,10 +38,10 @@
                 <h5>Selected Date</h5>
                 <div class="dates">
                    <div class="mydate">
-                        <h5>{{selected_date.show_date}}</h5>
+                        <h5>{{selected_date}}</h5>
                           {% comment %} <a href="{% url 'cinema:time' d.id %}">  {% endcomment %}
                 <div class="adjust-date">
-                    <p>Jun{{selected_date.show_date.month}} <br><span class="date-number">{{selected_date.show_date.day}} </span> <br> {{selected_date.show_date.year}}</p>
+                    <p>Jun{{selected_date.month}} <br><span class="date-number">{{selected_date.day}} </span> <br> {{selected_date.year}}</p>
                 </div>
             {% comment %} </a> {% endcomment %}
             </div>
@@ -56,7 +56,7 @@
                   <h5>{{cinema_hall.name}} :  </h5>
                   {% for s in showtimes %}
                     <ul>
-                     <a href = "{% url 'booking:seat' details.slug selected_date.id s.id cinema_hall.id %}"> <li>{{s.start_time}} to {{s.end_time}}</li></a>
+                     <a href = "{% url 'booking:seat' details.slug  s.id cinema_hall.id %}"> <li>{{s.start_time}} to {{s.end_time}}</li></a>
                     </ul>
                     {% endfor %}
                 </div>

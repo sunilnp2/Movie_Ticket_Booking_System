@@ -31,7 +31,7 @@
     <div class="selection-area seat-area">
 
       <h5 style="color: yellow; font-size:0.9em;">Selected Seat : <span id="selected-seat">{{seats}}</span></h5>
-      <h5 style="color: yellow; font-size:0.9em;">Selected Date : <span id="selected-date">{{dates.show_date}}</span>
+      <h5 style="color: yellow; font-size:0.9em;">Selected Date : <span id="selected-date">{{dates}}</span>
       </h5>
       <h5 style="color: yellow; font-size:0.9em;">Selected Hall : <span id="selected-hall">{{hall_name.name}}</span>
       </h5>
@@ -173,7 +173,7 @@
         </div>
       </div>
       <div class="buy-sm-12">
-        <a href="{% url 'booking:booking' details.slug dates.id showtime.id hall_id %}"><input type="submit"
+        <a href="{% url 'booking:booking' details.slug showtime.id hall_id %}"><input type="submit"
             value="Buy Now" /></a>
       </div>
     </div>

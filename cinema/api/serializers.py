@@ -1,12 +1,13 @@
-'''
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
-from movie.models import Movie
+from cinema.models import CinemaHall
 
-# class MovieSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = Movie
-#         fields = '__all__'
+STATUS = [('active', 'active'), ('inactive', 'inactive')]
 
-'''
+
+# Serializer for Ciemahall
+class CinemaHallSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    location = serializers.CharField(max_length=100)
+    slug = serializers.SlugField()
+    hall_status = serializers.ChoiceField(STATUS, default='active')
+    contact_number = serializers.CharField(max_length=200)

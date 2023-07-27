@@ -216,13 +216,13 @@ CELERY_TIMEZONE = 'Asia/Kathmandu'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
    
 }
 
 
 # Django project settings.py
-
 from datetime import timedelta
 from django.conf import settings
 

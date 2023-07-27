@@ -56,7 +56,7 @@
             <div class="payment-method">
                 <h3>Choose Payment methood</h3>
                 <ul>
-                  <form type = 'post' action = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id hall.id %}">
+                  <form type = 'post' action = "{% url 'booking:payment' movie_id.slug sh_id.id hall.id %}">
                     {% csrf_token %}
                     <label for="pay">Demo Balance : </label> 
                     <input type="radio" name="pay" id="khalti" value = "khalti"> <br>
@@ -67,7 +67,7 @@
                 
                
                 </ul>
-                <a href = "{% url 'booking:payment' movie_id.slug d_id.id sh_id.id hall.id %}">
+                <a href = "{% url 'booking:payment' movie_id.slug sh_id.id hall.id %}">
                 <button >Book Now</button>
                 </a>
                 <form>

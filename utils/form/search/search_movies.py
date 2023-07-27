@@ -9,3 +9,4 @@ class SearchForm(forms.Form):
     def filter_movie(self):
         search = self.cleaned_data.get('search')
         return self.queryset.filter(name__istartswith = search)
+ 

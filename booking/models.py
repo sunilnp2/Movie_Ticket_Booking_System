@@ -18,7 +18,7 @@ class Seat(models.Model):
 class SeatAvailability(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE, null=True, blank=True)
-    show_date = models.ForeignKey(ShowDate, on_delete=models.CASCADE, null=True, blank=True)
+    show_date = models.DateField()
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
@@ -41,7 +41,7 @@ class SeatAvailability(models.Model):
 class BookingHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE, null=True, blank=True)
-    show_date = models.ForeignKey(ShowDate, on_delete=models.CASCADE, null=True, blank=True)
+    show_date = models.DateField()
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     seats = models.ManyToManyField(Seat)

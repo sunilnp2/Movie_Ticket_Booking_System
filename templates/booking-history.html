@@ -49,7 +49,7 @@
               <td>{{final_seat}}</td>
               <td>{{h.reservation_datetime}}</td>
               <td>{{h.payment_status}}</td>
-              <td><a href="{% url 'booking:getpdf' h.movie.slug h.show_date.id h.hall.id h.showtime.id %}"> Download Pdf</a></td>
+              <td><a href="{% url 'booking:getpdf' h.movie.slug h.hall.id h.showtime.id %}"> Download Pdf</a></td>
              
             </tr>
             {% endfor %}

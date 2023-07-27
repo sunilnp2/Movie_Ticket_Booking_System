@@ -26,6 +26,9 @@ urlpatterns = [
     path('auth/', include('authentication.urls', namespace='auth')),
     path('booking/', include('booking.urls')),
     path('utils/', include('utils.urls')),
+    
+    # for rest framework 
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 ] 
 
 if settings.DEBUG:

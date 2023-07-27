@@ -26,7 +26,8 @@ class Seatview(BaseView):
     """ 
     This View Shows The reserved and vacant seats of selected cinema hall , movie and showtime.
     """
-    def get(self,request, slug, date_id, show_id, hall_id):
+    def get(self,request, slug, show_id, hall_id):
+        show_date = Showtime.objects.get(id = show_id).show_date
         self.views['first_row'] = Seat.objects.filter(seat_number__lte = 5)
         self.views['second_row'] = Seat.objects.filter(seat_number__gt=5,seat_number__lte=10)
         self.views['third_row'] = Seat.objects.filter(seat_number__gt=10,seat_number__lte=15)
@@ -43,10 +44,10 @@ class Seatview(BaseView):
             payment_status=False,
             movie=movie_id,
             showtime=show_id,
-            show_date=date_id
+            show_date=Showtime.objects.get(id = show_id).show_date
         ).values_list('seat__name', flat=True)
         try:
-            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
             seat = [s.seat.name for s in seleted_seat]
             
             self.views['seats'] = ",".join(seat)
@@ -54,7 +55,7 @@ class Seatview(BaseView):
         except Exception as e:
             print(e)
             pass
-        seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+        seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
         # , show_date = show_id,movie = movie_id,showtime = show_id 
         total = 0 
         for p in seleted_seat:
@@ -62,7 +63,7 @@ class Seatview(BaseView):
         self.views['total'] = total
         self.views['hall_name'] = CinemaHall.objects.get(id = hall_id)
         self.views['hall_id'] = hall_id
-        self.views['dates'] = ShowDate.objects.get(id = date_id)
+        self.views['dates'] = Showtime.objects.get(id = show_id).show_date
         self.views['showtime'] = Showtime.objects.get(id = show_id)
         
 
@@ -76,11 +77,11 @@ class ReserveView(BaseView):
     using Jquery and Ajax
     
     """
-    def post(self,request, seat_id, date_id, show_id, slug, hall_id):
+    def post(self,request, seat_id, show_id, slug, hall_id):
         user = request.user
         s_id = Seat.objects.get(id = seat_id)
         get_seat_id = Seat.objects.get(id = seat_id).id
-        d_id = ShowDate.objects.get(id = date_id)
+        show_date = Showtime.objects.get(id = show_id).show_date
         sh_id = Showtime.objects.get(id = show_id)
         movie_id = Movie.objects.get(slug = slug)
         hall = CinemaHall.objects.get(id = hall_id)
@@ -112,17 +113,17 @@ class ReserveView(BaseView):
             myseat = SeatAvailability.objects.get(user = user, movie = movie_id, showtime = sh_id,seat = s_id, hall = hall_id,seat_status = 'pending')
             myseat.delete()
             try:
-                seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+                seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
                 seats = [s.seat.name for s in seleted_seat]
             
             except Exception as e:
                 print(e)
                 pass
-            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
             total = 0 
             for p in seleted_seat:
                 total += p.total
-            res_data = {"success":"Seat Un reserved", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
+            res_data = {"success":"Seat Un reserved", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
@@ -130,13 +131,13 @@ class ReserveView(BaseView):
         elif SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = show_id, seat_status__in = ["pending","reserved"]).exists():
             # messages.error(request, "Movie is booked already")
             # return redirect("booking:seat",slug, date_id, show_id,hall_id)
-            res_data = {"success":"Movie is booked Already", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id}
+            res_data = {"success":"Movie is booked Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
         
         elif BookingHistory.objects.filter(movie = movie_id,seats__id = get_seat_id,hall = hall_id,showtime = sh_id, payment_status =True).exists():
-            res_data = {"success":"Seat Un reserved Already", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id}
+            res_data = {"success":"Seat Un reserved Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
@@ -145,7 +146,7 @@ class ReserveView(BaseView):
             res = SeatAvailability.objects.create(user = myuser,movie = movie_id,
                                             seat = s_id,
                                             hall = hall,
-                                             show_date = d_id, 
+                                             show_date = show_date, 
                                              showtime = sh_id,
                                              seat_status = 'pending',
                                              morning = morning, 
@@ -156,17 +157,17 @@ class ReserveView(BaseView):
             res.save()
             Seat.objects.update(seat_status = "pending")
             try:
-                seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+                seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
                 seats = [s.seat.name for s in seleted_seat]
             
             except Exception as e:
                 print(e)
                 pass
-            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = date_id)
+            seleted_seat= SeatAvailability.objects.filter(user = user, seat_status = 'pending',hall = hall_id,payment_status = False, movie = movie_id, showtime = show_id , show_date = show_date)
             total = 0 
             for p in seleted_seat:
                 total += p.total
-            res_data = {"success":"Seat reserved successfully", "slug":slug, "date_id":date_id, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
+            res_data = {"success":"Seat reserved successfully", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
@@ -178,17 +179,17 @@ class BookingView(BaseView):
     This view shows the all booking information of user with Selected Cinema hall, Selected date
     Selected showtime and Selected seats accordingly.
     """
-    def get(self,request,slug,date_id,show_id, hall_id):
+    def get(self,request,slug,show_id, hall_id):
         self.views['user'] = request.user
         email = self.views['user'].email
         self.views['balance'] = Customer.objects.get(email = email).balance
-        self.views['d_id'] = ShowDate.objects.get(id = date_id)
+        self.views['show_date'] = Showtime.objects.get(id = show_id).show_date
         self.views['sh_id'] = Showtime.objects.get(id = show_id)
         self.views['movie_id'] = Movie.objects.get(slug = slug)
         m_id= Movie.objects.get(slug = slug).id
         self.views['hall'] = CinemaHall.objects.get(id = hall_id)
 
-        seleted_seat= SeatAvailability.objects.filter(user = request.user,hall = hall_id, show_date = date_id,showtime = show_id,movie = m_id,  seat_status = 'pending', payment_status = False)
+        seleted_seat= SeatAvailability.objects.filter(user = request.user,hall = hall_id, show_date = self.views['show_date'],showtime = show_id,movie = m_id,  seat_status = 'pending', payment_status = False)
         total = 0 
         for p in seleted_seat:
             total += p.total
@@ -203,25 +204,20 @@ class PaymentView(BaseView):
     and generate and provide pdf of selected seat to user
     
     """
-    def get(self, request, slug,date_id,show_id, hall_id):
+    def get(self, request, slug,show_id, hall_id):
         if request.method == 'POST':
             payment_type = request.POST.get('pay')
         movie_id = Movie.objects.get(slug = slug).id
-        user = request.user
+        user = request.user 
         my_user_id = user.id
         user_id = user.email
         movie_obj = Movie.objects.get(slug = slug)
         customer = Customer.objects.get(email = user_id)
         balance = Customer.objects.get(email = user_id).balance
         print(balance)
-        
-        # for sending email
-        # subject = 'Your Movie Ticket Booking'
-        # message = 'Thank you for booking your movie ticket with us!'
-        # from_email = settings.EMAIL_HOST_USER
-        # recipient_list = [user_id]
-        if SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, seat_status = 'pending',payment_status = False).exists():
-            cart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, seat_status = 'pending',payment_status = False )
+        show_date = Showtime.objects.get(id = show_id).show_date
+        if SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_id, showtime = show_id, seat_status = 'pending',payment_status = False).exists():
+            cart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_id, showtime = show_id, seat_status = 'pending',payment_status = False )
             total = 0
             for c in cart:
                 total += c.total
@@ -246,7 +242,7 @@ class PaymentView(BaseView):
                 booking.save()
                 balance = balance - total
                 # cart.delete()
-                SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id).update(payment_status = True, seat_status = "reserved")
+                SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_id, showtime = show_id).update(payment_status = True, seat_status = "reserved")
                 Customer.objects.filter(email = user_id).update(email = user_id, balance = balance)
                 
                 # code for adding collection 
@@ -258,9 +254,9 @@ class PaymentView(BaseView):
                 phone = user.phone
                 address = user.address
                 movie = Movie.objects.get(slug = slug)
-                reserve_date = ShowDate.objects.get(id = date_id).show_date
+                reserve_date = Showtime.objects.get(id = show_id).show_date
                 showtime = Showtime.objects.get(id = show_id)
-                mycart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie_id, showtime = show_id, payment_status = True)
+                mycart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_id, showtime = show_id, payment_status = True)
                 my_seats_name = [s.seat.name for s in mycart]
                 print(f" The seat name is {my_seats_name}")
                 # str_seat = ",".join(my_seats_name)
@@ -351,7 +347,7 @@ class PaymentView(BaseView):
         
             
         
-        elif SeatAvailability.objects.filter(user = user, show_date = date_id, movie = movie_id, showtime = show_id, seat_status = "reserved", payment_status = True).exists():
+        elif SeatAvailability.objects.filter(user = user, show_date = show_date, movie = movie_id, showtime = show_id, seat_status = "reserved", payment_status = True).exists():
             messages.error(request, "Already reserved")
             return redirect('cinema:home')
         
@@ -363,7 +359,7 @@ class GetPdfView(BaseView):
     """
     This view provide a pdf of booking history of user
     """
-    def get(self, request, slug, date_id, hall_id, show_id):
+    def get(self, request, slug, hall_id, show_id):
         # Code for Generate Pdf
             user = request.user
             name = f"{user.first_name} {user.last_name}"
@@ -371,9 +367,9 @@ class GetPdfView(BaseView):
             phone = user.phone
             address = user.address
             movie = Movie.objects.get(slug = slug)
-            reserve_date = ShowDate.objects.get(id = date_id).show_date
+            reserve_date = Showtime.objects.get(id = show_id).show_date
             showtime = Showtime.objects.get(id = show_id)
-            mycart = BookingHistory.objects.filter(user = user,hall = hall_id, show_date = date_id, movie = movie.id, showtime = show_id, payment_status = True)
+            mycart = BookingHistory.objects.filter(user = user,hall = hall_id, show_date = reserve_date, movie = movie.id, showtime = show_id, payment_status = True)
             my_seats_name = [s.seats.name for s in mycart]
             print(f" The seat name is {my_seats_name}")
             # str_seat = ",".join(my_seats_name)

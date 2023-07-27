@@ -159,12 +159,10 @@ $(document).ready(function(){
 $(".row").on("click",".material-symbols-outlined", function(e){
   e.preventDefault();
   let seat_id = $(this).attr("data-seat-id");
-  let date_id = $(this).attr("data-date-id");
   let showtime_id = $(this).attr("data-showtime-id");
   let movie_slug = $(this).attr("data-details-slug");
   let hall_id = $(this).attr("data-hall-id");
   console.log(seat_id)
-  console.log(date_id)
   console.log(showtime_id)
   console.log(movie_slug)
   console.log(hall_id)
@@ -174,7 +172,7 @@ $(".row").on("click",".material-symbols-outlined", function(e){
   $(this).css("color", "red");
   const csrftoken = getCookie('csrftoken');
   $.ajax({
-    url : 'http://localhost:8000/booking/reserve/' + seat_id + '/' + date_id + '/'+ showtime_id +  '/' + movie_slug+  '/' + hall_id,
+    url : 'http://localhost:8000/booking/reserve/' + seat_id + '/' + showtime_id +  '/' + movie_slug+  '/' + hall_id,
     method:'POST',
     dataType : 'json',
     headers :{

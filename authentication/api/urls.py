@@ -1,6 +1,7 @@
 
 from django.urls import path
-from .views import SignUpSerializerView, VerifyTOkenView, LoginSerializerView
+from .views import SignUpSerializerView, LoginSerializerView
+from utils.api.jwt_tokens import VerifyTOkenView
 
 
 urlpatterns = [

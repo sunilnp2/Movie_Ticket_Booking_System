@@ -104,7 +104,8 @@
           {% for d in dates %}
           <div class="mydate">
             <h5>{{d.show_date}}</h5>
-            <a href="{% url 'movie:cinemahall' d.id details.slug %}">
+            <h1>{{d.pk}}</h1>
+            <a href="{% url 'movie:cinemahall' d.pk details.slug %}">
               <div class="adjust-date">
                 <p>
                   July{{d.show_date.month}} <br /><span class="date-number"
