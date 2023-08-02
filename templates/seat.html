@@ -29,8 +29,8 @@
       <hr />
     </div>
     <div class="selection-area seat-area">
-
-      <h5 style="color: yellow; font-size:0.9em;">Selected Seat : <span id="selected-seat">{{seats}}</span></h5>
+<h3 style="color: yellow; position: absolute; display: inline; width: 50%; text-align: center; ">Recommended Seat for you :{% for seat in recommended_seat%}{{seat.name}} {% endfor %} </h3>
+      <h5 style="color: yellow; font-size:0.9em;">Selected Seat : <span id="selected-seat">{{seats}}</span></h5>  
       <h5 style="color: yellow; font-size:0.9em;">Selected Date : <span id="selected-date">{{dates}}</span>
       </h5>
       <h5 style="color: yellow; font-size:0.9em;">Selected Hall : <span id="selected-hall">{{hall_name.name}}</span>

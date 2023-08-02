@@ -1,4 +1,4 @@
-from booking.api.serializers import SeatSerializer, SeatAvailabilitySerializer, BookingHistorySerializer
+from booking.api.serializers import SeatSerializer, SeatAvailabilitySerializer, BookingHistorySerializer, CollectionSerializer
 from movie.api.serializers import MovieSerializer, ShowtimeSerializer
 from cinema.api.serializers import CinemaHallSerializer
 from rest_framework.views import APIView
@@ -8,6 +8,10 @@ from rest_framework import status
 from movie.models import Showtime, Movie
 from cinema.models import CinemaHall
 from authentication.models import Customer
+from django.db import transaction
+from booking.api.custom_permissions import MyBookingPermission
+from rest_framework import authentication
+from rest_framework import permissions
 
 
 class SeatAPIView(APIView):
@@ -91,6 +95,8 @@ class BookPenHisAPIView(APIView):
     
 # code for booking
 class BookingAPIView(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [MyBookingPermission]
     def get(self, request, slug,show_id, hall_id):
         user = request.user
         email = user.email
@@ -129,7 +135,58 @@ class BookingAPIView(APIView):
 # code for payment 
 
 class PaymentAPIView(APIView):
-    def get(self, request):
-        pass
+    def get(self, request,slug,show_id,hall_id):
+        return Response({"success":"This is get method on payment"})
+    def post(self, request,slug,show_id, hall_id):
+        
+        user = request.user
+        movie_obj = Movie.objects.get(slug = slug)
+        user_email = user.email
+        customer_obj = Customer.objects.get(email = user_email)
+        print(customer_obj.balance)
+        
+        show_date = Showtime.objects.get(id = show_id).show_date
+        if SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_obj.id, showtime = show_id, seat_status = 'pending',payment_status = False).exists():
+            cart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_obj.id, showtime = show_id, seat_status = 'pending',payment_status = False )
+            total = cart.count()
+            
+            if customer_obj.balance > total:
+                
+                my_seats = [s.seat for s in cart]
+                histry_data = {
+                    'user':user.id,
+                    'hall':hall_id,
+                    'show_date':show_date,
+                    'showtiem':show_id,
+                    'movie':movie_obj.id,
+                    'seats':my_seats,
+                    'pay_method':'demo',
+                    'total':total,
+                    'correctio_data':{
+                    'user':user.id,
+                    'movie':movie_obj.id,
+                    'total':total
+                }
+                }
+                
+                collection_data = {
+                    'user':user.id,
+                    'movie':movie_obj.id,
+                    'total':total
+                }
+                with transaction.atomic():
+                    histry_serializer = BookingHistorySerializer(data = histry_data)
+                    collection_serializer = CollectionSerializer(data = collection_data)
+                
+                    if histry_serializer.is_valid() and collection_serializer.is_valid():
+                        instance1 = histry_serializer.save()
+                        instance2 = collection_serializer.save()
+                        response_data = {"ins1":instance1, "ins2":instance2}
+                        return Response(response_data)
+                    
+                    return Response({"error":"error occured","data":histry_serializer.errors})
+            return Response({"error":"Your balance is less than total"})
+        return Response({"error":"Please select one movie"})
+            
         
         

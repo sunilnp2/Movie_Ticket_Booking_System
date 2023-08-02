@@ -20,6 +20,37 @@ from authentication.models import Customer
 
 from utils.tasks import send_ticket
 # Create your views here.
+def calculate_seat_score(seat):
+    # Calculate Seat Score based on Seat Characteristics
+    print(f"The seat is {seat}")
+    # seat = Seat.objects.get(id = seat)
+    seat_score = (
+        seat.seat_score +
+        seat.screen_visibility
+    )
+    return seat_score
+
+
+def recommend_using_backtrack(seats_queryset, num_seats_required):
+    # Create a list to store unique seat scores along with their positions
+    seat_scores = []
+
+    # Iterate through the seats in the queryset
+    for seat in seats_queryset:
+        # Calculate seat score based on seat_distance and screen_visibility using seat object
+        seat_score = calculate_seat_score(seat)
+        # Add the seat and its score to the list
+        seat_scores.append((seat, seat_score))
+
+    # Sort seats by score (descending order, higher scores first)
+    sorted_seats = sorted(seat_scores, key=lambda x: x[1], reverse=True)
+
+    # Filter out any reserved or unavailable seats
+    available_seats = [seat for seat, seat_score in sorted_seats if seat.seat_status == 'available']
+
+    # Return the recommended seats
+    return available_seats[:num_seats_required]
+
 
 @method_decorator(login_required, name='dispatch')
 class Seatview(BaseView):
@@ -33,7 +64,17 @@ class Seatview(BaseView):
         self.views['third_row'] = Seat.objects.filter(seat_number__gt=10,seat_number__lte=15)
         self.views['fourth_row'] = Seat.objects.filter(seat_number__gt=15,seat_number__lte=20)
         self.views['fifth_row'] = Seat.objects.filter(seat_number__gt=20,seat_number__lte=25)
+        
+        # Get the queryset for available seats
+        num_seats_required = 1
+        seats_queryset = Seat.objects.all()
 
+        # Calculate the recommended seats using the seat recommendation algorithm
+        recommended_seats = recommend_using_backtrack(seats_queryset, num_seats_required)
+        print(f"The recommended Seat is{recommended_seats}")
+
+
+        self.views['recommended_seat'] = recommended_seats
         self.views['details'] = Movie.objects.get(slug = slug)
         movie_id = self.views['details'].id
         user = request.user
@@ -68,6 +109,7 @@ class Seatview(BaseView):
         
 
         return render(request, 'seat.html', self.views)
+    
 
 @method_decorator(login_required, name='dispatch')
 class ReserveView(BaseView):
@@ -129,15 +171,13 @@ class ReserveView(BaseView):
             return response
         
         elif SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = show_id, seat_status__in = ["pending","reserved"]).exists():
-            # messages.error(request, "Movie is booked already")
-            # return redirect("booking:seat",slug, date_id, show_id,hall_id)
             res_data = {"success":"Movie is booked Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
         
         elif BookingHistory.objects.filter(movie = movie_id,seats__id = get_seat_id,hall = hall_id,showtime = sh_id, payment_status =True).exists():
-            res_data = {"success":"Seat Un reserved Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
+            res_data = {"success":"Seat reserved Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
@@ -170,7 +210,11 @@ class ReserveView(BaseView):
             res_data = {"success":"Seat reserved successfully", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id, "total":total, "seat":seats}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
-            return response
+            return response 
+        
+        
+
+
         
 
         
@@ -210,7 +254,7 @@ class PaymentView(BaseView):
         movie_id = Movie.objects.get(slug = slug).id
         user = request.user 
         my_user_id = user.id
-        user_id = user.email
+        user_id = user.email 
         movie_obj = Movie.objects.get(slug = slug)
         customer = Customer.objects.get(email = user_id)
         balance = Customer.objects.get(email = user_id).balance

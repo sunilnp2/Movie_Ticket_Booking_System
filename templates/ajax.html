@@ -162,6 +162,7 @@ $(".row").on("click",".material-symbols-outlined", function(e){
   let showtime_id = $(this).attr("data-showtime-id");
   let movie_slug = $(this).attr("data-details-slug");
   let hall_id = $(this).attr("data-hall-id");
+  let csrftoken = getCookie('csrftoken');
   console.log(seat_id)
   console.log(showtime_id)
   console.log(movie_slug)
@@ -170,7 +171,6 @@ $(".row").on("click",".material-symbols-outlined", function(e){
   console.log("Seat booked Clicked Inside DIv");
   console.log("Change Color");
   $(this).css("color", "red");
-  const csrftoken = getCookie('csrftoken');
   $.ajax({
     url : 'http://localhost:8000/booking/reserve/' + seat_id + '/' + showtime_id +  '/' + movie_slug+  '/' + hall_id,
     method:'POST',

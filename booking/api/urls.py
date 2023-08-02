@@ -1,5 +1,5 @@
 from django.urls import path
-from booking.api.views import SeatAPIView, SeatReserveAPIView, BookPenHisAPIView, BookingAPIView
+from booking.api.views import SeatAPIView, SeatReserveAPIView, BookPenHisAPIView, BookingAPIView, PaymentAPIView
 
 urlpatterns = [
     path('api_seat', SeatAPIView.as_view(), name='api_seat'),
@@ -10,4 +10,7 @@ urlpatterns = [
     
     # for booking confirmation and pay
     path('drf_booking/<str:slug>/<int:show_id>/<int:hall_id>/', BookingAPIView.as_view(), name='drf_booking'),
+    
+    # code for payment
+    path('api_payment/<str:slug>/<int:show_id>/<int:hall_id>', PaymentAPIView.as_view(), name='api_payment'),
 ]

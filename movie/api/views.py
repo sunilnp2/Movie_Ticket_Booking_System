@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from movie.api.serializers import MovieSerializer, ShowtimeSerializer, MovieLikeSerializer
 from rest_framework import status
 from movie.models import Movie, Showtime, Like
-from cinema.models import CinemaHall
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import date
 from rest_framework.authentication import BaseAuthentication, SessionAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
-from movie.api.custom_authentication import CustomBasicAuthentication
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 # from django.
 
 
@@ -17,6 +17,9 @@ from movie.api.custom_authentication import CustomBasicAuthentication
 # Views for showing all movie and movie details 
 
 class MovieAPIView(APIView):
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filterset_fields = ['name']
+    search_fields = ['namne']
     def get(self, request, slug = None):
         slug = slug
         if slug is not None:

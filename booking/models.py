@@ -10,6 +10,8 @@ class Seat(models.Model):
     seat_number = models.PositiveIntegerField()
     name = models.CharField(max_length=10)
     seat_status = models.CharField(choices=SEAT_STATUS, max_length=100,blank=True, null=True)
+    seat_score = models.PositiveIntegerField(default=0,blank=True, null=True)
+    screen_visibility = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
         return str(self.seat_number)

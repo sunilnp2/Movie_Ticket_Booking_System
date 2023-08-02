@@ -76,11 +76,33 @@ class BookingHistorySerializer(serializers.Serializer):
     showtime = serializers.PrimaryKeyRelatedField(queryset=Showtime.objects.all())
     movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
     seats = serializers.PrimaryKeyRelatedField(queryset=Seat.objects.all(), many=True)
-    reservation_datetime = serializers.DateTimeField(read_only=True)
+    reservation_datetime = serializers.DateTimeField(default = timezone.now())
     payment_status = serializers.BooleanField(default=False)
     payment_method = serializers.CharField(max_length=50, allow_null=True, required=False)
     total = serializers.IntegerField(default=0, allow_null=True, required=False)
     
+    def create(self, validated_data):
+        user = validated_data.get('user')
+        hall = validated_data.get('hall')
+        show_date = validated_data.get('show_date')
+        showtime = validated_data.get('showtime')
+        movie = validated_data.get('movie')
+        paymethod_method = validated_data.get('pay_method')
+        total = validated_data.get('total')
+    
+        seats = validated_data.get('user')
+        
+        BookingHistory.objects.create(
+            user = user,
+            hall = hall,
+            show_date = show_date, 
+            showtime = showtime,
+            movie = movie,
+            payment_status = True,
+            paymethod_method = paymethod_method,
+            total = total,
+            seats = seats
+        )
 
 
 class CollectionSerializer(serializers.Serializer):

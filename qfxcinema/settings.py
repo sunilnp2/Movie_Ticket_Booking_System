@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',  
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -217,8 +218,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        
     ],
-   
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 
@@ -269,3 +271,20 @@ SIMPLE_JWT = {
 
 
 # cors headers -------------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
+CORS_ALLOW_HEADERS = [
+    'Accept',
+    'Accept-Language',
+    'Authorization',
+    'contentType', 
+    'x-csrftoken' # Add 'Content-Type' to the list of allowed headers
+]
+
+
+# django filters

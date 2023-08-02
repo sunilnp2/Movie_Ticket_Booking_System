@@ -31,9 +31,10 @@ class MovieSearchView(BaseView):
         sf = SearchForm({"search": request.GET.get('search', '')})
         if sf.is_valid():
             movie_qs = sf.filter_movie()
+            return render(request, 'movie-search.html',context = {'search':movie_qs})
         else:
             movie_qs = []
-        return render(request, 'movie-search.html',context = {'search':movie_qs})
+            return render(request, 'movie-search.html',context = {'search':movie_qs})
         
        
 

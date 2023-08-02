@@ -86,6 +86,7 @@
       <p>Language : {{details.language}}</p>
       <p>Genre : {{details.genre}}</p>
       <p class="-movie-casts">Cast : {{details.cast}}</p>
+      <p>Trailer Link : <a target="_blank" href="{{details.trailer_link}}" >Click Here to Watch</a></p>
     </div>
   </div>
   {% if details.movie_status == 'showing' %}
@@ -104,7 +105,7 @@
           {% for d in dates %}
           <div class="mydate">
             <h5>{{d.show_date}}</h5>
-            <h1>{{d.pk}}</h1>
+            <!-- <h1>{{d.pk}}</h1> -->
             <a href="{% url 'movie:cinemahall' d.pk details.slug %}">
               <div class="adjust-date">
                 <p>
