@@ -46,7 +46,7 @@ class BookingHistory(models.Model):
     show_date = models.DateField()
     showtime = models.ForeignKey(Showtime, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    seats = models.ManyToManyField(Seat)
+    seats = models.ManyToManyField(Seat, related_name='seats')
     reservation_datetime = models.DateTimeField(auto_now_add=True)
     payment_status = models.BooleanField(default=False)
     payment_method = models.CharField(max_length=50, null=True, blank=True)

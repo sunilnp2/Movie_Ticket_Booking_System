@@ -28,28 +28,48 @@ def calculate_seat_score(seat):
         seat.seat_score +
         seat.screen_visibility
     )
+    print(seat_score)
     return seat_score
 
 
-def recommend_using_backtrack(seats_queryset, num_seats_required):
+def recommend_using_backtrack(show_id, hall_id, num_seats_required):
+    # Get the queryset of Seat objects
+    seats_queryset = Seat.objects.all()
+    showtime = Showtime.objects.select_related('movie').get(id = show_id)
+    movie = showtime.movie.id
+    show_date = showtime.show_date
+
+
+
     # Create a list to store unique seat scores along with their positions
     seat_scores = []
 
     # Iterate through the seats in the queryset
     for seat in seats_queryset:
-        # Calculate seat score based on seat_distance and screen_visibility using seat object
-        seat_score = calculate_seat_score(seat)
-        # Add the seat and its score to the list
-        seat_scores.append((seat, seat_score))
+        # Filter the SeatAvailability objects for the specific seat, showtime, and date with 'reserved' status
+        reserved_seats = SeatAvailability.objects.filter(
+            seat=seat,
+            showtime_id=show_id,
+            hall_id=hall_id,
+            movie = movie,
+            show_date = show_date,
+            seat_status__in = ('reserved', 'pending')
+        )
+
+        # If no reservations found for the specific seat, calculate the seat score
+        if not reserved_seats.exists():
+            seat_score = calculate_seat_score(seat)
+            # Add the seat and its score to the list
+            seat_scores.append((seat, seat_score))
 
     # Sort seats by score (descending order, higher scores first)
     sorted_seats = sorted(seat_scores, key=lambda x: x[1], reverse=True)
 
-    # Filter out any reserved or unavailable seats
-    available_seats = [seat for seat, seat_score in sorted_seats if seat.seat_status == 'available']
-
     # Return the recommended seats
-    return available_seats[:num_seats_required]
+    recommended_seats = [seat for seat, seat_score in sorted_seats]
+
+    return recommended_seats[:num_seats_required]
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -67,10 +87,9 @@ class Seatview(BaseView):
         
         # Get the queryset for available seats
         num_seats_required = 1
-        seats_queryset = Seat.objects.all()
 
         # Calculate the recommended seats using the seat recommendation algorithm
-        recommended_seats = recommend_using_backtrack(seats_queryset, num_seats_required)
+        recommended_seats = recommend_using_backtrack(show_id, hall_id, num_seats_required)
         print(f"The recommended Seat is{recommended_seats}")
 
 
@@ -131,7 +150,8 @@ class ReserveView(BaseView):
         user = request.user
         user_id = user.id
         myuser = User.objects.get(id = user_id)
-
+        # num_seats_required = 1
+        # recommended_seats = recommend_using_backtrack(show_id, hall_id, num_seats_required)
         shift = sh_id.shift
         if shift == "Morning":
             morning = False

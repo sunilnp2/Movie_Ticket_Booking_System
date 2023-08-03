@@ -6,6 +6,7 @@ from movie.models import Movie, Showtime
 from cinema.models import CinemaHall
 from rest_framework.response import Response
 from django.utils import timezone
+from authentication.api.serializers import CustomerSerializer
 
 class SeatSerializer(serializers.Serializer):
     seat_number = serializers.IntegerField()
@@ -68,6 +69,23 @@ class SeatAvailabilitySerializer(serializers.Serializer):
         
 
 # Serializer for Showing Booking Pending and Booking BookingHistory to admin 
+# -----------------------------One Option 1------------------------------
+'''
+class CollectionSerializer(serializers.Serializer):
+    user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all())
+    movie = serializers.PrimaryKeyRelatedField(queryset = Movie.objects.all())
+    payment_amount = serializers.DecimalField(max_digits = 10, decimal_places=2)
+    timestamp = serializers.DateTimeField(default = timezone.now())
+    
+    
+    def create(self, validated_data):
+        user = validated_data.get('user')
+        movie = validated_data.get('movie')
+        payment = validated_data.get('amount')
+        
+        Collection.objects.create(user = user, movie = movie, payment_amount = payment).save()
+        
+
 
 class BookingHistorySerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
@@ -80,6 +98,8 @@ class BookingHistorySerializer(serializers.Serializer):
     payment_status = serializers.BooleanField(default=False)
     payment_method = serializers.CharField(max_length=50, allow_null=True, required=False)
     total = serializers.IntegerField(default=0, allow_null=True, required=False)
+
+
     
     def create(self, validated_data):
         user = validated_data.get('user')
@@ -104,7 +124,9 @@ class BookingHistorySerializer(serializers.Serializer):
             seats = seats
         )
 
+        '''
 
+# -----------------------------Two Option 2------------------------------
 class CollectionSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all())
     movie = serializers.PrimaryKeyRelatedField(queryset = Movie.objects.all())
@@ -118,6 +140,34 @@ class CollectionSerializer(serializers.Serializer):
         payment = validated_data.get('amount')
         
         Collection.objects.create(user = user, movie = movie, payment_amount = payment).save()
-        
-        
 
+
+class BookingHistorySerializer(serializers.Serializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    hall = serializers.PrimaryKeyRelatedField(queryset=CinemaHall.objects.all(), allow_null=True, required=False)
+    show_date = serializers.DateField()
+    showtime = serializers.PrimaryKeyRelatedField(queryset=Showtime.objects.all())
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    seats = serializers.SlugRelatedField(many=True, slug_field='seat', queryset=Seat.objects.all())
+    reservation_datetime = serializers.DateTimeField(default = timezone.now())
+    payment_status = serializers.BooleanField(default=False)
+    payment_method = serializers.CharField(max_length=50, allow_null=True, required=False)
+    total = serializers.IntegerField(default=0, allow_null=True, required=False)
+    collection = CollectionSerializer()
+
+
+    def create(self, validated_data):
+        collection_data = validated_data.pop('collection')
+
+        collectio_instance = Collection.objects.create(**collection_data)
+
+
+        # for booking history
+
+        booking_history_instance = BookingHistory.objects.create(
+            collection = collectio_instance, 
+            **validated_data
+        )
+        return booking_history_instance
+        
+        

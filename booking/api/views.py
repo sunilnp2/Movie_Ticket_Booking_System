@@ -148,43 +148,39 @@ class PaymentAPIView(APIView):
         show_date = Showtime.objects.get(id = show_id).show_date
         if SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_obj.id, showtime = show_id, seat_status = 'pending',payment_status = False).exists():
             cart = SeatAvailability.objects.filter(user = user,hall = hall_id, show_date = show_date, movie = movie_obj.id, showtime = show_id, seat_status = 'pending',payment_status = False )
-            total = cart.count()
+            total = 0
+            for c in cart:
+                total += c.total
+            print(total)
             
             if customer_obj.balance > total:
                 
-                my_seats = [s.seat for s in cart]
-                histry_data = {
-                    'user':user.id,
-                    'hall':hall_id,
-                    'show_date':show_date,
-                    'showtiem':show_id,
-                    'movie':movie_obj.id,
-                    'seats':my_seats,
-                    'pay_method':'demo',
-                    'total':total,
-                    'correctio_data':{
-                    'user':user.id,
-                    'movie':movie_obj.id,
-                    'total':total
-                }
-                }
+                my_seats = [s.seat.id for s in cart]
+                
                 
                 collection_data = {
                     'user':user.id,
                     'movie':movie_obj.id,
-                    'total':total
+                    'payment_amount':total
                 }
-                with transaction.atomic():
-                    histry_serializer = BookingHistorySerializer(data = histry_data)
-                    collection_serializer = CollectionSerializer(data = collection_data)
+                histry_data = {
+                    'user':user.id,
+                    'hall':hall_id,
+                    'show_date':show_date,
+                    'showtime':show_id,
+                    'movie':movie_obj.id,
+                    'seats':my_seats,
+                    'pay_method':'demo',
+                    'total':total,
+                    'collection':collection_data,
+                }
                 
-                    if histry_serializer.is_valid() and collection_serializer.is_valid():
-                        instance1 = histry_serializer.save()
-                        instance2 = collection_serializer.save()
-                        response_data = {"ins1":instance1, "ins2":instance2}
-                        return Response(response_data)
-                    
-                    return Response({"error":"error occured","data":histry_serializer.errors})
+                serializer = BookingHistorySerializer(data = histry_data)
+                if serializer.is_valid():
+                    serializer.save()
+                    # instance.seat.set(my_seats)
+                    return Response({"message":"Seat is reserved"})
+                return Response(serializer.errors)
             return Response({"error":"Your balance is less than total"})
         return Response({"error":"Please select one movie"})
             
