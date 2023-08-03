@@ -1,12 +1,14 @@
 # serializer for Seat View
 from rest_framework import serializers
 from booking.models import SEAT_STATUS, SeatAvailability, Seat, BookingHistory, Collection
-from authentication.models import User
+from authentication.models import User, Customer
 from movie.models import Movie, Showtime
 from cinema.models import CinemaHall
 from rest_framework.response import Response
 from django.utils import timezone
-from authentication.api.serializers import CustomerSerializer
+
+# from authentication.api.serializers import CustomerSerializer
+from django.db import transaction
 
 class SeatSerializer(serializers.Serializer):
     seat_number = serializers.IntegerField()
@@ -135,11 +137,7 @@ class CollectionSerializer(serializers.Serializer):
     
     
     def create(self, validated_data):
-        user = validated_data.get('user')
-        movie = validated_data.get('movie')
-        payment = validated_data.get('amount')
-        
-        Collection.objects.create(user = user, movie = movie, payment_amount = payment).save()
+        Collection.objects.create(**validated_data)
 
 
 class BookingHistorySerializer(serializers.Serializer):
@@ -148,7 +146,7 @@ class BookingHistorySerializer(serializers.Serializer):
     show_date = serializers.DateField()
     showtime = serializers.PrimaryKeyRelatedField(queryset=Showtime.objects.all())
     movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
-    seats = serializers.SlugRelatedField(many=True, slug_field='seat', queryset=Seat.objects.all())
+    seats = serializers.PrimaryKeyRelatedField(many=True, queryset=Seat.objects.all(), required=False)
     reservation_datetime = serializers.DateTimeField(default = timezone.now())
     payment_status = serializers.BooleanField(default=False)
     payment_method = serializers.CharField(max_length=50, allow_null=True, required=False)
@@ -158,16 +156,39 @@ class BookingHistorySerializer(serializers.Serializer):
 
     def create(self, validated_data):
         collection_data = validated_data.pop('collection')
+        seats_data = validated_data.pop('seats', [])
+        # customer_email  = User.objects.get(id = validated_data.get('user')).email
+        balance = Customer.objects.get(email = validated_data.get('user')).balance
 
-        collectio_instance = Collection.objects.create(**collection_data)
 
-
-        # for booking history
-
-        booking_history_instance = BookingHistory.objects.create(
-            collection = collectio_instance, 
-            **validated_data
-        )
-        return booking_history_instance
         
+
+        try:
+            if transaction.atomic():
+                Collection.objects.create(**collection_data)
+
+
+
+                # for booking history
+
+                booking_history_instance = BookingHistory.objects.create(
+                    **validated_data
+                )
+                booking_history_instance.payment_status = True
+                booking_history_instance.save()
+                booking_history_instance.seats.set(seats_data)
+
+                SeatAvailability.objects.filter(user = validated_data.get('user'),
+                                                hall = validated_data.get('hall'),
+                                                show_date = validated_data.get('show_date'),
+                                                movie = validated_data.get('movie'),
+                                                showtime = validated_data.get('showtime'),
+                                                payment_status = False).update(payment_status = True, seat_status = "reserved")
+                
+
+                Customer.objects.filter(email = validated_data.get('user')).update(balance = balance - validated_data.get('total'))
+                return booking_history_instance
+        except Exception as e:
+            print(e)
+            
         

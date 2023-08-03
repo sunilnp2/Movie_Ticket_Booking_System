@@ -11,7 +11,7 @@ from authentication.models import Customer
 from django.db import transaction
 from booking.api.custom_permissions import MyBookingPermission
 from rest_framework import authentication
-from rest_framework import permissions
+# from rest_framework import permissions
 
 
 class SeatAPIView(APIView):
@@ -156,6 +156,7 @@ class PaymentAPIView(APIView):
             if customer_obj.balance > total:
                 
                 my_seats = [s.seat.id for s in cart]
+                print(my_seats)
                 
                 
                 collection_data = {
@@ -176,13 +177,13 @@ class PaymentAPIView(APIView):
                 }
                 
                 serializer = BookingHistorySerializer(data = histry_data)
-                if serializer.is_valid():
+                if serializer.is_valid():   
                     serializer.save()
                     # instance.seat.set(my_seats)
                     return Response({"message":"Seat is reserved"})
                 return Response(serializer.errors)
             return Response({"error":"Your balance is less than total"})
         return Response({"error":"Please select one movie"})
-            
+
         
         

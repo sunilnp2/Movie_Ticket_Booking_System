@@ -212,13 +212,15 @@ body{
     height: 50%;
     display: flex;
     justify-content: center;
-    align-content: center;
+    /* align-content: center; */
+    flex-direction: column;
 }
 
 .list-upcoming{
     height: 80%;
     width: 230px;
-    margin: 5px 10px;
+    margin: 20px 10px;
+
 }
 
 .list-upcoming img{
