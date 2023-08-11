@@ -12,6 +12,10 @@ from cinema.views import BaseView
 from authentication.models import User, Customer
 from utils.forms import UpdateProfileForm
 from authentication.tasks import activate_email
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 # from django.contrib.auth.backends import ModelBackend
@@ -54,9 +58,11 @@ def activate(request, uidb64, token):
         )
         customer.save()
         messages.success(request, "Thank you for your email confirmation you can login your account.")
+        logger.info("User is created successfuly")
         return redirect('authentication:login')
     else:
         messages.error(request, "Activation link is invalid!")
+        logger.error("Some error occurs")
     return redirect('home')
 
 def activateEmail(request, user, to_email):
@@ -91,10 +97,10 @@ class LoginView(BaseView):
             login(request, user)
             if 'next' in request.POST:
                 return redirect(request.POST.get('next'))
-            
+            logger.info("Login")
             messages.success(request, "Login Successfully")
             return redirect('cinema:home')
-        
+        logger.error("Some error happen", exc_info=True)
         messages.error(request, "Enter Correct password")
         return render(request, 'login.html')
 

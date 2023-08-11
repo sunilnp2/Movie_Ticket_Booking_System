@@ -10,6 +10,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from utils.form.search.search_movies import SearchForm
 from django.contrib import messages
+import datetime
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -31,6 +36,7 @@ class MovieSearchView(BaseView):
         sf = SearchForm({"search": request.GET.get('search', '')})
         if sf.is_valid():
             movie_qs = sf.filter_movie()
+            logger.info("This is movie search")
             return render(request, 'movie-search.html',context = {'search':movie_qs})
         else:
             movie_qs = []
@@ -65,6 +71,7 @@ class MovieDetailView(BaseView):
         self.views['selected_date'] = None
         
         movie_id = self.views['details'].id
+        
         try:
             
             like = self.views['details'].like_set.filter(movie=movie_id).order_by('liked_at').last()
@@ -75,6 +82,7 @@ class MovieDetailView(BaseView):
             self.views['like_count'] = like_count
         except ObjectDoesNotExist:
             self.views['like_count'] = 0
+        logger.warning('This is movie detail view at '+str(datetime.datetime.now())+' hours!')
         return render(request, 'movie-detail.html', self.views)
 
 
