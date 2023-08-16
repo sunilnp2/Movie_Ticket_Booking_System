@@ -229,7 +229,7 @@ from datetime import timedelta
 from django.conf import settings
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
@@ -374,3 +374,13 @@ LOGGING = {
         },
     },
 }
+
+
+#--------------------------------pyest--------------------
+# import os
+# import pytest
+# from django.conf import settings
+
+# # Configure Django settings for testing
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qfxcinema.settings')
+# settings.configure()

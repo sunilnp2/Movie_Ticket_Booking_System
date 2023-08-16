@@ -12,12 +12,18 @@ from django.conf import settings
 
 # Jwt token process 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 def generate_token(user):
     refresh = RefreshToken.for_user(user)
-    token = str(refresh.access_token)
-    return token
 
-
+    
+    # token = str(refresh.access_token)
+    # return token
+    return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
 
 
 
@@ -46,16 +52,20 @@ class VerifyTOkenView(APIView):
     def get(self,request, uidb64, token):
         user = request.user
         User = get_user_model()
-        try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
-        except:
-            user = None
-        decoded_token = verify_jwt_token(token)
-        
-        if decoded_token is not None:
-            user.email_verified = True
-            user.save()
-            return Response({"success":"Thank you for Email Confirmation"}, status = status.HTTP_200_OK)
+
+        if user.email_verified == True:
+             return Response({"Error":"Your Email is Verified already"}, status = status.HTTP_200_OK)
         else:
-            return Response({"message":"Invalid Token"}, status.HTTP_400_BAD_REQUEST)
+            try:
+                uid = force_str(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(pk=uid)
+            except:
+                user = None
+            decoded_token = verify_jwt_token(token)
+            
+            if decoded_token is not None:
+                user.email_verified = True
+                user.save()
+                return Response({"success":"Thank you for Email Confirmation"}, status = status.HTTP_200_OK)
+            else:
+                return Response({"message":"Invalid Token"}, status.HTTP_400_BAD_REQUEST)

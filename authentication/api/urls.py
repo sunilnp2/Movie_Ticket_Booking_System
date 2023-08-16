@@ -1,7 +1,7 @@
 
 from django.urls import path
 from .views import SignUpSerializerView, LoginSerializerView
-from utils.api.jwt_tokens import VerifyTOkenView
+from utils.api.jwt_tokens import VerifyTOkenView, RefreshToken
 
 
 urlpatterns = [

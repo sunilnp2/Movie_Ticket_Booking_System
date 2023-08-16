@@ -15,12 +15,18 @@ django-crontab==0.7.1
 django-filter==23.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
+exceptiongroup==1.1.2
 idna==3.4
+iniconfig==2.0.0
 kombu==5.3.1
+packaging==23.1
 Pillow==9.5.0
+pluggy==1.2.0
 prompt-toolkit==3.0.39
 psycopg2==2.9.6
 PyJWT==2.7.0
+pytest==7.4.0
+pytest-django==4.5.2
 python-dateutil==2.8.2
 python-decouple==3.8
 pytz==2023.3
@@ -30,6 +36,7 @@ requests==2.31.0
 simplejwt==2.0.1
 six==1.16.0
 sqlparse==0.4.4
+tomli==2.0.1
 tqdm==4.65.0
 typing==3.7.4.3
 typing_extensions==4.6.3

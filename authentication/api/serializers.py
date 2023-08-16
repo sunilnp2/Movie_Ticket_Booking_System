@@ -69,9 +69,6 @@ class SignUpSerializer(serializers.Serializer):
         print(password)
         print(password2)
         
-        if password != password2:
-            raise serializers.ValidationError("Password is not match.")
-        
         username = email.split('@')[0]
         print(username)
         # username = ""
@@ -85,7 +82,7 @@ class SignUpSerializer(serializers.Serializer):
         ).save()
         # myuser = usr.save()
         activateEmail(request,email)
-        return Response({"success":"Create"})
+        return Response({"success":"Created"})
         
 
         

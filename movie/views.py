@@ -40,6 +40,7 @@ class MovieSearchView(BaseView):
             return render(request, 'movie-search.html',context = {'search':movie_qs})
         else:
             movie_qs = []
+            logger.error("This is error in search")
             return render(request, 'movie-search.html',context = {'search':movie_qs})
         
        

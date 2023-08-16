@@ -7,13 +7,14 @@ from authentication.views import *
 from django.core.mail import send_mail
 
 @shared_task(bind = True)
-def drf_activate_email(request,id,domain, uid, token, protocol):
+def drf_activate_email(request,id,domain, uid, protocol,access = None, refresh = None ):
     user = User.objects.get(id = id)
     name = user.username
     email = user.email
     domain = domain
     uid = uid
-    token = token
+    access_token = access
+    refresh_token = refresh
     protocol = protocol
     mail_subject = "Activate your user account."
     message = render_to_string("drf-email-activate.html", {
@@ -21,7 +22,8 @@ def drf_activate_email(request,id,domain, uid, token, protocol):
         'username':name,
         'domain': domain,
         'uid': uid,
-        'token': token,
+        'token': access_token,
+        'refresh_token':refresh_token,
         "protocol": protocol,
     })
     send_mail(
@@ -33,4 +35,5 @@ def drf_activate_email(request,id,domain, uid, token, protocol):
 
         )
     return "Done"
+
 

@@ -13,6 +13,8 @@ def activateEmail(request,email):
     domain =  get_current_site(request).domain
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = generate_token(user)
+    access = token['access']
+    refresh = token['refresh']
     protocol = 'https' if request.is_secure() else 'http'
-    drf_activate_email.delay(id, domain, uid, token, protocol)
+    drf_activate_email.delay(id, domain, uid, protocol, access = access, refresh = refresh)
     

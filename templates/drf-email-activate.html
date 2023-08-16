@@ -3,6 +3,10 @@ Hi {{ user.username }},
 
 Please click on the link below to confirm your registration:
 
+Access Token
 {{ protocol }}://{{ domain }}{% url 'auth:drf_activate' uidb64=uid token=token %}
+
+Refresh Token
+{{ refresh_token }}
 
 {% endautoescape %}
