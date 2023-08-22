@@ -122,7 +122,7 @@ DATABASES = {
        'ENGINE': 'django.db.backends.postgresql',
        'NAME': 'qfxcinema',
        'USER': 'postgres',
-       'PASSWORD': 'root',
+       'PASSWORD': 'postgres',
        'HOST': '127.0.0.1',
        'PORT': '5432',
    }
@@ -271,6 +271,7 @@ SIMPLE_JWT = {
 
 
 # cors headers -------------------------------------------------
+<<<<<<< Updated upstream
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True 
 
@@ -384,3 +385,8 @@ LOGGING = {
 # # Configure Django settings for testing
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qfxcinema.settings')
 # settings.configure()
+=======
+
+
+# django filters
+>>>>>>> Stashed changes

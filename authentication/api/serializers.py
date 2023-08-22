@@ -120,3 +120,33 @@ class CustomerSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         return Customer.objects.create(**validated_data)
+    
+# code for custom jwt serializer --------------------------------------------------------------------
+
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer,TokenVerifySerializer
+class MyCustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    '''
+        THIS WILL  CREATE A TOKEN FOR THE USER
+    '''
+    def validate(self,attrs):
+        # print(self.context) REQUEST IS INSIDE CONTEXT
+        data = super().validate(attrs)
+        # refresh = self.get_token(self.user)
+        data["user"]=str(self.user)
+        # data[“refresh”] = str(refresh)
+        # data[“access”] = str(refresh.access_token)
+        return data
+
+
+    @classmethod
+    def get_token(cls, user):
+
+
+        '''
+            THIS IS TO ADD PAYLOAD IN TOKEN
+        '''
+
+        token=super().get_token(user)
+        token["username"]=user.username
+        return token
