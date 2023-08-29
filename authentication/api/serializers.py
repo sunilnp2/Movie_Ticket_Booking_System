@@ -123,8 +123,8 @@ class CustomerSerializer(serializers.Serializer):
     
 # code for custom jwt serializer --------------------------------------------------------------------
 
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer,TokenVerifySerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 class MyCustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     '''
         THIS WILL  CREATE A TOKEN FOR THE USER

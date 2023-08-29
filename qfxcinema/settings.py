@@ -271,7 +271,6 @@ SIMPLE_JWT = {
 
 
 # cors headers -------------------------------------------------
-<<<<<<< Updated upstream
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True 
 
@@ -385,8 +384,4 @@ LOGGING = {
 # # Configure Django settings for testing
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qfxcinema.settings')
 # settings.configure()
-=======
 
-
-# django filters
->>>>>>> Stashed changes

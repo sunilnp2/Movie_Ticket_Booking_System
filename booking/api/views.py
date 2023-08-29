@@ -155,7 +155,6 @@ class PaymentAPIView(APIView):
             
             if customer_obj.balance > total:
                 
-<<<<<<< Updated upstream
                 my_seats = [s.seat.id for s in cart]
                 print(my_seats)
                 
@@ -165,14 +164,11 @@ class PaymentAPIView(APIView):
                     'movie':movie_obj.id,
                     'payment_amount':total
                 }
-=======
                 my_seats = [s.seat for s in cart]
->>>>>>> Stashed changes
                 histry_data = {
                     'user':user.id,
                     'hall':hall_id,
                     'show_date':show_date,
-<<<<<<< Updated upstream
                     'showtime':show_id,
                     'movie':movie_obj.id,
                     'seats':my_seats,
@@ -190,33 +186,31 @@ class PaymentAPIView(APIView):
             return Response({"error":"Your balance is less than total"})
         return Response({"error":"Please select one movie"})
 
-=======
-                    'showtiem':show_id,
-                    'movie':movie_obj.id,
-                    'seats':my_seats,
-                    'pay_method':'demo',
-                    'total':total
-                }
+                    # 'showtiem':show_id,
+        #             'movie':movie_obj.id,
+        #             'seats':my_seats,
+        #             'pay_method':'demo',
+        #             'total':total
+        #         }
                 
-                collection_data = {
-                    'user':user.id,
-                    'movie':movie_obj.id,
-                    'total':total
-                }
+        #         collection_data = {
+        #             'user':user.id,
+        #             'movie':movie_obj.id,
+        #             'total':total
+        #         }
                 
-                histry_serializer = BookingHistorySerializer(data = histry_data)
-                collection_serializer = CollectionSerializer(data = collection_data)
+        #         histry_serializer = BookingHistorySerializer(data = histry_data)
+        #         collection_serializer = CollectionSerializer(data = collection_data)
                 
-                if histry_serializer.is_valid() and collection_serializer.is_valid():
-                    instance1 = histry_serializer.save()
-                    instance2 = collection_serializer.save()
-                    response_data = {"ins1":instance1, "ins2":instance2}
-                    return Response(response_data)
+        #         if histry_serializer.is_valid() and collection_serializer.is_valid():
+        #             instance1 = histry_serializer.save()
+        #             instance2 = collection_serializer.save()
+        #             response_data = {"ins1":instance1, "ins2":instance2}
+        #             return Response(response_data)
                 
-                return Response({"error":"error occured","data":histry_serializer.errors})
-            return Response({"error":"Your balance is less than total"})
-        return Response({"error":"Please select one movie"})
+        #         return Response({"error":"error occured","data":histry_serializer.errors})
+        #     return Response({"error":"Your balance is less than total"})
+        # return Response({"error":"Please select one movie"})
             
->>>>>>> Stashed changes
         
         
