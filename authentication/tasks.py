@@ -2,6 +2,8 @@ from django.conf import settings
 from celery import shared_task
 from django.template.loader import render_to_string
 from authentication.views import *
+from django.core.mail import EmailMessage
+
 
 from django.core.mail import send_mail
 
@@ -25,14 +27,20 @@ def activate_email(request,id,domain, uid, token, protocol):
         "protocol": protocol,
     })
     # email = EmailMessage(mail_subject, message, to=[email])
-    # email.send()
-    send_mail(
-            subject= mail_subject,
-            message= message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email],
-            fail_silently=True,
+    email = EmailMessage (
+    subject=mail_subject,
+    body=message,
+    from_email= settings.EMAIL_HOST_USER,
+    to=[email])
 
-        )
+    email.send()
+    # send_mail(
+    #         subject= mail_subject,
+    #         message= message,
+    #         from_email=settings.EMAIL_HOST_USER,
+    #         recipient_list=[email],
+    #         fail_silently=True,
+
+    #     )
     return "Done"
 

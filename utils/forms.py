@@ -17,8 +17,8 @@ class UpdateProfileForm(forms.ModelForm):
     
     username = forms.CharField(
 
-        validators=[checkemail], label='Email :', widget=forms.TextInput(
-        attrs={'id': 'email', 'class': 'email','readonly': 'readonly', 'placeholder': "Enter email"}), 
+        validators=[checkemail], label='Username :', widget=forms.TextInput(
+        attrs={'id': 'email', 'class': 'email','readonly': 'readonly', 'placeholder': "Enter Username"}), 
         error_messages={'required':"enter email"})
     
     first_name = forms.CharField(
@@ -35,11 +35,11 @@ class UpdateProfileForm(forms.ModelForm):
         error_messages={'required':"Enter Last Name "})
     
     address = forms.CharField(label='Current City :', widget=forms.TextInput(
-        attrs={'id': 'address', 'class': 'address_id', 'placeholder': "Enter Current City"}), 
+        attrs={'id': 'address', 'class': 'address_id','readonly': 'readonly',  'placeholder': "Enter Current City"}), 
         error_messages={'required':"City Is required "})
     
     phone = forms.CharField(validators=[checkphone], label='Phone Number :', widget=forms.TextInput(
-        attrs={'id': 'phone', 'class': 'phone', 'placeholder': "Enter phone"}), 
+        attrs={'id': 'phone', 'class': 'phone','readonly': 'readonly',  'placeholder': "Enter phone"}), 
         error_messages={'required':"Enter Phone Number"})
     
     balance = forms.CharField(validators=[checkphone], label='Available Balance :', widget=forms.TextInput(

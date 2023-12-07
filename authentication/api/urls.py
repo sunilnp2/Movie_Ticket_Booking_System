@@ -1,14 +1,12 @@
 
 from django.urls import path
-<<<<<<< Updated upstream
 from .views import SignUpSerializerView, LoginSerializerView
 from utils.api.jwt_tokens import VerifyTOkenView, RefreshToken
 
-=======
+
 from .views import SignUpSerializerView, LoginSerializerView, CustomTokenObtainPairView
 from utils.api.jwt_tokens import VerifyTOkenView
 from rest_framework_simplejwt.views import TokenRefreshView
->>>>>>> Stashed changes
 
 urlpatterns = [
     path('api_signup/', SignUpSerializerView.as_view(), name='api_signup'),

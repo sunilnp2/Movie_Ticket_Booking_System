@@ -168,7 +168,7 @@ $(".row").on("click",".material-symbols-outlined", function(e){
   console.log(movie_slug)
   console.log(hall_id)
 
-  console.log("Seat booked Clicked Inside DIv");
+  console.log("Seat booked Clicked Inside Div");
   console.log("Change Color");
   $(this).css("color", "red");
   $.ajax({
@@ -177,8 +177,8 @@ $(".row").on("click",".material-symbols-outlined", function(e){
     dataType : 'json',
     headers :{
       "X-CSRFToken": csrftoken,
-      contentType : 'application/json'
     },
+    contentType: 'application/json',
     success: function(data) {
               console.log(data);
               $('#seat-message').text(data.success);
@@ -190,6 +190,7 @@ $(".row").on("click",".material-symbols-outlined", function(e){
               $("#recommended").text(data.recommended_seat);
               console.log("fine");
             }
+    
 
   });
 

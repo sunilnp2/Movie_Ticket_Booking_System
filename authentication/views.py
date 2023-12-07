@@ -78,6 +78,9 @@ def activateEmail(request, user, to_email):
 
 
 class LoginView(BaseView):
+    '''
+    This LoginView is used for logim a email verified user only
+    '''
     def get(self,request):
         self.views['fm'] = LoginForm()
         return render(request, 'login.html', self.views)
@@ -106,6 +109,9 @@ class LoginView(BaseView):
 
 
 class SignupView(BaseView):  
+    '''
+    This Signup view is used for registered a user with email verification with django celery
+    '''
     def get(self,request):
         self.views['fm'] = SignupForm()
         return render(request, 'signup.html', self.views)
@@ -138,13 +144,20 @@ class ProfileView(BaseView):
         user = request.user
         customer = Customer.objects.get(email = user.email)
         fm = UpdateProfileForm(request.POST, instance=customer)
+        print(f"The data is {fm}")
+        first_name = fm.cleaned_data.get('first_name')
+        print(first_name)
+
         if fm.is_valid():
+            print(fm)
             fm.save()
             messages.success(request, "Profile Update successfully")
             return redirect('authentication:profile')
-        print(fm.errors)
-        messages.error(request, "Some Error Occurs")
-        return redirect('authentication:profile')
+        else:
+            
+            messages.error(request, "Some Error Occurs")
+            return redirect('authentication:profile')
+        
         
 class LogoutView(View):
     def get(self, request):

@@ -4,7 +4,7 @@ from booking.models import *
 
 
 class SeatAdmin(admin.ModelAdmin):
-    list_display = ['id','seat_number', 'name']
+    list_display = ['id','seat_number', 'name', 'screen_visibility', 'seat_score']
 admin.site.register(Seat, SeatAdmin)
 
 class SeatAvailabilityAdmin(admin.ModelAdmin):

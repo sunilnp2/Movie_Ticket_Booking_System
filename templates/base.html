@@ -42,10 +42,12 @@
       </div>
       <div class="right-sm-4">
         
-        <ul>
+        <ul> 
+          {% if user.is_superuser %}
           <li class="nav getvalue">
             <a href="{% url 'booking:bookingadmin' %}">Status</a>
           </li>
+          {% endif %}
           <li class="nav getvalue">
             <a href="{% url 'movie:movie' %}">Movies</a>
           </li>

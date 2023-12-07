@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # templates and static directory
 
@@ -61,12 +61,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
 ]
 
 ROOT_URLCONF = 'qfxcinema.urls'
@@ -153,7 +153,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM = 'nepalisun22@gmail.com'
 EMAIL_HOST_USER = 'nepalisun22@gmail.com'
-EMAIL_HOST_PASSWORD = 'mblsqyqaqwzidwpy'
+EMAIL_HOST_PASSWORD = 'bqzirddspkhlrfpm'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -271,21 +271,67 @@ SIMPLE_JWT = {
 
 
 # cors headers -------------------------------------------------
-<<<<<<< Updated upstream
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True 
+CSRF_COOKIE_SECURE = False
+CORS_ALLOW_ALL_ORIGINS = True
 
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://127.0.0.1:8000",
+#     'http://localhost:8000',
+#     # Add other allowed origins if needed
+# ]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://127.0.0.1:8000",
+#     'http://localhost:8000',
+# ]
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+# ]
+# CORS_ORIGIN_WHITELIST = [
+#      "http://127.0.0.1:8000",
+#      'http://localhost:8000',
+# ]
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
+    'http://localhost:8000',
+    # Add other allowed origins if needed
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+]
+# ALLOWED_HOSTS = [
+#     'localhost',
+# ]
+ALLOWED_HOSTS = ['localhost']
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+]
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
 CORS_ALLOW_HEADERS = [
     'Accept',
+    'Accept-Charset',
+    'Accept-Encoding',
+    'Content-Type',
+    'DNT',
+    'Origin',
+    'User-Agent',
+    'X-Requested-With',
     'Accept-Language',
     'Authorization',
     'contentType', 
-    'x-csrftoken' # Add 'Content-Type' to the list of allowed headers
+    'x-csrftoken'
 ]
+
 
 
 # django filters
@@ -385,8 +431,3 @@ LOGGING = {
 # # Configure Django settings for testing
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qfxcinema.settings')
 # settings.configure()
-=======
-
-
-# django filters
->>>>>>> Stashed changes

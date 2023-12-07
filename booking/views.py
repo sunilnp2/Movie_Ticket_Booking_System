@@ -19,7 +19,25 @@ from authentication.models import Customer
     
 
 from utils.tasks import send_ticket
+
 # Create your views here.
+def find_best_seat(cinema_hall, num_seats_required):
+    # Create a list to store unique seat scores along with their positions
+    seat_scores = []
+    for row in range(len(cinema_hall)):
+        for col in range(len(cinema_hall[0])):
+            seat = cinema_hall[row][col]
+            seat.score = calculate_seat_score(seat)
+
+            seat_scores.append((row, col, seat.score))
+    sorted_seats = sorted(seat_scores, key=lambda x: x[2], reverse=True)
+
+    available_seats = [(row, col) for row, col, score in sorted_seats if cinema_hall[row][col] == 'available']
+
+    # Return the recommended seats
+    return available_seats[:num_seats_required]
+
+
 def calculate_seat_score(seat):
     # Calculate Seat Score based on Seat Characteristics
     print(f"The seat is {seat}")
@@ -191,7 +209,7 @@ class ReserveView(BaseView):
             return response
         
         elif SeatAvailability.objects.filter(movie = movie_id,seat = s_id,hall = hall_id, showtime = show_id, seat_status__in = ["pending","reserved"]).exists():
-            res_data = {"success":"Movie is booked Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
+            res_data = {"success":"Seat reserved Already", "slug":slug, "date_id":show_date, "show_id":show_id, "hall_id":hall_id}
             response = JsonResponse(res_data)
             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
             return response
@@ -261,11 +279,12 @@ class BookingView(BaseView):
         self.views['seats'] = [s.seat.name for s in seleted_seat]
         return render(request, 'booking.html', self.views)
 
-    
+
 class PaymentView(BaseView):
     """
     This views verify the user booking and reserve the seat with current user id 
     and generate and provide pdf of selected seat to user
+    
     
     """
     def get(self, request, slug,show_id, hall_id):
@@ -403,7 +422,7 @@ class PaymentView(BaseView):
                 pdf_buffer.close()
                 # return resposnse
                 
-                messages.success(request,"Ticket Booked Successfully GO to your email to check pdf")
+                messages.success(request,"Ticket Booked Successfully, Check your email to get pdf")
                 return redirect('cinema:home')
             else:
                 messages.error(request, "You don't have enough balance please Load balance")
@@ -604,27 +623,62 @@ class DeleteBookingView(View):
 
 # ----------------------------------Seat Booking with BackTracking Algorithm-------------------------------------------------------
 
-def seat_reservation_backtrack(seats_queryset, num_seats_required, current_reservation=[], valid_reservations=[]):
-    if len(current_reservation) == num_seats_required:
-        # Base case: Valid combination found, add to list of valid reservations
-        valid_reservations.append(current_reservation)
-        return
 
-    for seat in seats_queryset:
-        if seat.seat_status == 'available':
-            # Choose the seat and mark it as reserved ('pending')
-            seat.seat_status = 'pending'
-            # Recursive call to explore further
-            seat_reservation_backtrack(seats_queryset, num_seats_required, current_reservation + [seat], valid_reservations)
-            # Backtrack: Restore the seat status to 'available' to explore other possibilities
-            seat.seat_status = 'available'
+# def is_valid_seat_combination(seats_queryset, num_seats_required, current_reservation=[], valid_reservations=[]):
+#     if len(current_reservation) == num_seats_required:
+#         # Base case: Valid combination found, add to list of valid reservations
+#         valid_reservations.append(current_reservation)
+#         return
 
+#     for seat in seats_queryset:
+#         if seat.seat_status == 'available':
+#             # Choose the seat and mark it as reserved ('pending')
+#             seat.seat_status = 'pending'
+#             seat_reservation_backtrack(seats_queryset, num_seats_required, current_reservation + [seat], valid_reservations)
+#             # Backtrack: Restore the seat status to 'available' to explore other possibilities
+#             seat.seat_status = 'available'
+
+#     return True
+
+# def seat_reservation_backtrack(seats, num_seats_required, current_reservation=[], start_index=0):
+#     if len(current_reservation) == num_seats_required:
+#         # Base case: Valid combination found, return it
+#         if is_valid_seat_combination(current_reservation):
+#             return current_reservation.copy()
+#         return []
+
+#     for i in range(start_index, len(seats)):
+#         seat = seats[i]
+#         if seat.seat_status == 'available':
+#             # Choose the seat and mark it as reserved
+#             seat.seat_status = 'pending'
+#             result = seat_reservation_backtrack(seats, num_seats_required, current_reservation + [seat], i + 1)
+#             if result:
+#                 return result
+#             seat.seat_status = 'available'
+
+#     return seat
+
+
+# # views.py
+
+# @method_decorator(login_required, name='dispatch')
 # class ReserveView(BaseView):
 #     def post(self, request, seat_id, show_id, slug, hall_id):
-#         # ... (your existing code)
+#         user = request.user
+#         s_id = Seat.objects.get(id = seat_id)
+#         get_seat_id = Seat.objects.get(id = seat_id).id
+#         show_date = Showtime.objects.get(id = show_id).show_date
+#         sh_id = Showtime.objects.get(id = show_id)
+#         movie_id = Movie.objects.get(slug = slug)
+#         hall = CinemaHall.objects.get(id = hall_id)
+#         price = Showtime.objects.get(id = show_id).price
+#         user = request.user
+#         user_id = user.id
+#         myuser = User.objects.get(id = user_id)
 
 #         # Get the existing seat status for the selected showtime, hall, and date
-#         seats_queryset = SeatAvailability.objects.filter(showtime_id=show_id, hall_id=hall_id, date_id=show_date)
+#         seats = SeatAvailability.objects.filter(showtime_id=show_id, hall_id=hall_id, date_id=show_date)
 
 #         # Check if the selected seat is available
 #         selected_seat = Seat.objects.get(id=seat_id)
@@ -633,45 +687,49 @@ def seat_reservation_backtrack(seats_queryset, num_seats_required, current_reser
 #             selected_seat.seat_status = 'reserved'
 #             selected_seat.save()
 
-#             # Calculate the old price if the user already has a reservation
-#             old_reservation = SeatAvailability.objects.filter(user=myuser, show_date=show_date, showtime=sh_id, seat_status='reserved')
-#             old_total = 0
-#             if old_reservation.exists():
-#                 old_total = old_reservation.aggregate(Sum('total'))['total__sum']
+#             # Use the backtracking algorithm to find a valid reservation
+#             num_seats_required = 1  # Adjust this based on your requirement
+#             valid_reservation = seat_reservation_backtrack(seats, num_seats_required)
+#             shift = sh_id.shift
+#             if shift == "Morning":
+#                 morning, day, night = False, True, True
+#             elif shift == "Day":
+#                 morning, day, night = True, False, True
+#             elif shift == "Night":
+#                 morning, day, night = True, True, False
 
-#             # Calculate the new total price (price of the showtime for one seat reservation)
-#             new_total = Showtime.objects.get(id=show_id).price
+#             if valid_reservation:
+#                 # Handle the reservation logic (create SeatAvailability objects, update totals, etc.)
+#                 res = SeatAvailability.objects.create(user = myuser,movie = movie_id,
+#                                             seat = s_id,
+#                                             hall = hall,
+#                                              show_date = show_date, 
+#                                              showtime = sh_id,
+#                                              seat_status = 'pending',
+#                                              morning = morning, 
+#                                              day = day,
+#                                              night = night,
+#                                              total = price
+#                                              )
+#                 res.save()
+#                 Seat.objects.update(seat_status = "pending")
+                
+#                 res_data = {
+#                     "success": "Seat reserved successfully",
+#                     "slug": slug,
+#                     "date_id": show_date,
+#                     "show_id": show_id,
+#                     "hall_id": hall_id,
+#                     "seats": [seat.seat.name for seat in valid_reservation],
+#                 }
+#                 response = JsonResponse(res_data)
+#                 response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
+#                 return response
+#             else:
+#                 # No valid reservation found
+#                 # Handle this case accordingly
+#                 pass
 
-#             # Create a new SeatAvailability object to reserve the seat
-#             seat_availability = SeatAvailability.objects.create(
-#                 user=myuser,
-#                 movie=movie_id,
-#                 seat=selected_seat,
-#                 hall=hall,
-#                 show_date=show_date,
-#                 showtime=sh_id,
-#                 seat_status='reserved',
-#                 total=new_total
-#             )
-
-#             # Calculate the final total price (old total + new total)
-#             final_total = old_total + new_total
-
-#             # ...
-
-#             # Return the response using JsonResponse
-#             res_data = {
-#                 "success": "Seat reserved successfully",
-#                 "slug": slug,
-#                 "date_id": show_date,
-#                 "show_id": show_id,
-#                 "hall_id": hall_id,
-#                 "total": final_total,
-#                 "seats": seats,  # You need to set 'seats' based on the selected seats
-#             }
-#             response = JsonResponse(res_data)
-#             response['Access-Control-Allow-Origin'] = 'http://127.0.0.1:8000'
-#             return response
 #         else:
 #             # The seat is not available for reservation
 #             res_data = {

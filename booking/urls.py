@@ -19,5 +19,5 @@ urlpatterns = [
     path('pending/delete/', DeleteBookingView.as_view(), name='delete_pending'),
     
      # for api
-    path('api/', include('booking.api.urls')),
+    # path('api/', include('booking.api.urls')),
 ]

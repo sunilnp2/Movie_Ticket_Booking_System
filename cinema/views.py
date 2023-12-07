@@ -19,8 +19,8 @@ class BaseView(View):
 class HomeView(BaseView):
     def get(self,request):
         fm = FilterMovieForm(request.GET)
-        showing = Movie.objects.filter(movie_status = "showing")
-        upcoming = Movie.objects.filter(movie_status = "comingsoon")
+        showing = Movie.objects.filter(movie_status = "showing", active = "active")
+        upcoming = Movie.objects.filter(movie_status = "comingsoon", active = "active")
         
         recommended_movies = Movie.objects.annotate(like_count=Count('like')).filter(like_count__gt=2, like__like__isnull=False)
         return render(

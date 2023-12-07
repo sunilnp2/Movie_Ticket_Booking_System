@@ -1,12 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-<<<<<<< Updated upstream
 from authentication.api.serializers import SignUpSerializer, LoginSerializer
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
-=======
 from authentication.api.serializers import SignUpSerializer, LoginSerializer, MyCustomTokenObtainPairSerializer
->>>>>>> Stashed changes
 
 class SignUpSerializerView(APIView):
     

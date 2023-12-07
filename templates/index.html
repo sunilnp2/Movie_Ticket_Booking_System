@@ -55,7 +55,7 @@
     </div>
         <div class="now-showing">
         <div class="heading-sm-12">
-          <p class="heading">Recommendation</p>
+          <p class="heading">Popular Movies - Many people watch this movie</p>
         </div>
         <div class="movie-list">
           {% for show in recom %}
@@ -77,11 +77,11 @@
         <div class="heading-sm-12">
           <p>Coming Soon</p>
         </div>
-        <div class="movie-list-upcoming">
+        <div class="movie-list-upcoming my-4">
           {% for soon in coming %}
           <div class="list-upcoming"> 
             <a href = "{% url 'movie:movie-detail' soon.slug %}"> 
-            <img src="{{soon.image.url}}" alt="">
+            <img src="{{soon.image.url}}" alt="" style="height: 100px; width:90px;">
             <p class="name">{{soon.name}}</p>
           </a>
           </div>
